@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moatmat_admin/Core/widgets/toucheable_tile_widget.dart';
 
 import '../../../Core/injection/app_inj.dart';
 import '../../../Core/resources/colors_r.dart';
@@ -35,7 +36,20 @@ class _QuestionsPickerViewsManagerState extends State<QuestionsPickerViewsManage
       body: BlocBuilder<QuestionsPickerCubit, QuestionsPickerState>(
         builder: (context, state) {
           if (state is QuestionsPickerTeacher) {
-            return const SizedBox();
+            return Scaffold(
+              appBar: AppBar(),
+              body: ListView.builder(
+                itemCount: state.teachers.length,
+                itemBuilder: (context, index) {
+                  return TouchableTileWidget(
+                    title: state.teachers[index].name,
+                    onTap: () {
+                      context.read<QuestionsPickerCubit>().setTeacher(state.teachers[index].email);
+                    },
+                  );
+                },
+              ),
+            );
           } else if (state is QuestionsPickerRepository) {
             return PopScope(
               canPop: true,
@@ -79,7 +93,7 @@ class _QuestionsPickerViewsManagerState extends State<QuestionsPickerViewsManage
                     children: [
                       PickTeacherItemView(
                         isTest: true,
-                        teacherEmail: locator<TeacherData>().email,
+                        teacherEmail: state.teacher,
                         onPickTest: (test) {
                           context.read<QuestionsPickerCubit>().setRepository(
                                 bank: null,
@@ -89,7 +103,7 @@ class _QuestionsPickerViewsManagerState extends State<QuestionsPickerViewsManage
                       ),
                       PickTeacherItemView(
                         isTest: false,
-                        teacherEmail: locator<TeacherData>().email,
+                        teacherEmail: state.teacher,
                         onPickBank: (bank) {
                           context.read<QuestionsPickerCubit>().setRepository(
                                 bank: bank,
@@ -148,7 +162,7 @@ class _QuestionsPickerViewsManagerState extends State<QuestionsPickerViewsManage
                                 );
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("تمت اضافة السؤال"),
+                                content: Text("تمت إضافة السؤال"),
                               ),
                             );
                           },

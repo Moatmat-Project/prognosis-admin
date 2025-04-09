@@ -28,7 +28,7 @@ class TeacherDataModel extends TeacherData {
       banksFolders: json["banks_folders"] ?? {},
       testsFolders: json["tests_folders"] ?? {},
       //
-      groups: List.generate((json['groups'] as List).length, (i) {
+      groups: List.generate((json['groups'] as List?)?.length ?? 0, (i) {
         return GroupModel.fromJson((json['groups'] as List)[i]);
       }),
       //

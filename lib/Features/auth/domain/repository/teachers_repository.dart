@@ -28,4 +28,9 @@ abstract class TeacherRepository {
   Future<Either<Failure, UserData>> getUserDataData({required String id});
   //
   Future<Either<Exception, List<TeacherData>>> getALlTeachers();
+  // get user Data
+  Future<Either<Failure, List<UserData>>> getUsersDataByIds({
+    required List<String> ids,
+    bool isUuid = true,
+  });
 }

@@ -6,6 +6,7 @@ import 'package:moatmat_admin/Features/buckets/domain/usecases/upload_file_uc.da
 import 'package:moatmat_admin/Features/tests/data/models/question_m.dart';
 import 'package:moatmat_admin/Features/tests/data/models/test_m.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
+import 'package:moatmat_admin/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class TestsRemoteDS {
@@ -43,6 +44,8 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
   @override
   Stream<String> uploadTest({required Test test}) async* {
     //
+    ErrorsCopier().addErrorLogs("starting uploading");
+    //
     bool visible = test.properties.visible ?? false;
     //
     final client = Supabase.instance.client;
@@ -75,20 +78,24 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
       }
     }
     //--------------------------------------------------------------------
-    // update bank
+    // update test
     await client.from("tests").update(model).eq("id", test.id);
+    //
+    ErrorsCopier().addErrorLogs("finish uploading test");
     //
     yield "unit";
   }
 
   Stream<dynamic> uploadTestFile({required Test test}) async* {
     //
+    ErrorsCopier().addErrorLogs("starting uploading test files");
+    //
     int length = test.questions.length;
     int filesLength = test.information.files?.length ?? 0;
     //
     var newTest = test;
     //
-
+    ErrorsCopier().addErrorLogs("tests remote datasource:uploading video");
     // upload test videos
     for (int i = 0; i < (newTest.information.video ?? []).length; i++) {
       //
@@ -101,8 +108,13 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
         path: newTest.information.video![i],
       );
       res.fold(
-        (l) {},
+        (l) {
+          ErrorsCopier().addErrorLogs("left $l");
+        },
         (r) {
+          ErrorsCopier().addErrorLogs("right $r");
+          ErrorsCopier().addErrorLogs("starting swap:");
+          ErrorsCopier().addErrorLogs("before swap:${newTest.information.video}");
           //
           List<String> newVideos = newTest.information.video ?? [];
           //
@@ -116,6 +128,8 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
               video: newVideos,
             ),
           );
+          ErrorsCopier().addErrorLogs("after swap:${newTest.information.video}");
+          ErrorsCopier().addErrorLogs("finish swap.");
         },
       );
       //
@@ -265,7 +279,9 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
       }
       newTest.questions[i] = QuestionModel.fromClass(q);
     }
-
+    //
+    ErrorsCopier().addErrorLogs("finish uploading test files");
+    //
     yield newTest;
   }
 
@@ -327,7 +343,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     //
     if (oldTest != null) {
       //
-      yield "حذف ملفات الأختبار القديم";
+      yield "حذف ملفات الاختبار القديم";
       // delete old test files
       locator<DeleteTestFilesUC>().call(oldTest: oldTest, newTest: test);
     }

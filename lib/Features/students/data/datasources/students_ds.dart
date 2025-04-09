@@ -5,6 +5,7 @@ import 'package:moatmat_admin/Features/students/data/models/result_m.dart';
 import 'package:moatmat_admin/Features/students/data/models/user_data_m.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../auth/domain/use_cases/get_users_data_by_ids.dart';
 import '../../../banks/domain/entities/bank.dart';
 import '../../../banks/domain/usecases/get_bank_by_id_uc.dart';
 import '../../../outer_tests/domain/entities/outer_test.dart';
@@ -14,12 +15,17 @@ import '../../../tests/domain/usecases/get_test_by_id_uc.dart';
 import '../../domain/entities/result.dart';
 import '../../domain/entities/user_data.dart';
 import '../../domain/usecases/get_repository_details_uc.dart';
+import '../responses/get_my_students_statistics_response.dart';
 
 abstract class StudentsDS {
   //
   // get my students
   Future<List<UserData>> getMyStudents({
     required bool update,
+  });
+  //
+  Future<GetMyStudentsStatisticsResponse> getMyStudentsStatistics({
+    required List<UserData> students,
   });
   // get my students
   Future<List<UserData>> getMyStudentsByIds({
@@ -297,16 +303,114 @@ class StudentsDSimpl implements StudentsDS {
     //
     return unit;
   }
-  
+
   @override
-  Future<Unit> addResults({required List<Result> results}) {
-    // TODO: implement addResults
-    throw UnimplementedError();
+  Future<Unit> addResults({required List<Result> results}) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    List<UserData> usersData = [];
+    //
+    if (results.first.userId.isEmpty) {
+      await locator<GetUsersDataByIdsUC>().call(ids: results.map((e) => e.userNumber).toList(), isUuid: false).then((response) {
+        response.fold(
+          (l) {},
+          (r) {
+            usersData = r;
+          },
+        );
+      });
+    }
+    //
+    List list = results.map((Result e) {
+      UserData? userData = usersData.where((data) {
+        String modifiedUserNumber = e.userNumber.toString().substring(1);
+        return data.id == modifiedUserNumber;
+      }).firstOrNull;
+      return ResultModel.fromClass(e.copyWith(userId: userData?.uuid)).toJson();
+    }).toList();
+    //
+    await client.from("results").insert(list);
+    //
+    return unit;
   }
-  
+
   @override
   Future<List<UserData>> getMyStudentsByIds({required List<String> ids}) {
     // TODO: implement getMyStudentsByIds
     throw UnimplementedError();
+  }
+
+  @override
+  Future<GetMyStudentsStatisticsResponse> getMyStudentsStatistics({
+    required List<UserData> students,
+  }) async {
+    final client = Supabase.instance.client;
+    //
+    final List<Map<String, dynamic>> testsJson = await client
+        //
+        .from("tests")
+        .select("id , information->>title");
+
+    //
+    final List<Map<String, dynamic>> resultsJson = await client
+        //
+        .from("results")
+        .select("user_id,mark,date,test_id,answers")
+        .not("test_id", "is", null);
+
+    //
+    final List<Result> results = resultsJson.map((e) => ResultModel.fromStatisticsQuery(e)).toList();
+    //
+    results.removeWhere((e) => e.answers.any((e) => e == null));
+
+    // Store user marks
+    Map<String, List<StudentTestMarkDetails>> userMarksHolder = {};
+    for (var r in results) {
+      userMarksHolder.putIfAbsent(r.userId, () => []).add(
+            StudentTestMarkDetails(
+              testId: r.testId ?? -1,
+              mark: r.mark,
+              date: r.date,
+            ),
+          );
+    }
+
+    // Generate student row details
+    final List<StudentRowDetails> rows = students.map((s) {
+      List<StudentTestMarkDetails> marks = userMarksHolder[s.uuid] ?? [];
+      //
+      // Step 1: Group by ID
+      Map<int, List<StudentTestMarkDetails>> grouped = {};
+      for (var mark in marks) {
+        int id = mark.testId;
+        grouped.putIfAbsent(id, () => []).add(mark);
+      }
+      //
+      // Step 2: Sort each group by date
+      grouped.forEach((id, list) {
+        list.sort((a, b) => a.date.compareTo(b.date)); // Oldest first
+      });
+      //
+      // Step 3: Extract the oldest item from each group
+      List<StudentTestMarkDetails> newMarks = grouped.values.map((list) => list.first).toList();
+
+      //
+      return StudentRowDetails(
+        name: s.name,
+        userId: s.id,
+        marks: newMarks,
+      );
+    }).toList();
+
+    return GetMyStudentsStatisticsResponse(
+      rows: rows,
+      tests: testsJson.map((e) {
+        return (
+          e['id'] as int,
+          e['title'] as String,
+        );
+      }).toList(),
+    );
   }
 }

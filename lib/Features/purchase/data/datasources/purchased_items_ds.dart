@@ -1,3 +1,4 @@
+import 'package:dartz/dartz.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
 import 'package:moatmat_admin/Features/purchase/data/models/purchase_item_m.dart';
 import 'package:moatmat_admin/Features/purchase/domain/entities/purchase_item.dart';
@@ -5,6 +6,8 @@ import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class PurchasedItemsDS {
+  //
+  Future<Unit> cancelPurchase({required PurchaseItem item});
   //
   Future<List<PurchaseItem>> testPurchases({required Test test});
   //
@@ -48,5 +51,15 @@ class PurchasedItemsDSImpl implements PurchasedItemsDS {
     var list = res.map((e) => PurchaseItemModel.fromJson(e)).toList();
     //
     return list;
+  }
+
+  @override
+  Future<Unit> cancelPurchase({required PurchaseItem item}) async {
+    //
+    var client = Supabase.instance.client;
+    //
+    await client.from("purchases").delete().eq("id", item.id);
+    //
+    return unit;
   }
 }

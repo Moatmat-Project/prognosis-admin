@@ -40,13 +40,13 @@ addGroupDialog({
               Navigator.of(context).pop();
             }
           },
-          child: const Text("اضافة"),
+          child: const Text("إضافة"),
         ),
         TextButton(
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text("الغاء"),
+          child: const Text("إلغاء"),
         ),
       ],
     ),

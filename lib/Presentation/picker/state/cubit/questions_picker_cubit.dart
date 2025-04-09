@@ -1,9 +1,9 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../Core/injection/app_inj.dart';
 import '../../../../Features/auth/domain/entites/teacher_data.dart';
+import '../../../../Features/auth/domain/use_cases/get_all_teachers_uc.dart';
 import '../../../../Features/banks/domain/entities/bank.dart';
 import '../../../../Features/tests/domain/entities/question/question.dart';
 import '../../../../Features/tests/domain/entities/test/test.dart';
@@ -24,17 +24,24 @@ class QuestionsPickerCubit extends Cubit<QuestionsPickerState> {
     //
     emit(QuestionsPickerLoading());
     //
-    setTeacher(locator<TeacherData>().email);
+    pickTeachers();
+  }
+
+  pickTeachers() async {
+    //
+    final teachers = await locator<GetAllTeachersUC>().call();
+    //
+    teachers.fold(
+      (l) {
+        emit(const QuestionsPickerTeacher(teachers: []));
+      },
+      (r) {
+        emit(QuestionsPickerTeacher(teachers: r));
+      },
+    );
   }
 
   //
-  pickTeacher() async {
-    emit(QuestionsPickerLoading());
-    //
-    emit(QuestionsPickerRepository(
-      teacher: locator<TeacherData>().email,
-    ));
-  }
 
   //
   setTeacher(String email) {

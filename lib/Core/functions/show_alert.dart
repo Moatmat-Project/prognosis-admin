@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moatmat_admin/Core/resources/colors_r.dart';
 
 import '../resources/sizes_resources.dart';
 
@@ -18,16 +19,21 @@ showAlert({
       actions: [
         TextButton(
           onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(
+            disagreeBtn ?? "إلغاء",
+            style: TextStyle(
+              color: ColorsResources.blackText2,
+            ),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
             onAgree();
             Navigator.of(context).pop();
           },
           child: Text(agreeBtn ?? "حسنا"),
-        ),
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(disagreeBtn ?? "الغاء"),
         ),
       ],
     ),

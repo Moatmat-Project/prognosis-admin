@@ -31,6 +31,8 @@ abstract class TeachersDataSource {
   // get User Data
   Future<UserData> getUserDataData({required String id});
   //
+  Future<List<UserData>> getUsersDataByIds({required List<String> ids, bool isUuid = true});
+  //
   Future<Unit> resetPassword({
     required String email,
     required String password,
@@ -229,5 +231,26 @@ class TeachersDataSourceImpl implements TeachersDataSource {
     teachers = res.map((e) => TeacherDataModel.fromJson(e)).toList();
     //
     return teachers;
+  }
+
+  @override
+  Future<List<UserData>> getUsersDataByIds({required List<String> ids, bool isUuid = true}) async {
+    //
+    PostgrestList query;
+    if (isUuid) {
+      query = await client.from("users_data").select().inFilter("uuid", ids);
+    } else {
+      query = await client.from("users_data").select().inFilter("id", ids);
+    }
+    //
+    List res = query;
+    if (res.isNotEmpty) {
+      final usersData = res.map((e) {
+        return UserDataModel.fromJson(e);
+      }).toList();
+      return usersData;
+    } else {
+      throw Exception("empty");
+    }
   }
 }

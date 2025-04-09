@@ -81,7 +81,7 @@ class _BankDetailsViewState extends State<BankDetailsView> {
                     },
                   ),
                   TouchableTileWidget(
-                    title: "اضافة البنك الى مجلد",
+                    title: "إضافة البنك إلى مجلد",
                     iconData: Icons.folder,
                     onTap: () async {
                       if (locator<TeacherData>().options.allowUpdate) {
@@ -125,7 +125,7 @@ class _BankDetailsViewState extends State<BankDetailsView> {
                         showAlert(
                           context: context,
                           title: "تأكيد",
-                          body: "هل انت متاكد من انك تريد حذف الأختبار",
+                          body: "هل انت متاكد من انك تريد حذف الاختبار",
                           onAgree: () {
                             context.read<MyBanksCubit>().deleteBank(state.bank);
                             Navigator.of(context).pop();

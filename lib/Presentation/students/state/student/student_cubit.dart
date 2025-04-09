@@ -181,8 +181,13 @@ class StudentCubit extends Cubit<StudentState> {
             if (result.form! < outerTest.forms.length) {
               question = outerTest.forms[result.form!].questions[i];
             } else {
-              question = outerTest.forms[0].questions[i];
               Fluttertoast.showToast(msg: "لم يتم العثور على النموذج التصحيحي الاصلي");
+              if (i > outerTest.forms[0].questions.length - 1) {
+                Fluttertoast.showToast(msg: "هنالك اختلاف في عدد الأسئلة");
+                question = outerTest.forms[0].questions[0];
+              } else {
+                question = outerTest.forms[0].questions[i];
+              }
             }
             //
             if (answer != null) {

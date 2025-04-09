@@ -242,7 +242,7 @@ class TestPropertiesInfoWidget extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Text("السماح بتصفح الاسئلة"),
+            const Text("السماح بتصفح الأسئلة"),
             const Spacer(),
             Text(properties.exploreAnswers == true ? "نعم" : "لا"),
           ],
@@ -250,7 +250,7 @@ class TestPropertiesInfoWidget extends StatelessWidget {
         //
         Row(
           children: [
-            const Text("اظهار الاجابات"),
+            const Text("اظهار الإجابات"),
             const Spacer(),
             Text(properties.showAnswers == true ? "نعم" : "لا"),
           ],
@@ -409,9 +409,7 @@ class TestInformationWidget extends StatelessWidget {
             const Text("المدة"),
             const Spacer(),
             Text(
-              information.period != null
-                  ? periodToTextFunction(information.period!)
-                  : "فارغ",
+              information.period != null ? periodToTextFunction(information.period!) : "فارغ",
             ),
           ],
         ),

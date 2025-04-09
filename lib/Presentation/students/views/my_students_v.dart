@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:moatmat_admin/Presentation/students/views/student_v.dart';
+import 'package:moatmat_admin/Presentation/students/views/students_statistics_v.dart';
 
 import '../../../Core/resources/colors_r.dart';
 import '../../../Core/resources/shadows_r.dart';
@@ -39,61 +40,79 @@ class _MyStudentsViewState extends State<MyStudentsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("تصفح الطلاب"),
-      ),
       body: BlocBuilder<MyStudentsCubit, MyStudentsState>(
         builder: (context, state) {
           if (state is MyStudentsInitial) {
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<MyStudentsCubit>().update();
-              },
-              child: Column(
-                children: [
-                  const SizedBox(height: SizesResources.s2),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: SpacingResources.mainWidth(context),
-                        child: Text(
-                          "العدد الكلي : ${state.users.length}",
-                          style: const TextStyle(
-                            color: ColorsResources.blackText2,
-                            fontSize: 12,
-                          ),
+            return Scaffold(
+              appBar: AppBar(title: const Text("تصفح الطلاب"), actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (c) => StudentsStatisticsView(
+                          students: state.users,
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: SizesResources.s2),
-                  MyTextFormFieldWidget(
-                    hintText: "بحث",
-                    suffix: const Icon(Icons.search),
-                    controller: _controller,
-                  ),
-                  const SizedBox(height: SizesResources.s2),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.users.length,
-                      itemBuilder: (context, index) {
-                        return Column(
-                          children: [
-                            StudentTileWidget(
-                              userData: state.users[index],
+                    );
+                  },
+                  child: Text("الإحصائيات"),
+                ),
+              ]),
+              body: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<MyStudentsCubit>().update();
+                },
+                child: Column(
+                  children: [
+                    const SizedBox(height: SizesResources.s2),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: SpacingResources.mainWidth(context),
+                          child: Text(
+                            "العدد الكلي : ${state.users.length}",
+                            style: const TextStyle(
+                              color: ColorsResources.blackText2,
+                              fontSize: 12,
                             ),
-                          ],
-                        );
-                      },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: SizesResources.s2),
+                    MyTextFormFieldWidget(
+                      hintText: "بحث",
+                      suffix: const Icon(Icons.search),
+                      controller: _controller,
+                    ),
+                    const SizedBox(height: SizesResources.s2),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: state.users.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              StudentTileWidget(
+                                userData: state.users[index],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
-          return const Center(
-            child: CupertinoActivityIndicator(),
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("تصفح الطلاب"),
+            ),
+            body: const Center(
+              child: CupertinoActivityIndicator(),
+            ),
           );
         },
       ),

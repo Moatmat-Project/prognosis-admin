@@ -29,7 +29,7 @@ addSubFolderFunction({
             ),
             const SizedBox(height: SizesResources.s4),
             ElevatedButtonWidget(
-              text: "اضافة",
+              text: "إضافة",
               width: SpacingResources.mainHalfWidth(context),
               onPressed: () {
                 onAdd(name);

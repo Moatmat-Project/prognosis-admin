@@ -122,8 +122,11 @@ class _StudentViewState extends State<StudentView> {
               userData: state.userData,
             );
           }
-          return const Center(
-            child: CupertinoActivityIndicator(),
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: CupertinoActivityIndicator(),
+            ),
           );
         },
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../../Core/resources/colors_r.dart';
 import '../../../Core/resources/sizes_resources.dart';
 import '../../../Core/resources/spacing_resources.dart';
@@ -31,7 +30,7 @@ class _TestAnswersPercentageState extends State<TestAnswersPercentage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("نسب اختيار الاجوبة"),
+        title: const Text("نسب اختيار الأجوبة"),
       ),
       body: Column(
         children: [

@@ -9,6 +9,7 @@ import 'package:moatmat_admin/Features/students/domain/repository/students_repo.
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 
 import '../../../outer_tests/domain/entities/outer_test.dart';
+import '../responses/get_my_students_statistics_response.dart';
 
 class StudentsRepositoryImpl implements StudentsRepository {
   final StudentsDS dataSource;
@@ -19,6 +20,19 @@ class StudentsRepositoryImpl implements StudentsRepository {
   Future<Either<Exception, List<UserData>>> getMyStudents({required bool update}) async {
     try {
       var res = await dataSource.getMyStudents(update: update);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+    @override
+  Future<Either<Exception, GetMyStudentsStatisticsResponse>> getMyStudentsStatistics({
+        required List<UserData> students,
+  }) async {
+    try {
+      var res = await dataSource.getMyStudentsStatistics(
+        students: students,
+      );
       return right(res);
     } on Exception catch (e) {
       return left(e);

@@ -244,7 +244,7 @@ class ExportRepositoryService {
                             width: maxItemWidth,
                             height: maxColumnHeight,
                             child: pw.Column(
-                              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: (i == list.length - 1 || list[i].$2.length == 1) ? pw.MainAxisAlignment.start : pw.MainAxisAlignment.spaceBetween,
                               children: List.generate(list[i].$1.length, (i2) {
                                 //
                                 counter++;
@@ -356,7 +356,7 @@ class ExportRepositoryService {
                             width: maxItemWidth,
                             height: maxColumnHeight,
                             child: pw.Column(
-                              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: (i == list.length - 1 || list[i].$2.length == 1) ? pw.MainAxisAlignment.start : pw.MainAxisAlignment.spaceBetween,
                               children: List.generate(list[i].$2.length, (i2) {
                                 //
                                 counter++;
@@ -546,15 +546,18 @@ class ExportRepositoryService {
     //
     for (var q in questions) {
       //
-      if (q.image != null) {
-        print("cached");
-        await cacheImage(imageUrl: q.image!, context: context);
-      }
-      //
-      for (var a in q.answers) {
-        if (a.image != null) {
-          await cacheImage(imageUrl: a.image!, context: context);
+      try {
+        if (q.image != null) {
+          await cacheImage(imageUrl: q.image!, context: context);
         }
+        //
+        for (var a in q.answers) {
+          if (a.image != null) {
+            await cacheImage(imageUrl: a.image!, context: context);
+          }
+        }
+      } on Exception  {
+        continue;
       }
       //
     }
@@ -566,6 +569,8 @@ class ExportRepositoryService {
     required String imageUrl,
     required BuildContext context,
   }) async {
+    //
+    if (imageUrl.isEmpty) return;
     //
     Completer<void> completer = Completer<void>();
     //

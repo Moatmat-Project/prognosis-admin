@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:moatmat_admin/Core/services/one_signal_s.dart';
 import 'package:moatmat_admin/Features/notifications/data/models/notification_m.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/notification.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -49,12 +48,7 @@ class NotificationDSImpl implements NotificationDS {
       List notifications = res.first["notifications"] ?? [];
       //
       notifications.add(NotificationDataModel.fromClass(notification).toJson());
-      //
-      OneSignalService.sendNotification(
-        title: notification.title,
-        content: notification.content,
-        topic: userId,
-      );
+
       //
       await client.from("users_data").update({"notifications": notifications}).eq("uuid", userId);
     }

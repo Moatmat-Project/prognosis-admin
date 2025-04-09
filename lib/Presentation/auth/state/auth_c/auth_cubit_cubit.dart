@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:get_it/get_it.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
+import 'package:moatmat_admin/Features/auth/domain/entites/teacher_options.dart';
 import 'package:moatmat_admin/Features/auth/domain/use_cases/update_user_data_uc.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,8 +29,7 @@ class AuthCubit extends Cubit<AuthState> {
         //
         injectUpdateInfo(r);
         //
-        if (r.appVersion < r.currentVersion ||
-            r.appVersion < r.minimumVersion) {
+        if (r.appVersion < r.currentVersion || r.appVersion < r.minimumVersion) {
           //
           emit(AuthUpdate(updateInfo: r));
           //
@@ -78,8 +78,7 @@ class AuthCubit extends Cubit<AuthState> {
           } else {
             emit(
               const AuthError(
-                error:
-                    "حساب غير مصرح \n تواصل على واتساب 0984993813 لتنشيط حسابك",
+                error: "حساب غير مصرح \n تواصل على واتساب 0984993813 لتنشيط حسابك",
               ),
             );
           }

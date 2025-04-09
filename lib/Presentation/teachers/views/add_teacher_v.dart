@@ -8,7 +8,7 @@ import 'package:moatmat_admin/Core/widgets/fields/checking_w.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_options.dart';
-import 'package:moatmat_admin/Presentation/teachers/state/cubit/teachers_manager_cubit.dart';
+import 'package:moatmat_admin/Presentation/teachers/state/teachers_manager/teachers_manager_cubit.dart';
 
 class AddTeacherView extends StatefulWidget {
   const AddTeacherView({super.key});
@@ -66,7 +66,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
       appBar: AppBar(actions: [
         TextButton(
           onPressed: onUpdate,
-          child: const Text("اضافة"),
+          child: const Text("إضافة"),
         ),
       ]),
       body: Form(

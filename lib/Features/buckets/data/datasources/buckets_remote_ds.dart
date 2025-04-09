@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../Core/constant/materials.dart';
 
 import '../../../../Core/functions/coders/encode.dart';
+import '../../../../main.dart';
 import '../../../banks/domain/entities/bank.dart';
 import '../../../tests/domain/entities/test/test.dart';
 
@@ -73,8 +74,10 @@ class BucketsRemoteDSImpl implements BucketsRemoteDS {
     required String bucket,
     String? name,
   }) async {
+    // copy all steps with debugging to error copier ErrorsCopier()
     try {
       if (path.contains("supabase")) {
+        ErrorsCopier().addErrorLogs("path contains supabase , path is $path");
         return path;
       }
       //
@@ -89,10 +92,15 @@ class BucketsRemoteDSImpl implements BucketsRemoteDS {
         customName: name,
       );
       //
+      ErrorsCopier().addErrorLogs("file path after set up file path is $filePath");
+      //
       await storage.upload(filePath, File(path));
       //
-      return storage.getPublicUrl(Uri.decodeFull(filePath));
-    } on Exception {
+      final res = storage.getPublicUrl(Uri.decodeFull(filePath));
+      ErrorsCopier().addErrorLogs("public file path is $res");
+      return res;
+    } on Exception catch (e) {
+      ErrorsCopier().addErrorLogs("exception while uploading file , error is : $e");
       return path;
     }
   }

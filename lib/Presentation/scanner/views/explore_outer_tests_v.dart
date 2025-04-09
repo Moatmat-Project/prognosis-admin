@@ -133,7 +133,7 @@ class _ExploreOuterTestsViewState extends State<ExploreOuterTestsView> {
 //             ),
 //           ),
 //           TouchableTileWidget(
-//             title: "تصدير نتائج الأختبار",
+//             title: "تصدير نتائج الاختبار",
 //             iconData: Icons.arrow_forward_ios,
 //             onTap: () {
 //               Navigator.of(context).push(

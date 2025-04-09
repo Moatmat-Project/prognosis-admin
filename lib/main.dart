@@ -1,5 +1,4 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:moatmat_admin/Core/services/one_signal_s.dart';
 import 'package:moatmat_admin/Presentation/auth/state/auth_c/auth_cubit_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/add_bank/add_bank_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/my_banks/my_banks_cubit.dart';
@@ -10,6 +9,7 @@ import 'package:moatmat_admin/Presentation/questions/state/cubit/create_question
 import 'package:moatmat_admin/Presentation/requests/state/cubit/requests_cubit.dart';
 import 'package:moatmat_admin/Presentation/students/state/my_students/my_students_cubit.dart';
 import 'package:moatmat_admin/Presentation/students/state/student_reports/student_reports_cubit.dart';
+import 'package:moatmat_admin/Presentation/teachers/state/manage_teacher_purchases/manage_teacher_purchases_bloc.dart';
 import 'package:moatmat_admin/Presentation/tests/state/search_test/search_test_cubit.dart';
 import 'package:moatmat_admin/firebase_options.dart';
 import 'Core/injection/app_inj.dart';
@@ -25,7 +25,7 @@ import 'Presentation/groups/state/group_test_detials/group_test_details_cubit.da
 import 'Presentation/notifications/state/cubit/notifications_cubit.dart';
 import 'Presentation/reports/state/reports/reports_cubit.dart';
 import 'Presentation/scanner/state/cubit/explore_outer_tests_cubit.dart';
-import 'Presentation/teachers/state/cubit/teachers_manager_cubit.dart';
+import 'Presentation/teachers/state/teachers_manager/teachers_manager_cubit.dart';
 import 'Presentation/students/state/student/student_cubit.dart';
 import 'Presentation/tests/state/add_outer_test/add_outer_test_cubit.dart';
 import 'Presentation/tests/state/add_test/add_test_cubit.dart';
@@ -44,8 +44,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  //
-  await OneSignalService.initialize();
+
   // init get it
   await initGetIt();
 
@@ -81,8 +80,31 @@ void main() async {
         BlocProvider(create: (context) => OuterTestResultsCubit()),
         BlocProvider(create: (context) => GroupTestDetailsCubit()),
         BlocProvider(create: (context) => StudentReportsCubit()),
+        BlocProvider(create: (context) => ManageTeacherPurchasesBloc()),
       ],
       child: const AppRoot(),
     ),
   );
+}
+
+class ErrorsCopier {
+  ///
+  // Private constructor for singleton pattern
+  ErrorsCopier._privateConstructor();
+
+  // The single instance
+  static final ErrorsCopier _instance = ErrorsCopier._privateConstructor();
+
+  // Factory constructor to return the same instance every time
+  factory ErrorsCopier() => _instance;
+
+  ///
+  final List<String> errors = List.empty(growable: true);
+
+  static List<String> get errorsList => _instance.errors;
+
+  ///
+  Future<void> addErrorLogs(String details) async {
+    errors.add(details);
+  }
 }

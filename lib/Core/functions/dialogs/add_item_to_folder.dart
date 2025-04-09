@@ -149,7 +149,7 @@ class PickFolderWidget extends StatelessWidget {
         children: [
           const Row(
             children: [
-              Text("اضافة الى مجلد"),
+              Text("إضافة إلى مجلد"),
             ],
           ),
           //
@@ -158,7 +158,7 @@ class PickFolderWidget extends StatelessWidget {
             child: folders.isEmpty
                 ? const Center(
                     child: Text(
-                      "لا يوجد مجلدات \n قم بانشاء مجلدات لاضافة العناصر اليها",
+                      "لا يوجد مجلدات \n قم بانشاء مجلدات لإضافة العناصر اليها",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 12,
@@ -235,9 +235,7 @@ class PickSubFolderWidget extends StatelessWidget {
           ),
           const SizedBox(height: SizesResources.s2),
           ElevatedButtonWidget(
-            text: selected != null
-                ? "حفظ في ${folder.subFolders[selected!].name}"
-                : "حفظ هنا",
+            text: selected != null ? "حفظ في ${folder.subFolders[selected!].name}" : "حفظ هنا",
             onPressed: onSave,
             width: SpacingResources.mainHalfWidth(context),
           ),
@@ -269,8 +267,7 @@ class FolderSelectableTileWidget extends StatelessWidget {
       decoration: BoxDecoration(
         color: ColorsResources.onPrimary,
         borderRadius: BorderRadius.circular(10),
-        border:
-            selected ? Border.all(color: ColorsResources.darkPrimary) : null,
+        border: selected ? Border.all(color: ColorsResources.darkPrimary) : null,
       ),
       child: Material(
         borderRadius: BorderRadius.circular(10),

@@ -32,12 +32,23 @@ class PurchasesRepositoryImpl implements PurchasesRepository {
       return left(e);
     }
   }
+
   @override
   Future<Either<Exception, List<PurchaseItem>>> teacherPurchases({
     required String email,
   }) async {
     try {
       var res = await dataSource.teacherPurchases(email: email);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Unit>> cancelPurchase({required PurchaseItem item}) async {
+    try {
+      var res = await dataSource.cancelPurchase(item: item);
       return right(res);
     } on Exception catch (e) {
       return left(e);

@@ -116,10 +116,12 @@ class QuestionTextBuilderWidget extends StatefulWidget {
     this.wrapAlignment,
     this.width,
     this.fontSize,
+    this.mathFontSize,
     this.fontWeight,
     this.disableNewLines = false,
   });
   final double? fontSize;
+  final double? mathFontSize;
   final FontWeight? fontWeight;
   final double? width;
   final String text;
@@ -187,6 +189,8 @@ class _QuestionTextBuilderWidgetState extends State<QuestionTextBuilderWidget> {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: List.generate(words.length, (index) {
             //
+            print("word : ${words[index]} , color : ${colors[index]}");
+            //
             if (containsEscapeSequence(words[index])) {
               //
               String equation = getEquationByFromText(words[index]);
@@ -196,14 +200,17 @@ class _QuestionTextBuilderWidgetState extends State<QuestionTextBuilderWidget> {
                   return ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: constraints.maxWidth,
-                      minHeight: (widget.fontSize ?? 15) * 2,
+                      minHeight: (widget.mathFontSize ?? 15) * 2.7,
                     ),
                     child: FittedBox(
-                      child: MathTexWidget(
-                        equation: equation,
-                        color: colors[index],
-                        fontWeight: widget.fontWeight,
-                        fontSize: widget.fontSize ?? 14,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: MathTexWidget(
+                          equation: equation,
+                          color: colors[index],
+                          fontWeight: widget.fontWeight,
+                          fontSize: widget.mathFontSize ?? 14,
+                        ),
                       ),
                     ),
                   );
@@ -236,13 +243,13 @@ class _QuestionTextBuilderWidgetState extends State<QuestionTextBuilderWidget> {
     );
   }
 
-  bool isArabic(String text) {
-    return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
-  }
-
   bool containsEscapeSequence(String input) {
     RegExp regex = RegExp(r'\\[0-9]');
     return regex.hasMatch(input);
+  }
+
+  bool isArabic(String text) {
+    return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
   }
 
   String getEquationByFromText(String text) {

@@ -10,6 +10,10 @@ abstract class PurchasesRepository {
     required Test test,
   });
   //
+  Future<Either<Exception, Unit>> cancelPurchase({
+    required PurchaseItem item,
+  });
+  //
   Future<Either<Exception, List<PurchaseItem>>> bankPurchases({
     required Bank bank,
   });

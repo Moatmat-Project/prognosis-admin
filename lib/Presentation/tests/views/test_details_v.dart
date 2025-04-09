@@ -81,7 +81,7 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                     },
                   ),
                   TouchableTileWidget(
-                    title: "اضافة الاختبار الى مجلد",
+                    title: "إضافة الاختبار إلى مجلد",
                     iconData: Icons.folder,
                     onTap: () async {
                       if (locator<TeacherData>().options.allowUpdate) {
@@ -125,7 +125,7 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                         showAlert(
                           context: context,
                           title: "تأكيد",
-                          body: "هل انت متاكد من انك تريد حذف الأختبار",
+                          body: "هل انت متاكد من انك تريد حذف الاختبار",
                           onAgree: () {
                             context.read<MyTestsCubit>().deleteTest(state.test);
                             Navigator.of(context).pop();
@@ -146,7 +146,7 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         TouchableTileWidget(
-                          title: "تصفح نتائج الأختبار",
+                          title: "تصفح نتائج الاختبار",
                           iconData: Icons.arrow_forward_ios,
                           onTap: () {
                             Navigator.of(context).push(

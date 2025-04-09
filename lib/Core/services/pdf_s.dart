@@ -177,7 +177,7 @@ class PdfService {
 
               // 4 - wrong answers
               getColumnCell(
-                "الاسئلة الخاطئة",
+                "الأسئلة الخاطئة",
                 2,
               ),
 
@@ -222,7 +222,7 @@ class PdfService {
                 child: pw.Text(
                   content,
                   textAlign: pw.TextAlign.center,
-                style: const pw.TextStyle(fontSize: 7),
+                  style: const pw.TextStyle(fontSize: 7),
                 ),
               ),
             )

@@ -3,6 +3,7 @@ import 'package:moatmat_admin/Features/purchase/data/repository/purhcases_repo_i
 import 'package:moatmat_admin/Features/purchase/domain/usecases/bank_purchases_uc.dart';
 
 import '../../Features/purchase/domain/repository/purchases_rep.dart';
+import '../../Features/purchase/domain/usecases/cancel_purchase_uc.dart';
 import '../../Features/purchase/domain/usecases/teacher_purchases_uc.dart';
 import '../../Features/purchase/domain/usecases/test_purchases_uc.dart';
 import 'app_inj.dart';
@@ -26,6 +27,11 @@ void injectUC() {
   );
   locator.registerFactory<TeacherPurchasesUC>(
     () => TeacherPurchasesUC(
+      repository: locator(),
+    ),
+  );
+  locator.registerFactory<CancelPurchaseUC>(
+    () => CancelPurchaseUC(
       repository: locator(),
     ),
   );

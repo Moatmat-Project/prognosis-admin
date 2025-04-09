@@ -10,6 +10,8 @@ import 'package:moatmat_admin/Features/students/domain/usecases/get_repository_s
 import 'package:moatmat_admin/Features/students/domain/usecases/search_in_my_students_uc.dart';
 
 import '../../Features/students/data/datasources/students_local_ds.dart';
+import '../../Features/students/domain/usecases/add_results_uc.dart';
+import '../../Features/students/domain/usecases/get_my_students_statistics_uc.dart';
 import '../../Features/students/domain/usecases/get_repository_details_uc.dart';
 import 'app_inj.dart';
 
@@ -20,8 +22,18 @@ injectStudents() {
 }
 
 void injectUC() {
+  locator.registerFactory<AddResultsUC>(
+    () => AddResultsUC(
+      repository: locator(),
+    ),
+  );
   locator.registerFactory<GetMyStudentsUC>(
     () => GetMyStudentsUC(
+      repository: locator(),
+    ),
+  );
+  locator.registerFactory<GetMyStudentsStatisticsUc>(
+    () => GetMyStudentsStatisticsUc(
       repository: locator(),
     ),
   );

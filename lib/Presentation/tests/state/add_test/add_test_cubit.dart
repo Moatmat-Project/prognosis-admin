@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:moatmat_admin/Features/requests/domain/usecases/send_request_uc.dart';
@@ -7,6 +8,7 @@ import 'package:moatmat_admin/Features/tests/domain/entities/test/test_informati
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test_properties.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/question/question.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/update_test_uc.dart';
+import 'package:moatmat_admin/main.dart';
 
 import '../../../../Core/injection/app_inj.dart';
 import '../../../../Core/services/questions_cash_s.dart';
@@ -161,7 +163,7 @@ class AddTestCubit extends Cubit<AddTestState> {
         },
       );
     }
-
+    await Clipboard.setData(ClipboardData(text: ErrorsCopier.errorsList.toString()));
     //s
   }
 

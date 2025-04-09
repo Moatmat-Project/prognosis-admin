@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:moatmat_admin/Features/tests/domain/repositories/tests_repository.dart';
 
+import '../../../../main.dart';
 import '../datasources/tests_remote_ds.dart';
 
 class TestsRepositoryImpl implements TestsRepository {
@@ -11,8 +12,10 @@ class TestsRepositoryImpl implements TestsRepository {
   @override
   Future<Either<Exception, Stream>> uploadTest({required Test test}) async {
     try {
-      return right(dataSource.uploadTest(test: test));
+      final res = dataSource.uploadTest(test: test);
+      return right(res);
     } on Exception catch (e) {
+      ErrorsCopier().addErrorLogs("error is : $e");
       return left(e);
     }
   }
@@ -28,8 +31,7 @@ class TestsRepositoryImpl implements TestsRepository {
   }
 
   @override
-  Future<Either<Exception, List<Test>>> getTests(
-      {required String? material}) async {
+  Future<Either<Exception, List<Test>>> getTests({required String? material}) async {
     try {
       final res = await dataSource.getMyTests(material: material);
       return right(res);
@@ -39,8 +41,7 @@ class TestsRepositoryImpl implements TestsRepository {
   }
 
   @override
-  Future<Either<Exception, Test?>> getTestById(
-      {required int testId, required bool update}) async {
+  Future<Either<Exception, Test?>> getTestById({required int testId, required bool update}) async {
     try {
       final res = await dataSource.getTestById(testId: testId, update: update);
       return right(res);
@@ -59,8 +60,7 @@ class TestsRepositoryImpl implements TestsRepository {
   }
 
   @override
-  Future<Either<Exception, List<Test>>> getTestsByIds(
-      {required List<int> ids, required bool update}) async {
+  Future<Either<Exception, List<Test>>> getTestsByIds({required List<int> ids, required bool update}) async {
     try {
       final res = await dataSource.getTestsByIds(ids: ids, update: update);
       return right(res);

@@ -6,12 +6,18 @@ import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 
 import '../../../banks/domain/entities/bank.dart';
 import '../../../outer_tests/domain/entities/outer_test.dart';
+import '../../data/responses/get_my_students_statistics_response.dart';
 
 abstract class StudentsRepository {
   //
   // get my students
   Future<Either<Exception, List<UserData>>> getMyStudents({
     required bool update,
+  });
+    // get my students
+  Future<Either<Exception, GetMyStudentsStatisticsResponse>> getMyStudentsStatistics({
+
+    required List<UserData> students,
   });
   // get my students by ids
   Future<Either<Exception, List<UserData>>> getMyStudentsByIds({

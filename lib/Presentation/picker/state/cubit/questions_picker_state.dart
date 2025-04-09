@@ -10,7 +10,7 @@ sealed class QuestionsPickerState extends Equatable {
 final class QuestionsPickerLoading extends QuestionsPickerState {}
 
 final class QuestionsPickerTeacher extends QuestionsPickerState {
-  final List<String> teachers;
+  final List<TeacherData> teachers;
 
   const QuestionsPickerTeacher({required this.teachers});
 

@@ -191,7 +191,7 @@ class _StudentResultDetailsViewState extends State<StudentResultDetailsView> {
                   width: SpacingResources.mainWidth(context),
                   child: const Row(
                     children: [
-                      Text("الاجابات الخاطئة :"),
+                      Text("الإجابات الخاطئة :"),
                     ],
                   ),
                 ),
@@ -222,7 +222,7 @@ class _StudentResultDetailsViewState extends State<StudentResultDetailsView> {
       List<int?> answers = widget.result.answers;
       List<int> trueAnswers = widget.outerTest!.forms[widget.result.form! < widget.outerTest!.forms.length ? widget.result.form! : 0].questions.map((e) => e.trueAnswer).toList();
 
-      for (int i = 0; i < answers.length; i++) {
+      for (int i = 0; i < widget.outerTest!.forms.first.questions.length; i++) {
         if (answers[i] == (trueAnswers[i] + 1)) {
           count++;
         }
@@ -379,7 +379,7 @@ class OuterWrongAnswersBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.only(top: 15),
-      itemCount: answers.length,
+      itemCount: questions.length,
       //
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -423,7 +423,7 @@ class OuterWrongAnswersBuilder extends StatelessWidget {
                         Color color1 = ColorsResources.red;
                         return Expanded(
                           child: CircleAvatar(
-                            backgroundColor: (selection! - 1) == i
+                            backgroundColor: ((selection ?? 1) - 1) == i
                                 ? color1
                                 : trueAnswer
                                     ? Colors.green

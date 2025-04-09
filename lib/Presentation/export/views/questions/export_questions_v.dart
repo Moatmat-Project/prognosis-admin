@@ -86,7 +86,7 @@ class _ExportQuestionsViewState extends State<ExportQuestionsView> {
   exportAll() async {
     files = [];
     setState(() {
-      text = "جاري تجهيز الاسئلة للطباعة";
+      text = "جاري تجهيز الأسئلة للطباعة";
     });
     for (int i = 0; i < length; i++) {
       files.add(await export(numberToLetter(i + 1)));
@@ -271,6 +271,15 @@ class _ExportQuestionsViewState extends State<ExportQuestionsView> {
               ],
             ),
           ),
+          // Stack(
+          //   children: [
+          //     QuestionPdfImgWidget(
+          //       id: 0,
+          //       question: widget.questions[2],
+          //       controller: ScreenshotController(),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
@@ -354,6 +363,7 @@ class QuestionPdfImgWidget extends StatelessWidget {
                   fontWeight: FontWeight.w800,
                   wrapAlignment: WrapAlignment.start,
                   fontSize: 18,
+                  mathFontSize: 20,
                   colors: const [],
                   disableNewLines: true,
                 ),

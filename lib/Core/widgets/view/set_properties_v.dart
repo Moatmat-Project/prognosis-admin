@@ -87,7 +87,7 @@ class _SetPropertiesViewState extends State<SetPropertiesView> {
             const SizedBox(height: SizesResources.s2),
             if (widget.isTest)
               CheckingWidget(
-                title: "تصفح الاجابات الخاطئة",
+                title: "تصفح الإجابات الخاطئة",
                 value: exploreAnswers,
                 onChanged: (value) {
                   exploreAnswers = value ?? false;

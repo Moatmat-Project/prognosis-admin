@@ -360,7 +360,36 @@ class QuestionPreviewWidget extends StatelessWidget {
         border: Border.all(color: ColorsResources.borders),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: QuestionBodyWidget(question: question),
+      child: Column(
+        children: [
+          //
+          QuestionBodyWidget(question: question),
+          //
+          if (question.explain?.isNotEmpty??false) ...[
+            //
+            const SizedBox(
+              height: SizesResources.s2,
+            ),
+            //
+            const Divider(
+              endIndent: 30,
+              indent: 30,
+            ),
+            const SizedBox(
+              height: SizesResources.s2,
+            ),
+            const Text("شرح السؤال : "),
+            const SizedBox(
+              height: SizesResources.s1,
+            ),
+            QuestionTextBuilderWidget(
+              text: question.explain!,
+              equations: question.equations,
+              colors: const [],
+            ),
+          ]
+        ],
+      ),
     );
   }
 }

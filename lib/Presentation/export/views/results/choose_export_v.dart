@@ -30,7 +30,7 @@ class _ChooseExportVState extends State<ChooseExportV> {
 
   List<String> types = [
     "جميع العلامات",
-    "اعلى علامة",
+    "أعلى علامة",
   ];
   @override
   void initState() {
@@ -53,25 +53,25 @@ class _ChooseExportVState extends State<ChooseExportV> {
     // Populate the sheet with data
     resultsSheet.appendRow([
       // 1 - id
-      ( TextCellValue("رقم الطالب")),
+      (TextCellValue("رقم الطالب")),
       // 2 - name
-      ( TextCellValue("اسم الطالب")),
+      (TextCellValue("اسم الطالب")),
       // 3 - mark
-      ( TextCellValue("العلامة")),
+      (TextCellValue("العلامة")),
       // 4 - test id
-      ( TextCellValue("رقم البنك")),
+      (TextCellValue("رقم البنك")),
       // 5 - bank id
-      ( TextCellValue("رقم الاختبار")),
+      (TextCellValue("رقم الاختبار")),
       // 6 - wrong answers
-      ( TextCellValue("الاجابات الخاطئة")),
+      (TextCellValue("الإجابات الخاطئة")),
       // 7 - date
-      ( TextCellValue("التاديخ")),
+      (TextCellValue("التاديخ")),
       // 8 - time
-      ( TextCellValue("الوقت")),
+      (TextCellValue("الوقت")),
       // 9 - period
-      ( TextCellValue("المدة")),
+      (TextCellValue("المدة")),
       // 10 - t/b name
-      ( TextCellValue("الاسم")),
+      (TextCellValue("الاسم")),
       //
     ]);
     // Example headers
