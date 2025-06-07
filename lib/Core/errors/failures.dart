@@ -49,8 +49,13 @@ class InvalidDataFailure extends Failure {
 }
 
 class NotEnoughtBalaneFailure extends Failure {
-  const NotEnoughtBalaneFailure()
-      : super("لا يوجد رصيد كافي لاتمام عملية الشراء.!");
+  const NotEnoughtBalaneFailure() : super("لا يوجد رصيد كافي لاتمام عملية الشراء.!");
+  @override
+  List<Object?> get props => [];
+}
+
+class NotFoundFailure extends Failure {
+  const NotFoundFailure() : super("لم يتم العثور على المستخدم");
   @override
   List<Object?> get props => [];
 }

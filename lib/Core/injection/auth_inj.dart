@@ -6,6 +6,7 @@ import 'package:moatmat_admin/Features/auth/domain/use_cases/update_user_data_uc
 import '../../Features/auth/data/data_source/users_ds.dart';
 import '../../Features/auth/data/repository/teachers_repository_impl.dart';
 import '../../Features/auth/domain/use_cases/get_all_teachers_uc.dart';
+import '../../Features/auth/domain/use_cases/get_users_data_by_ids.dart';
 import '../../Features/auth/domain/use_cases/sign_in_uc.dart';
 import '../../Features/auth/domain/use_cases/sign_up_uc.dart';
 import 'app_inj.dart';
@@ -44,6 +45,11 @@ void injectUC() {
   );
     locator.registerFactory<GetAllTeachersUC>(
     () => GetAllTeachersUC(
+      repository: locator(),
+    ),
+  );
+    locator.registerFactory<GetUsersDataByIdsUC>(
+    () => GetUsersDataByIdsUC(
       repository: locator(),
     ),
   );

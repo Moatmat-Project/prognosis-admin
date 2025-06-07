@@ -31,6 +31,7 @@ dependencies:
   cached_network_image: ^3.3.1
   cupertino_icons: ^1.0.2
   dartz: ^0.10.1
+  encrypt: ^5.0.3
   equatable: ^2.0.5
   excel: ^4.0.2
   file_picker: ^9.0.0
@@ -86,6 +87,7 @@ flutter:
     - assets/fonts/Tajawal/
     - assets/math/
     - assets/other/
+    - assets/images/other/
     - assets/images/home/
     - assets/images/apps/
     - assets/images/materials/

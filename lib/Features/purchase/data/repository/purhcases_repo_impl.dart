@@ -5,6 +5,8 @@ import 'package:moatmat_admin/Features/purchase/domain/entities/purchase_item.da
 import 'package:moatmat_admin/Features/purchase/domain/repository/purchases_rep.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 
+import '../../../../Core/errors/exceptions.dart';
+
 class PurchasesRepositoryImpl implements PurchasesRepository {
   final PurchasedItemsDS dataSource;
 
@@ -49,6 +51,16 @@ class PurchasesRepositoryImpl implements PurchasesRepository {
   Future<Either<Exception, Unit>> cancelPurchase({required PurchaseItem item}) async {
     try {
       var res = await dataSource.cancelPurchase(item: item);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Unit>> createTeacherPurchase({required PurchaseItem item}) async {
+    try {
+      var res = await dataSource.createTeacherPurchase(item: item);
       return right(res);
     } on Exception catch (e) {
       return left(e);

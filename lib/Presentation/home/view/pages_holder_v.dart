@@ -4,7 +4,9 @@ import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/widgets/material_picker_v.dart';
 import 'package:moatmat_admin/Presentation/banks/views/banks_search_result_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/codes_views_manager.dart';
+import 'package:moatmat_admin/Presentation/codes/views/print_students_code_view.dart';
 import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.dart';
+import 'package:moatmat_admin/Presentation/students/views/add_student_balance_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/add_teacher_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/all_teachers_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/tests_search_result_v.dart';
@@ -133,12 +135,36 @@ class _PagesHolderViewState extends State<PagesHolderView> {
         animatedIcon: AnimatedIcons.menu_home,
         children: [
           SpeedDialChild(
+            label: "طباعة اكواد",
+            child: const Icon(Icons.picture_as_pdf_outlined),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PrintStudentsCodeView(),
+                ),
+              );
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          ),
+          SpeedDialChild(
             label: "انشاء اكواد",
             child: const Icon(Icons.qr_code),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const CodesViewManager(),
+                ),
+              );
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          ),
+          SpeedDialChild(
+            label: "شحن رصيد طالب",
+            child: const Icon(Icons.currency_exchange),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AddStudentBalanceView(),
                 ),
               );
               FocusManager.instance.primaryFocus?.unfocus();

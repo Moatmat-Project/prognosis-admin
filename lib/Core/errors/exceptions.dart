@@ -7,7 +7,10 @@ class OfflineException implements Exception {}
 class NotFoundException implements Exception {}
 
 class AnonException implements Exception {}
+class DuplicatedSubscriptionException implements Exception {}
+
 class NotEnoughtBalaneException implements Exception {}
+
 class CodesUsedException implements Exception {}
 
 class CancelException implements Exception {}
@@ -31,4 +34,5 @@ class UserAlreadyExcitedException implements Exception {}
 class InvalidDataException implements Exception {}
 
 class WrongPasswordException implements Exception {}
+
 class CrossMaxSizeException implements Exception {}

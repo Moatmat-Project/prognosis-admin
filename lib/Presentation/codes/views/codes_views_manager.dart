@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moatmat_admin/Presentation/codes/state/cubit/codes_cubit.dart';
+import 'package:moatmat_admin/Core/functions/pdf/export_qr_codes_pdf.dart';
+import 'package:moatmat_admin/Presentation/codes/state/codes/codes_cubit.dart';
 import 'package:moatmat_admin/Presentation/codes/views/code_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/generate_code_v.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -23,7 +26,7 @@ class _CodesViewManagerState extends State<CodesViewManager> {
   late final PageController _pageController;
   List<ScreenshotController> controllers = [];
   int current = 1, last = 1;
-  bool loading = false;
+  bool screenshotLoading = false, pdfLoading = false;
 
   @override
   void initState() {
@@ -45,7 +48,7 @@ class _CodesViewManagerState extends State<CodesViewManager> {
 
   saveScreenShots() async {
     setState(() {
-      loading = true;
+      screenshotLoading = true;
     });
 
     List<XFile> files = [];
@@ -84,7 +87,7 @@ class _CodesViewManagerState extends State<CodesViewManager> {
       await completer.future;
     }
     setState(() {
-      loading = false;
+      screenshotLoading = false;
     });
     if (files.isNotEmpty) {
       try {
@@ -125,6 +128,79 @@ class _CodesViewManagerState extends State<CodesViewManager> {
     return filePath;
   }
 
+  Future exportCodes() async {
+    final bool? onPerPage = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('اختيار طريقة التصدير'),
+          content: Text('هل ترغب بوضع كل كود في صفحة منفصلة؟'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('عدة أكواد في صفحة'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('كود في كل صفحة'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (onPerPage == null) return; // user closed dialog
+
+    try {
+      setState(() {
+        pdfLoading = true;
+      });
+
+      Uint8List pdfBytes = await exportQRCodesPdf(
+        codes: context.read<CodesCubit>().codes,
+        onPerPage: onPerPage,
+      );
+      // save and open file as :
+      final output = await getTemporaryDirectory();
+      final file = File('${output.path}/codes.pdf');
+      await file.writeAsBytes(pdfBytes);
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('تم تصدير الملف بنجاح'),
+              actions: [
+                TextButton(
+                  onPressed: () async {
+                    await OpenFile.open(file.path);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('فتح'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Share.shareXFiles([XFile(file.path)]);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('مشاركة'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } finally {
+      setState(() {
+        pdfLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,12 +223,24 @@ class _CodesViewManagerState extends State<CodesViewManager> {
                 centerTitle: true,
                 actions: [
                   IconButton(
-                    onPressed: loading ? () {} : saveScreenShots,
-                    icon: loading
+                    onPressed: screenshotLoading ? () {} : saveScreenShots,
+                    icon: screenshotLoading
                         ? const CupertinoActivityIndicator(
                             color: ColorsResources.whiteText1,
                           )
                         : const Icon(Icons.save_alt),
+                  ),
+                  IconButton(
+                    onPressed: kDebugMode
+                        ? exportCodes
+                        : pdfLoading
+                            ? () {}
+                            : exportCodes,
+                    icon: screenshotLoading
+                        ? const CupertinoActivityIndicator(
+                            color: ColorsResources.whiteText1,
+                          )
+                        : const Icon(Icons.picture_as_pdf),
                   ),
                 ],
                 title: Padding(

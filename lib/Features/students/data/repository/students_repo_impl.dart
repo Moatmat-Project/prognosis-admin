@@ -25,9 +25,10 @@ class StudentsRepositoryImpl implements StudentsRepository {
       return left(e);
     }
   }
-    @override
+
+  @override
   Future<Either<Exception, GetMyStudentsStatisticsResponse>> getMyStudentsStatistics({
-        required List<UserData> students,
+    required List<UserData> students,
   }) async {
     try {
       var res = await dataSource.getMyStudentsStatistics(
@@ -174,6 +175,19 @@ class StudentsRepositoryImpl implements StudentsRepository {
   }) async {
     try {
       var res = await dataSource.addResults(results: results);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Unit>> addStudentBalance({
+    required String studentId,
+    required int amount,
+  }) async {
+    try {
+      var res = await dataSource.addStudentBalance(amount: amount,studentId:studentId);
       return right(res);
     } on Exception catch (e) {
       return left(e);

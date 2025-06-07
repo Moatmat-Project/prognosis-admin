@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
 import 'package:moatmat_admin/Features/purchase/data/models/purchase_item_m.dart';
 import 'package:moatmat_admin/Features/purchase/domain/entities/purchase_item.dart';
@@ -8,6 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 abstract class PurchasedItemsDS {
   //
   Future<Unit> cancelPurchase({required PurchaseItem item});
+  //
+  Future<Unit> createTeacherPurchase({required PurchaseItem item});
   //
   Future<List<PurchaseItem>> testPurchases({required Test test});
   //
@@ -61,5 +64,22 @@ class PurchasedItemsDSImpl implements PurchasedItemsDS {
     await client.from("purchases").delete().eq("id", item.id);
     //
     return unit;
+  }
+
+  @override
+  Future<Unit> createTeacherPurchase({required PurchaseItem item}) async {
+    //
+    var client = Supabase.instance.client;
+    //
+    var items = await client.from("purchases").select().eq("uuid", item.uuid).eq("item_type", item.itemType).eq("item_id", item.itemId);
+    //
+    if (items.isEmpty) {
+      //
+      await client.from("purchases").insert(PurchaseItemModel.fromClass(item).toJson());
+      //
+      return unit;
+    } else {
+      throw DuplicatedSubscriptionException();
+    }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:moatmat_admin/Presentation/codes/state/cubit/codes_cubit.dart';
+import 'package:moatmat_admin/Presentation/codes/state/codes/codes_cubit.dart';
 
 import '../../../Core/resources/sizes_resources.dart';
 import '../../../Core/validators/not_empty_v.dart';

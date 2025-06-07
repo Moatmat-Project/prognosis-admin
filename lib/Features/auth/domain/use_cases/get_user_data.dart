@@ -9,7 +9,7 @@ class GetUserDataUC {
   final TeacherRepository repository;
 
   GetUserDataUC({required this.repository});
-  Future<Either<Failure, UserData>> call({required String id}) async {
-    return await repository.getUserDataData(id: id);
+  Future<Either<Failure, UserData>> call({required String id, bool isUuid = true}) async {
+    return await repository.getUserDataData(id: id, isUuid: isUuid);
   }
 }

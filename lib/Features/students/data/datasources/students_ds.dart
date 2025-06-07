@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
 import 'package:moatmat_admin/Features/students/data/models/result_m.dart';
@@ -23,6 +24,8 @@ abstract class StudentsDS {
   Future<List<UserData>> getMyStudents({
     required bool update,
   });
+  //
+  Future<Unit> addStudentBalance({required int amount, required String studentId});
   //
   Future<GetMyStudentsStatisticsResponse> getMyStudentsStatistics({
     required List<UserData> students,
@@ -412,5 +415,25 @@ class StudentsDSimpl implements StudentsDS {
         );
       }).toList(),
     );
+  }
+
+  @override
+  Future<Unit> addStudentBalance({required int amount, required String studentId}) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    final response = await client.from("users_data").select().eq("id", studentId);
+    //
+    if (response.isEmpty) {
+      throw UserNotFoundException();
+    }
+    //
+    final UserDataModel userData = UserDataModel.fromJson(response.first);
+    //
+    final newBalance = userData.balance + amount;
+    //
+    await client.from("users_data").update({"balance": newBalance}).eq("id", studentId);
+    //
+    return unit;
   }
 }

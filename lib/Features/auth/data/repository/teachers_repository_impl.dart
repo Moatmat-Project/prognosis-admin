@@ -106,10 +106,12 @@ class TeachersRepositoryImpl implements TeacherRepository {
   }
 
   @override
-  Future<Either<Failure, UserData>> getUserDataData({required String id}) async {
+  Future<Either<Failure, UserData>> getUserDataData({required String id, bool isUuid = true}) async {
     try {
-      var res = await dataSource.getUserDataData(id: id);
+      var res = await dataSource.getUserDataData(id: id, isUuid: isUuid);
       return right(res);
+    } on NotFoundException {
+      return left(NotFoundFailure());
     } on Exception catch (e) {
       print(e);
       return left(const AnonFailure());

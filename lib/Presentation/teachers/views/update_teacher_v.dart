@@ -101,7 +101,7 @@ class _UpdateTeacherViewState extends State<UpdateTeacherView> {
               const SizedBox(height: SizesResources.s4),
               //
               TouchableTileWidget(
-                title: "تصفح عمليات الاشتراك",
+                title: "ادارة عمليات الاشتراك",
                 icon: const Icon(
                   Icons.arrow_forward_ios,
                   size: 14,

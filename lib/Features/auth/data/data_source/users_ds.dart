@@ -29,7 +29,7 @@ abstract class TeachersDataSource {
   // get teacher Data
   Future<TeacherData> getTeacherData({String? email});
   // get User Data
-  Future<UserData> getUserDataData({required String id});
+  Future<UserData> getUserDataData({required String id,bool isUuid = true});
   //
   Future<List<UserData>> getUsersDataByIds({required List<String> ids, bool isUuid = true});
   //
@@ -204,16 +204,16 @@ class TeachersDataSourceImpl implements TeachersDataSource {
   }
 
   @override
-  Future<UserData> getUserDataData({required String id}) async {
+  Future<UserData> getUserDataData({required String id, bool isUuid = true}) async {
     //
-    var query = client.from("users_data").select().eq("uuid", id);
+    var query = isUuid ? client.from("users_data").select().eq("uuid", id) : client.from("users_data").select().eq("id", id);
     //
     List res = await query;
     if (res.isNotEmpty) {
       final userData = UserDataModel.fromJson(res.first);
       return userData;
     } else {
-      throw Exception();
+      throw NotFoundException();
     }
   }
 

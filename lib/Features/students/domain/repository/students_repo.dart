@@ -14,9 +14,8 @@ abstract class StudentsRepository {
   Future<Either<Exception, List<UserData>>> getMyStudents({
     required bool update,
   });
-    // get my students
+  // get my students
   Future<Either<Exception, GetMyStudentsStatisticsResponse>> getMyStudentsStatistics({
-
     required List<UserData> students,
   });
   // get my students by ids
@@ -76,5 +75,9 @@ abstract class StudentsRepository {
   });
   Future<Either<Exception, Unit>> addResults({
     required List<Result> results,
+  });
+  Future<Either<Exception, Unit>> addStudentBalance({
+    required String studentId,
+    required int amount,
   });
 }

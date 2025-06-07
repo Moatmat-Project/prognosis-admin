@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import '../../../../Core/services/encryption_s.dart';
+
 class UserData {
   final String id;
   final String uuid;
@@ -28,6 +32,14 @@ class UserData {
     required this.phoneNumber,
     required this.whatsappNumber,
   });
+  String toQrValue() {
+    String str = json.encode({
+      "id": id,
+      "name": name,
+    });
+    str = EncryptionService.encryptData(str);
+    return str;
+  }
 
   UserData copyWith({
     String? uuid,

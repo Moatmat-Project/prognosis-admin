@@ -11,6 +11,7 @@ import 'package:moatmat_admin/Features/students/domain/usecases/search_in_my_stu
 
 import '../../Features/students/data/datasources/students_local_ds.dart';
 import '../../Features/students/domain/usecases/add_results_uc.dart';
+import '../../Features/students/domain/usecases/add_student_balance_uc.dart';
 import '../../Features/students/domain/usecases/get_my_students_statistics_uc.dart';
 import '../../Features/students/domain/usecases/get_repository_details_uc.dart';
 import 'app_inj.dart';
@@ -29,6 +30,11 @@ void injectUC() {
   );
   locator.registerFactory<GetMyStudentsUC>(
     () => GetMyStudentsUC(
+      repository: locator(),
+    ),
+  );
+  locator.registerFactory<AddStudentBalanceUC>(
+    () => AddStudentBalanceUC(
       repository: locator(),
     ),
   );
