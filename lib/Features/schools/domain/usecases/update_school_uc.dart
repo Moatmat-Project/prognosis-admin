@@ -1,0 +1,20 @@
+import 'package:dartz/dartz.dart';
+import 'package:moatmat_admin/Core/errors/exceptions.dart';
+import 'package:moatmat_admin/Features/schools/domain/repository/school_repository.dart';
+import 'package:moatmat_admin/Presentation/schools/models/school_model.dart';
+
+class UpdateSchool {
+  final SchoolRepository repository;
+
+  UpdateSchool(this.repository);
+
+  Future<Either<Failure, School>> call(UpdateSchoolParams params) async {
+    return await repository.updateSchool(params.school);
+  }
+}
+
+class UpdateSchoolParams {
+  final School school;
+
+  UpdateSchoolParams({required this.school});
+}
