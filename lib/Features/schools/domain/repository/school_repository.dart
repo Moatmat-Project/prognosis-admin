@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:moatmat_admin/Core/errors/exceptions.dart';
-import 'package:moatmat_admin/Presentation/schools/models/school_model.dart';
+import 'package:moatmat_admin/Features/schools/domain/entites/school.dart';
 
 abstract class SchoolRepository {
   Future<Either<Failure, List<School>>> fetchAllSchools();

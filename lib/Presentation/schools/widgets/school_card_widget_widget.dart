@@ -7,7 +7,7 @@ import '../models/school_model.dart';
 import 'action_button_widget.dart';
 
 class SchoolCard extends StatelessWidget {
-  final School school;
+  final SchoolTemp school;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 

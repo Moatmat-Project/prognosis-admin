@@ -36,7 +36,7 @@ class SchoolsView extends StatelessWidget {
     );
   }
 
-  void _onEditSchool(BuildContext context, School school) {
+  void _onEditSchool(BuildContext context, SchoolTemp school) {
     Navigator.of(context)
         .push(
           MaterialPageRoute(builder: (context) => AddOrUpdateSchoolView(school: school)),
@@ -44,7 +44,7 @@ class SchoolsView extends StatelessWidget {
         .then((_) {});
   }
 
-  void _onDeleteSchool(BuildContext context, School school) {
+  void _onDeleteSchool(BuildContext context, SchoolTemp school) {
     showAlert(
       context: context,
       title: TextsResources.deleteConfirmationTitle,
@@ -62,18 +62,18 @@ class SchoolsView extends StatelessWidget {
   }
 }
 
-List<School> schools = [
-  const School(
+List<SchoolTemp> schools = [
+  const SchoolTemp(
     id: '1',
     name: "اسم المدرسة الأولى",
     description: "وصف موجز ومفيد عن المدرسة وميزاتها الرئيسية",
   ),
-  const School(
+  const SchoolTemp(
     id: '2',
     name: "اسم المدرسة الأولى",
     description: "وصف موجز ومفيد عن المدرسة وميزاتها الرئيسية",
   ),
-  const School(
+  const SchoolTemp(
     id: '3',
     name: "اسم المدرسة الأولى",
     description: "وصف موجز ومفيد عن المدرسة وميزاتها الرئيسية",

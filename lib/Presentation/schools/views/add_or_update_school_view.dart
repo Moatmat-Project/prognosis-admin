@@ -11,7 +11,7 @@ import 'package:moatmat_admin/Presentation/schools/widgets/school_form_actions_w
 import 'package:moatmat_admin/Presentation/schools/widgets/school_form_header_widget.dart';
 
 class AddOrUpdateSchoolView extends StatefulWidget {
-  final School? school;
+  final SchoolTemp? school;
 
   const AddOrUpdateSchoolView({super.key, this.school});
 

@@ -1,4 +1,4 @@
-import 'package:moatmat_admin/Presentation/schools/models/school.dart';
+import 'package:moatmat_admin/Features/schools/domain/entites/school_information.dart';
 
 class School {
   final int id;
