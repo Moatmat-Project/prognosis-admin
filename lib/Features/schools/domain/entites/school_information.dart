@@ -1,10 +1,8 @@
-class School {
-  final String id;
+class SchoolInformation {
   final String name;
   final String description;
 
-  const School({
-    required this.id,
+  SchoolInformation({
     required this.name,
     required this.description,
   });

@@ -3,7 +3,7 @@ import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/resources/fonts_r.dart';
 import 'package:moatmat_admin/Core/resources/shadows_r.dart';
 import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
-import '../models/school_model.dart';
+import 'package:moatmat_admin/Features/schools/domain/entites/school.dart';
 import 'action_button_widget.dart';
 
 class SchoolCard extends StatelessWidget {
@@ -64,7 +64,7 @@ class SchoolCard extends StatelessWidget {
         SizedBox(width: SizesResources.s2),
         Expanded(
           child: Text(
-            school.name,
+            school.information.name,
             style: FontsResources.styleBold(color: ColorsResources.textPrimary, size: 18),
             textAlign: TextAlign.start,
           ),
@@ -75,7 +75,7 @@ class SchoolCard extends StatelessWidget {
 
   Widget _buildDescription(BuildContext context) {
     return Text(
-      school.description,
+      school.information.description,
       style: FontsResources.styleMedium(color: ColorsResources.textSecondary, size: 14),
       textAlign: TextAlign.start,
     );
