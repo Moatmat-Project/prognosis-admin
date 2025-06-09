@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:moatmat_admin/Core/resources/texts_resources.dart';
 import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
 import 'package:moatmat_admin/Core/resources/spacing_resources.dart';
 import 'package:moatmat_admin/Core/validators/school_v.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
+import 'package:moatmat_admin/Features/schools/domain/entites/school.dart';
+import 'package:moatmat_admin/Features/schools/domain/entites/school_information.dart';
+import 'package:moatmat_admin/Presentation/schools/state/school_bloc/school_bloc.dart';
 
-import 'package:moatmat_admin/Presentation/schools/models/school_model.dart';
 import 'package:moatmat_admin/Presentation/schools/widgets/school_form_actions_widget.dart';
 import 'package:moatmat_admin/Presentation/schools/widgets/school_form_header_widget.dart';
 
 class AddOrUpdateSchoolView extends StatefulWidget {
-  final SchoolTemp? school;
+  final School? school;
 
   const AddOrUpdateSchoolView({super.key, this.school});
 
@@ -31,8 +34,8 @@ class _AddOrUpdateSchoolViewState extends State<AddOrUpdateSchoolView> {
   }
 
   void _initControllers() {
-    _nameController = TextEditingController(text: widget.school?.name);
-    _descriptionController = TextEditingController(text: widget.school?.description);
+    _nameController = TextEditingController(text: widget.school?.information.name);
+    _descriptionController = TextEditingController(text: widget.school?.information.description);
   }
 
   @override
@@ -50,21 +53,34 @@ class _AddOrUpdateSchoolViewState extends State<AddOrUpdateSchoolView> {
       final String description = _descriptionController.text.trim();
 
       if (_isUpdating) {
-        _updateSchool(widget.school!.id, name, description);
+        _updateSchool(name, description);
       } else {
         _addSchool(name, description);
       }
 
-      // Navigator.of(context).pop();
+      Navigator.of(context).pop();
     }
   }
 
   void _addSchool(String name, String description) {
-    debugPrint('Adding new school: $name - $description');
+    final newSchool = School(
+      // Id for منظر
+      id: 0,
+      information: SchoolInformation(name: name, description: description),
+      createdAt: DateTime.now(),
+    );
+    context.read<SchoolBloc>().add(AddSchoolEvent(newSchool));
+    debugPrint('Dispatching AddSchoolEvent: $name - $description');
   }
 
-  void _updateSchool(String id, String name, String description) {
-    debugPrint('Updating school ID: $id | Name: $name | Description: $description');
+  void _updateSchool(String name, String description) {
+    final updatedSchool = School(
+      id: widget.school!.id,
+      information: SchoolInformation(name: name, description: description),
+      createdAt: widget.school!.createdAt,
+    );
+    context.read<SchoolBloc>().add(UpdateSchoolEvent(updatedSchool));
+    debugPrint('Dispatching UpdateSchoolEvent ID: ${widget.school!.id} | Name: $name | Description: $description');
   }
 
   @override

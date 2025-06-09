@@ -28,14 +28,20 @@ class TextsResources {
   static const updateSchoolDetails = "يرجى إدخال البيانات الجديدة";
   static const add = "إضافة";
   //
-  static const String deleteConfirmationTitle = 'تأكيد الحذف';
-  static const String deleteConfirmationContent = 'هل أنت متأكد من حذف المدرسة';
-  static const String cancel = 'إلغاء';
-  static const String delete = 'حذف';
-  static const String edit = 'تعديل';
-  static const String schoolDeleted = 'تم حذف المدرسة';
-  static const String addNewSchool = 'إضافة مدرسة جديدة';
-  static const String editSchool = 'تعديل المدرسة';
+  static const deleteConfirmationTitle = 'تأكيد الحذف';
+  static const deleteConfirmationContent = 'هل أنت متأكد من حذف المدرسة';
+  static const cancel = 'إلغاء';
+  static const delete = 'حذف';
+  static const edit = 'تعديل';
+  static const schoolDeleted = 'تم حذف المدرسة';
+  static const addNewSchool = 'إضافة مدرسة جديدة';
+  static const editSchool = 'تعديل المدرسة';
+  static const schoolAddedSuccess = 'تمت إضافة المدرسة بنجاح';
+  static const schoolUpdatedSuccess = 'تم تحديث بيانات المدرسة بنجاح';
+  static const schoolDeletedSuccess = 'تم حذف المدرسة بنجاح';
+  static const loadSchoolsFailure = 'فشل تحميل المدارس';
+
+  static const noSchoolsFound = "لا يوجد مدارس لعرضها حاليا";
 }
 
 class AppBarTitles {

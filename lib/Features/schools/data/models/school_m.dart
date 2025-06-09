@@ -24,7 +24,6 @@ class SchoolModel extends School {
     };
   }
 
-  // Helper method to convert a School entity to a SchoolModel
   factory SchoolModel.fromEntity(School school) {
     return SchoolModel(
       id: school.id,

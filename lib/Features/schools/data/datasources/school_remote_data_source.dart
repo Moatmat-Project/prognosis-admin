@@ -10,9 +10,7 @@ abstract class SchoolRemoteDataSource {
 }
 
 class SchoolRemoteDataSourceImpl implements SchoolRemoteDataSource {
-  final SupabaseClient supabaseClient;
-
-  SchoolRemoteDataSourceImpl(this.supabaseClient);
+  SupabaseClient supabaseClient = Supabase.instance.client;
 
   @override
   Future<List<SchoolModel>> fetchAllSchools() async {

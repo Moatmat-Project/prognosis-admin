@@ -3,10 +3,10 @@ import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/schools/domain/entites/school.dart';
 import 'package:moatmat_admin/Features/schools/domain/repository/school_repository.dart';
 
-class AddSchool {
+class AddSchoolUC {
   final SchoolRepository repository;
 
-  AddSchool(this.repository);
+  AddSchoolUC(this.repository);
 
   Future<Either<Failure, School>> call(AddSchoolParams params) async {
     return await repository.addSchool(params.school);
