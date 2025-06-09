@@ -16,6 +16,26 @@ class TextsResources {
   static const p = "";
   //
   static const startUsingApp = "البدء باستخدام التطبيق";
+  // school
+  static const schoolAdded = "تمت إضافة المدرسة";
+  static const enterSchoolName = "أدخل اسم المدرسة";
+  static const pleaseEnterSchoolName = "يرجى إدخال اسم المدرسة";
+  static const schoolNameMinLength = "يجب أن يحتوي اسم المدرسة على 3 أحرف على الأقل";
+  static const enterSchoolDescription = "أدخل وصف المدرسة";
+  static const pleaseEnterSchoolDescription = "يرجى إدخال وصف المدرسة";
+  static const schoolDescriptionMinLength = "يجب أن يحتوي وصف المدرسة على 10 أحرف على الأقل";
+  static const enterSchoolDetails = "يرجى إدخال تفاصيل المدرسة";
+  static const updateSchoolDetails = "يرجى إدخال البيانات الجديدة";
+  static const add = "إضافة";
+  //
+  static const String deleteConfirmationTitle = 'تأكيد الحذف';
+  static const String deleteConfirmationContent = 'هل أنت متأكد من حذف المدرسة';
+  static const String cancel = 'إلغاء';
+  static const String delete = 'حذف';
+  static const String edit = 'تعديل';
+  static const String schoolDeleted = 'تم حذف المدرسة';
+  static const String addNewSchool = 'إضافة مدرسة جديدة';
+  static const String editSchool = 'تعديل المدرسة';
 }
 
 class AppBarTitles {
@@ -42,5 +62,8 @@ class AppBarTitles {
   static const aboutUs = "حول التطبيق";
   static const communicateWithUs = "تواصل معنا";
   static const howToUseApp = "كيفية استخدام التطبيق";
+  static const addSchool = "إضافة مدرسة";
+  static const schools = "المدارس";
+  static const updateSchool = "تعديل بيانات مدرسة";
   static const n = "";
 }
