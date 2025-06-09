@@ -21,7 +21,6 @@ class _SchoolsViewState extends State<SchoolsView> {
   @override
   void initState() {
     context.read<SchoolBloc>().add(FetchSchools());
-    debugPrint("init------------------");
     super.initState();
   }
 

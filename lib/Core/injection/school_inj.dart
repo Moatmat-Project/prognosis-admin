@@ -6,11 +6,13 @@ import 'package:moatmat_admin/Features/schools/domain/usecases/add_school_uc.dar
 import 'package:moatmat_admin/Features/schools/domain/usecases/delete_school_uc.dart';
 import 'package:moatmat_admin/Features/schools/domain/usecases/fetch_all_schools_uc.dart';
 import 'package:moatmat_admin/Features/schools/domain/usecases/update_school_uc.dart';
+import 'package:moatmat_admin/Presentation/schools/state/school_bloc/school_bloc.dart';
 
 injectSchools() {
   injectDS();
   injectRepo();
   injectUC();
+  injectBlocs();
 }
 
 void injectUC() {
@@ -48,4 +50,13 @@ void injectDS() {
   locator.registerFactory<SchoolRemoteDataSource>(
     () => SchoolRemoteDataSourceImpl(),
   );
+}
+
+void injectBlocs() {
+  locator.registerFactory<SchoolBloc>(() => SchoolBloc(
+        addSchool: locator(),
+        deleteSchool: locator(),
+        fetchAllSchools: locator(),
+        updateSchool: locator(),
+      ));
 }

@@ -18,7 +18,6 @@ class SchoolModel extends School {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'information': (information as SchoolInformationModel).toJson(),
       'created_at': createdAt.toIso8601String(),
     };

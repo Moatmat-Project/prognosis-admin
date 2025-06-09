@@ -65,12 +65,11 @@ class _AddOrUpdateSchoolViewState extends State<AddOrUpdateSchoolView> {
   void _addSchool(String name, String description) {
     final newSchool = School(
       // Id for منظر
-      id: 0,
+      id: 11001,
       information: SchoolInformation(name: name, description: description),
       createdAt: DateTime.now(),
     );
     context.read<SchoolBloc>().add(AddSchoolEvent(newSchool));
-    debugPrint('Dispatching AddSchoolEvent: $name - $description');
   }
 
   void _updateSchool(String name, String description) {
@@ -80,7 +79,6 @@ class _AddOrUpdateSchoolViewState extends State<AddOrUpdateSchoolView> {
       createdAt: widget.school!.createdAt,
     );
     context.read<SchoolBloc>().add(UpdateSchoolEvent(updatedSchool));
-    debugPrint('Dispatching UpdateSchoolEvent ID: ${widget.school!.id} | Name: $name | Description: $description');
   }
 
   @override
