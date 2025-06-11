@@ -216,9 +216,9 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.group),
+              child: Icon(Icons.home_filled),
             ),
-            label: "الاساتذة",
+            label: "الرئيسية",
           ),
           BottomNavigationBarItem(
             icon: Padding(
