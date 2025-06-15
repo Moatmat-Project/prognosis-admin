@@ -7,6 +7,7 @@ import 'package:moatmat_admin/Core/widgets/toucheable_tile_widget.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
 import 'package:moatmat_admin/Presentation/teachers/state/teachers_manager/teachers_manager_cubit.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/update_teacher_v.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../Core/resources/sizes_resources.dart';
 import '../../../Core/widgets/fields/text_input_field.dart';
 
@@ -50,7 +51,72 @@ class _AllTeachersViewState extends State<AllTeachersView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("الاساتذة"),
-        actions: const [
+        actions: [
+          IconButton(
+  onPressed: () async {
+    try {
+ 
+      final data = await Supabase.instance.client.from('device_tokens').select('*');
+      debugPrint('Fetched device tokens: ${data.length}');
+      if (!mounted) return;
+      if (data == null || data.isEmpty) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Device Tokens'),
+            content: const Text('No device tokens found.'),
+            actions: [TextButton(onPressed: () => Navigator.pop(context), child: const Text('OK'))],
+          ),
+        );
+        return;
+      }
+      // Get all column names from the first row
+      final columns = (data[0]).keys.toList();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Device Tokens Table'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                child: DataTable(
+                  border: TableBorder.all(color: Colors.black),
+                  columns: columns.map((col) => DataColumn(label: Text(col))).toList(),
+                  rows: data
+                      .map<DataRow>((row) => DataRow(
+                            cells: columns
+                                .map((col) => DataCell(Text(row[col]?.toString() ?? '')))
+                                .toList(),
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Close'),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error fetching device tokens: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to fetch device tokens: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  },
+  icon: const Icon(Icons.add),
+),
           StudentsSearchIconWidget(),
           ReportIconWidget(),
         ],
