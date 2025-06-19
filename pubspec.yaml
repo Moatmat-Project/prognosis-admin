@@ -52,7 +52,7 @@ dependencies:
   fluttertoast: ^8.2.12
   get_it: ^8.0.3
   http: ^1.2.2
-  image_picker: ^1.0.7
+  image_picker: ^1.1.2
   open_file: ^3.5.10
   package_info_plus: ^8.0.0
   path: ^1.9.1

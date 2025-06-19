@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -6,10 +8,11 @@ import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_local_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 import '../../domain/repositories/notifications_repository.dart';
 
 class NotificationsRepositoryImplements implements NotificationsRepository {
-
   final NotificationsRemoteDatasource _remoteDatasource;
   final NotificationsLocalDatasource _localDatasource;
 
@@ -93,7 +96,7 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
   @override
   Future<Either<Failure, List<AppNotification>>> getNotifications() async {
     try {
-      final response = await _localDatasource.getNotifications();
+      final response = await _remoteDatasource.getNotifications();
       return right(response);
     } on Exception {
       return left(AnonFailure());
@@ -167,7 +170,6 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
     return getDeviceToken();
   }
 
-
   @override
   Future<Either<Failure, Unit>> registerDeviceToken({
     required String deviceToken,
@@ -188,12 +190,9 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> sendNotificationByTopics({
-    required AppNotification notification,
-    required List<String> topics,
-  }) async {
+  Future<Either<Failure, Unit>> sendNotificationToTopics({required SendNotificationToTopicsRequest sendNotificationRequest}) async {
     try {
-      final response = await _remoteDatasource.sendNotificationByTopics(notification: notification, topics: topics);
+      final response = await _remoteDatasource.sendNotificationToTopics(sendNotificationRequest: sendNotificationRequest);
       return right(response);
     } on Exception catch (e) {
       debugPrint(e.toString());
@@ -202,13 +201,23 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> sendNotificationByUsers({
-    required AppNotification notification,
-    required List<String> userIds,
+  Future<Either<Failure, Unit>> sendNotificationToUsers({
+    required SendNotificationToUsersRequest sendNotificationRequest,
   }) async {
     try {
-      final response = await _remoteDatasource.sendNotificationByUsers(notification: notification, userIds: userIds);
+      final response = await _remoteDatasource.sendNotificationToUsers(sendNotificationRequest: sendNotificationRequest);
       return right(response);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return left(AnonFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadNotificationImage({required File imageFile}) async {
+    try {
+      final String imageUrl = await _remoteDatasource.uploadNotificationImage(imageFile);
+      return right(imageUrl);
     } on Exception catch (e) {
       debugPrint(e.toString());
       return left(AnonFailure());

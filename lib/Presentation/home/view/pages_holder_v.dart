@@ -2,20 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/widgets/material_picker_v.dart';
+import 'package:moatmat_admin/Presentation/banks/views/add_bank_view.dart';
 import 'package:moatmat_admin/Presentation/banks/views/banks_search_result_v.dart';
+import 'package:moatmat_admin/Presentation/banks/views/my_banks_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/codes_views_manager.dart';
 import 'package:moatmat_admin/Presentation/codes/views/print_students_code_view.dart';
 import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.dart';
+import 'package:moatmat_admin/Presentation/students/views/add_results_v.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_student_balance_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/add_teacher_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/all_teachers_v.dart';
+import 'package:moatmat_admin/Presentation/tests/views/add_test_vew.dart';
+import 'package:moatmat_admin/Presentation/tests/views/my_tests_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/tests_search_result_v.dart';
-
-import '../../banks/views/add_bank_view.dart';
-import '../../banks/views/my_banks_v.dart';
-import '../../students/views/add_results_v.dart';
-import '../../tests/views/add_test_vew.dart';
-import '../../tests/views/my_tests_v.dart';
 
 class PagesHolderView extends StatefulWidget {
   const PagesHolderView({super.key});

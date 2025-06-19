@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
-
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 
 abstract class NotificationsRepository {
   ///
@@ -71,14 +74,16 @@ abstract class NotificationsRepository {
   });
 
   /// Sends a notification to a list of topics.
-  Future<Either<Failure, Unit>> sendNotificationByTopics({
-    required AppNotification notification,
-    required List<String> topics,
+  Future<Either<Failure, Unit>> sendNotificationToTopics({
+    required SendNotificationToTopicsRequest sendNotificationRequest,
   });
 
   /// Sends a notification to a list of user IDs.
-  Future<Either<Failure, Unit>> sendNotificationByUsers({
-    required AppNotification notification,
-    required List<String> userIds,
+  Future<Either<Failure, Unit>> sendNotificationToUsers({
+    required SendNotificationToUsersRequest sendNotificationRequest,
+  });
+
+  Future<Either<Failure, String>> uploadNotificationImage({
+    required File imageFile,
   });
 }

@@ -1,18 +1,18 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
+import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:moatmat_admin/Core/errors/exceptions.dart';
+import 'package:flutter/foundation.dart';
+import 'package:dartz/dartz.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:moatmat_admin/Features/notifications/data/models/device_token_model.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/app_local_notifications_settings.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/firebase_messaging_settings.dart';
 import 'package:moatmat_admin/features/notifications/data/handlers/firebase_messaging_handlers.dart';
-
 
 import '../../domain/entities/app_notification.dart';
 
@@ -34,27 +34,23 @@ abstract class NotificationsRemoteDatasource {
   Future<Unit> registerDeviceToken({required String deviceToken, required String platform});
 
   /// Sends a notification to a list of topics.
-  Future<Unit> sendNotificationByTopics({
-    required AppNotification notification,
-    required List<String> topics,
+  Future<Unit> sendNotificationToTopics({
+    required SendNotificationToTopicsRequest sendNotificationRequest,
   });
 
   /// Sends a notification to a list of user IDs.
-  Future<Unit> sendNotificationByUsers({
-    required AppNotification notification,
-    required List<String> userIds,
+  Future<Unit> sendNotificationToUsers({
+    required SendNotificationToUsersRequest sendNotificationRequest,
   });
+
+  Future<String> uploadNotificationImage(File imageFile);
+  Future<List<AppNotification>> getNotifications();
 }
-
-
-
 
 class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource {
   final _supabase = Supabase.instance.client;
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-
 
   @override
   Future<Unit> initializeLocalNotification() async {
@@ -209,31 +205,29 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     }
   }
 
-@override
-  Future<Unit> sendNotificationByTopics({
-    required AppNotification notification,
-    required List<String> topics,
+  @override
+  Future<Unit> sendNotificationToTopics({
+    required SendNotificationToTopicsRequest sendNotificationRequest,
   }) async {
     return _invokeNotificationFunction(
       functionName: 'send-notifications-to-topics',
       body: {
-        'topics': topics,
-        'notification': notification.toJson(),
+        'topics': sendNotificationRequest.topics,
+        'notification': sendNotificationRequest.notification.toJson(),
       },
       errorContext: 'send notification to topics',
     );
   }
 
   @override
-  Future<Unit> sendNotificationByUsers({
-    required AppNotification notification,
-    required List<String> userIds,
+  Future<Unit> sendNotificationToUsers({
+    required SendNotificationToUsersRequest sendNotificationRequest,
   }) async {
     return _invokeNotificationFunction(
       functionName: 'send-fcm-notifications',
       body: {
-        'userIds': userIds,
-        'notification': notification.toJson(),
+        'userIds': sendNotificationRequest.userIds,
+        'notification': sendNotificationRequest.notification.toJson(),
       },
       errorContext: 'send notification to users',
     );
@@ -252,23 +246,53 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
 
       if (response.status != 200) {
         final data = response.data as Map<String, dynamic>?;
-        final errorMessage = data?['error']?['message'] ??
-            data?['message'] ??
-            'Unknown error from function';
-        print('[$functionName] Failed: $errorMessage');
+        final errorMessage = data?['error']?['message'] ?? data?['message'] ?? 'Unknown error from function';
+        debugPrint('[$functionName] Failed: $errorMessage');
         throw Exception('Failed to $errorContext: $errorMessage');
       }
 
-      print('[$functionName] Success: ${response.data}');
+      debugPrint('[$functionName] Success: ${response.data}');
       return unit;
     } on FunctionException catch (e) {
-      print('[$functionName] FunctionException: ${e.toString()}');
-      print('Details: ${e.details}');
+      debugPrint('[$functionName] FunctionException: ${e.toString()}');
+      debugPrint('Details: ${e.details}');
       throw Exception('Failed to $errorContext: ${e.toString()}');
     } catch (e) {
-      print('[$functionName] Unexpected error: $e');
+      debugPrint('[$functionName] Unexpected error: $e');
       throw Exception('Unexpected error while trying to $errorContext.');
     }
   }
 
+  @override
+  Future<String> uploadNotificationImage(File imageFile) async {
+    try {
+      final supabaseStorage = _supabase.storage.from('notifications');
+      final file = File(imageFile.path);
+      final fileExt = imageFile.path.split('.').last;
+      final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
+
+      final path = 'uploads/$fileName';
+
+      await supabaseStorage.upload(
+        path,
+        file,
+        fileOptions: const FileOptions(
+          upsert: true,
+          contentType: 'image/*',
+        ),
+      );
+
+      final publicUrl = supabaseStorage.getPublicUrl(path);
+      return publicUrl;
+    } catch (e) {
+      debugPrint('[uploadImage] Upload failed: $e');
+      throw Exception('Image upload failed: $e');
+    }
+  }
+
+  @override
+  Future<List<AppNotification>> getNotifications() {
+    // TODO: implement getNotifications
+    throw UnimplementedError();
+  }
 }

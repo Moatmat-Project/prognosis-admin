@@ -16,11 +16,12 @@ import 'package:moatmat_admin/Features/notifications/domain/usecases/get_notific
 import 'package:moatmat_admin/Features/notifications/domain/usecases/initialize_firebase_notifications_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/initialize_local_notifications_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/refresh_device_token_usecase.dart';
-import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_by_topics_usecase.dart';
-import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_by_users_usecase.dart';
+import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_topics_usecase.dart';
+import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_users_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/subscribe_to_topic_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/register_device_token_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/unsubscribe_to_topic_usecase.dart';
+import 'package:moatmat_admin/Features/notifications/domain/usecases/upload_notification_image_usecase.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/initialize_notifications_cubit/initialize_notifications_cubit.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notification_settings_bloc/notification_settings_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
@@ -32,6 +33,7 @@ Future<void> injectNotifications() async {
   await injectRepo();
   await injectUC();
   await injectPlugins();
+  await injectBlocs();
   //
   await locator<InitializeLocalNotificationsUsecase>().call();
   await locator<InitializeFirebaseNotificationsUsecase>().call();
@@ -77,15 +79,16 @@ Future<void> injectUC() async {
   locator.registerFactory<ClearNotificationsUsecase>(
     () => ClearNotificationsUsecase(repository: locator()),
   );
-  locator.registerLazySingleton(
-      () => SendNotificationByUsersUsecase(repository: locator()));
-  locator.registerLazySingleton(
-      () => SendNotificationByTopicsUsecase(repository: locator()));
+  locator.registerLazySingleton(() => SendNotificationToUsersUsecase(repository: locator()));
+  locator.registerLazySingleton(() => SendNotificationToTopicsUsecase(repository: locator()));
   locator.registerLazySingleton(
     () => DeleteDeviceTokenUsecase(repository: locator()),
   );
   locator.registerLazySingleton(
     () => RegisterDeviceTokenUseCase(repository: locator()),
+  );
+  locator.registerLazySingleton(
+    () => UploadNotificationImageUsecase(repository: locator()),
   );
 }
 
@@ -105,19 +108,20 @@ Future<void> injectDS() async {
 }
 
 Future<void> injectBlocs() async {
-     locator.registerFactory(() => InitializeNotificationsCubit(
+  locator.registerFactory(() => InitializeNotificationsCubit(
         initializeLocalNotifications: locator(),
         initializeFirebaseNotifications: locator(),
       ));
   locator.registerLazySingleton(() => NotificationSettingsBloc(
         getDeviceToken: locator(),
         subscribeToTopic: locator(),
-        unsubscribeFromTopic: locator(),   
+        unsubscribeFromTopic: locator(),
       ));
 
   locator.registerLazySingleton(() => SendNotificationBloc(
-        sendNotificationByUsersUsecase: locator(),
-        sendNotificationByTopicsUsecase: locator(),
+        uploadNotificationImageUsecase: locator(),
+        sendNotificationToUsersUsecase: locator(),
+        sendNotificationToTopicsUsecase: locator(),
       ));
 
   locator.registerLazySingleton(() => NotificationsBloc(

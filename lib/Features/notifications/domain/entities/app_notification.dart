@@ -53,7 +53,7 @@ class AppNotification {
       title: '',
       subtitle: '',
       html: '',
-      imageUrl: '',
+      imageUrl: "",
       date: DateTime.now(),
     );
   }
