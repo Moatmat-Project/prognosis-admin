@@ -3,7 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class AppNotification {
   final int id;
   final String title;
-  final String? subtitle;
+  final String? body;
   final String? html;
   final String? imageUrl;
   final DateTime date;
@@ -16,7 +16,7 @@ class AppNotification {
   AppNotification copyWith({
     int? id,
     String? title,
-    String? subtitle,
+    String? body,
     String? html,
     String? imageUrl,
     DateTime? date,
@@ -25,7 +25,7 @@ class AppNotification {
     return AppNotification(
       id: id ?? this.id,
       title: title ?? this.title,
-      subtitle: subtitle ?? this.subtitle,
+      body: body ?? this.body,
       html: html ?? this.html,
       imageUrl: imageUrl ?? this.imageUrl,
       date: date ?? this.date,
@@ -39,9 +39,9 @@ class AppNotification {
       date = DateTime.parse(message.data["date"]);
     }
     return AppNotification(
-      id: DateTime.now().millisecond,
+      id: DateTime.now().millisecondsSinceEpoch,
       title: message.data["title"] ?? '',
-      subtitle: message.data["subtitle"],
+      body: message.data["body"],
       html: message.data["html"],
       imageUrl: message.data["image_url"],
       date: date,
@@ -51,7 +51,7 @@ class AppNotification {
     return AppNotification(
       id: 0,
       title: '',
-      subtitle: '',
+      body: '',
       html: '',
       imageUrl: "",
       date: DateTime.now(),
@@ -61,7 +61,7 @@ class AppNotification {
   AppNotification({
     required this.id,
     required this.title,
-    this.subtitle,
+    this.body,
     this.html,
     this.imageUrl,
     this.seen = false,
@@ -71,20 +71,20 @@ class AppNotification {
   Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'subtitle': subtitle,
-      'imageUrl': imageUrl,
+      'body': body,
+      'image_url': imageUrl,
       'html': html,
       'date': date.toIso8601String(),
-    }..removeWhere((key, value) => value == null);
+    };
   }
 
   factory AppNotification.fromJson(Map<String, dynamic> json) {
     return AppNotification(
-      id: json['id'] ?? 0,
+      id: 1,
       title: json['title'] ?? '',
-      subtitle: json['subtitle'],
+      body: json['body'],
       html: json['html'],
-      imageUrl: json['imageUrl'],
+      imageUrl: json['image_url'],
       seen: json['seen'] ?? false,
       date: json['date'] != null ? DateTime.parse(json['date']) : DateTime.now(),
     );

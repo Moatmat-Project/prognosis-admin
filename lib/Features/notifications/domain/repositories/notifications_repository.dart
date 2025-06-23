@@ -19,12 +19,6 @@ abstract class NotificationsRepository {
   Future<Either<Failure, List<AppNotification>>> getNotifications();
 
   ///
-  Future<Either<Failure, Unit>> clearNotifications();
-
-  ///
-  Future<Either<Failure, Unit>> deleteNotification({required int notificationId});
-
-  ///
   Future<Either<Failure, Unit>> displayNotification({
     required AppNotification notification,
     bool oneTimeNotification = false,

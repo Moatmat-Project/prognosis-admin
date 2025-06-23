@@ -8,9 +8,7 @@ class StateFeedback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<SendNotificationBloc>().state;
-    if (state is SendNotificationLoading) {
-      return const CircularProgressIndicator();
-    } else if (state is SendNotificationFailure) {
+   if (state is SendNotificationFailure) {
       return Text(state.message, style: const TextStyle(color: Colors.red));
     } else if (state is SendNotificationSuccess) {
       return const Text('✔ تم إرسال الإشعار بنجاح', style: TextStyle(color: Colors.green));

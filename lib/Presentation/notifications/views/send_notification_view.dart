@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/views/select_students_view.dart';
@@ -60,12 +59,11 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     final title = titleController.text.trim();
     final body = bodyController.text.trim();
     final image = selectedImage;
-
     final notification = AppNotification(
       id: DateTime.now().millisecondsSinceEpoch,
       date: DateTime.now(),
       title: title,
-      subtitle: body,
+      body: body,
     );
 
     if (isUserMode) {
@@ -107,33 +105,30 @@ class _SendNotificationViewState extends State<SendNotificationView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => locator<SendNotificationBloc>(),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('إرسال إشعار')),
-        body: BlocListener<SendNotificationBloc, SendNotificationState>(
-          listener: (context, state) {
-            if (state is SendNotificationSuccess) {
-              _handleSuccess();
-            } else if (state is SendNotificationFailure) {
-              _showSnackbar(state.message);
-            }
-          },
-          child: Form(
-            key: _formKey,
-            child: SendNotificationBody(
-              isUserMode: isUserMode,
-              selectedTopics: selectedTopics,
-              selectedUserIds: selectedUserIds,
-              selectedImage: selectedImage,
-              titleController: titleController,
-              bodyController: bodyController,
-              onModeChanged: (val) => setState(() => isUserMode = val),
-              onPickImage: _pickImage,
-              onRemoveImage: _removeImage,
-              onSelectUsers: _selectUsers,
-              onSend: () => _sendNotification(context),
-            ),
+    return Scaffold(
+      appBar: AppBar(title: const Text('إرسال إشعار')),
+      body: BlocListener<SendNotificationBloc, SendNotificationState>(
+        listener: (context, state) {
+          if (state is SendNotificationSuccess) {
+            _handleSuccess();
+          } else if (state is SendNotificationFailure) {
+            _showSnackbar(state.message);
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: SendNotificationBody(
+            isUserMode: isUserMode,
+            selectedTopics: selectedTopics,
+            selectedUserIds: selectedUserIds,
+            selectedImage: selectedImage,
+            titleController: titleController,
+            bodyController: bodyController,
+            onModeChanged: (val) => setState(() => isUserMode = val),
+            onPickImage: _pickImage,
+            onRemoveImage: _removeImage,
+            onSelectUsers: _selectUsers,
+            onSend: () => _sendNotification(context),
           ),
         ),
       ),

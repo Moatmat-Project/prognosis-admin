@@ -5,7 +5,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moatmat_admin/Core/errors/exceptions.dart';
-import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_local_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
@@ -14,9 +13,8 @@ import '../../domain/repositories/notifications_repository.dart';
 
 class NotificationsRepositoryImplements implements NotificationsRepository {
   final NotificationsRemoteDatasource _remoteDatasource;
-  final NotificationsLocalDatasource _localDatasource;
 
-  NotificationsRepositoryImplements(this._localDatasource, this._remoteDatasource);
+  NotificationsRepositoryImplements( this._remoteDatasource);
   @override
   Future<Either<Failure, Unit>> initializeLocalNotification() async {
     try {
@@ -63,8 +61,6 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
   Future<Either<Failure, Unit>> displayFirebaseNotification({required RemoteMessage message}) async {
     try {
       final response1 = await _remoteDatasource.displayFirebaseNotification(message);
-      final response2 = await _localDatasource.insertNotification(notification: AppNotification.fromRemoteMessage(message));
-      debugPrint("debugging num $response2");
       return right(response1);
     } on Exception catch (e) {
       debugPrint("debugging error ${e.toString()}");
@@ -84,9 +80,6 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
         oneTimeNotification: oneTimeNotification,
         details: details,
       );
-      await _localDatasource.insertNotification(
-        notification: notification,
-      );
       return right(response);
     } on Exception {
       return left(AnonFailure());
@@ -103,26 +96,9 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, Unit>> clearNotifications() async {
-    try {
-      final response = await _localDatasource.clearNotifications();
-      return right(response);
-    } on Exception {
-      return left(AnonFailure());
-    }
-  }
 
-  @override
-  Future<Either<Failure, Unit>> deleteNotification({required int notificationId}) async {
-    try {
-      final response = await _localDatasource.deleteNotification(notificationId: notificationId);
-      debugPrint("deleteNotification : $response");
-      return right(unit);
-    } on Exception {
-      return left(AnonFailure());
-    }
-  }
+
+
 
   @override
   Future<Either<Failure, Unit>> subscribeToTopic({required String topic}) async {

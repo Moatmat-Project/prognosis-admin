@@ -32,17 +32,12 @@ abstract class NotificationsRemoteDatasource {
   Future<String> getDeviceToken();
   Future<Unit> deleteDeviceToken();
   Future<Unit> registerDeviceToken({required String deviceToken, required String platform});
-
-  /// Sends a notification to a list of topics.
   Future<Unit> sendNotificationToTopics({
     required SendNotificationToTopicsRequest sendNotificationRequest,
   });
-
-  /// Sends a notification to a list of user IDs.
   Future<Unit> sendNotificationToUsers({
     required SendNotificationToUsersRequest sendNotificationRequest,
   });
-
   Future<String> uploadNotificationImage(File imageFile);
   Future<List<AppNotification>> getNotifications();
 }
@@ -115,7 +110,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     await _localNotificationsPlugin.show(
       notification.id,
       notification.title,
-      notification.subtitle,
+      notification.body,
       details ?? AppLocalNotificationsSettings.defaultNotificationsDetails(),
     );
 
@@ -134,7 +129,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     await _localNotificationsPlugin.show(
       DateTime.now().millisecond,
       notification.title,
-      notification.subtitle,
+      notification.body,
       AppLocalNotificationsSettings.defaultNotificationsDetails(),
     );
 
@@ -209,6 +204,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
   Future<Unit> sendNotificationToTopics({
     required SendNotificationToTopicsRequest sendNotificationRequest,
   }) async {
+
     return _invokeNotificationFunction(
       functionName: 'send-notifications-to-topics',
       body: {
@@ -263,36 +259,59 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     }
   }
 
-  @override
-  Future<String> uploadNotificationImage(File imageFile) async {
-    try {
-      final supabaseStorage = _supabase.storage.from('notifications');
-      final file = File(imageFile.path);
-      final fileExt = imageFile.path.split('.').last;
-      final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
-
-      final path = 'uploads/$fileName';
-
-      await supabaseStorage.upload(
-        path,
-        file,
-        fileOptions: const FileOptions(
-          upsert: true,
-          contentType: 'image/*',
-        ),
-      );
-
-      final publicUrl = supabaseStorage.getPublicUrl(path);
-      return publicUrl;
-    } catch (e) {
-      debugPrint('[uploadImage] Upload failed: $e');
-      throw Exception('Image upload failed: $e');
-    }
-  }
-
-  @override
-  Future<List<AppNotification>> getNotifications() {
-    // TODO: implement getNotifications
-    throw UnimplementedError();
+@override
+Future<String> uploadNotificationImage(File imageFile) async {
+  try {
+    final fileExtension = imageFile.path.split('.').last;
+    final fileName = 'notification_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+    
+    await _supabase.storage
+        .from('notifications2')
+        .upload(
+          fileName, 
+          imageFile,
+          fileOptions: FileOptions(
+            contentType: 'image/$fileExtension',
+          ),
+        );
+    
+   final imageUrlResponse = _supabase.storage
+        .from('notifications2')
+        .getPublicUrl(fileName);
+    
+    return imageUrlResponse;
+  } catch (e) {
+    debugPrint('[uploadImage] Upload failed: $e');
+    throw Exception('Image upload failed: $e');
   }
 }
+@override
+Future<List<AppNotification>> getNotifications() async {
+  try {
+    
+
+  final user = _supabase.auth.currentUser;
+  final userId = user?.id;
+  final subscribedTopics = AppRemoteNotificationsSettings.defaultTopicList;
+
+  if (userId == null) return [];
+
+  final response = await _supabase
+      .from('notifications2')
+      .select()
+      .or(
+        'and(type.eq.user,target_user_ids.cs.{$userId}),and(type.eq.topic,target_topics.cs.{${subscribedTopics.join(',')}})',
+      ) as List;
+
+  return response
+      .map((e) {
+      return AppNotification.fromJson(e as Map<String, dynamic>);
+      })
+      .toList();
+      } catch (e) {
+        debugPrint('Unexpected error while trying to get notifications: $e');
+        throw ServerException();
+      }
+}
+}
+

@@ -4,7 +4,7 @@ class AppNotificationModel extends AppNotification {
   AppNotificationModel({
     required super.id,
     required super.title,
-    required super.subtitle,
+    required super.body,
     required super.html,
     required super.date,
     required super.seen,
@@ -15,7 +15,7 @@ class AppNotificationModel extends AppNotification {
     return AppNotificationModel(
       id: json['id'],
       title: json['title'],
-      subtitle: json['subtitle'],
+      body: json['body'],
       html: json['html'],
       date: DateTime.parse(json['date']),
       imageUrl: json['image_url'],
@@ -27,7 +27,7 @@ class AppNotificationModel extends AppNotification {
     return {
       'id': id,
       'title': title,
-      'subtitle': subtitle,
+      'body': body,
       'html': html,
       'image_url': imageUrl,
       'date': date.toIso8601String(),

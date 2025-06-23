@@ -7,7 +7,7 @@ extension AppNotificationModelMapper on AppNotificationModel {
     return AppNotification(
       id: id,
       title: title,
-      subtitle: subtitle,
+      body: body,
       html: html,
       date: date,
       imageUrl: imageUrl,
@@ -21,7 +21,7 @@ extension AppNotificationMapper on AppNotification {
     return AppNotificationModel(
       id: id,
       title: title,
-      subtitle: subtitle,
+      body: body,
       html: html,
       date: date,
       imageUrl: imageUrl,

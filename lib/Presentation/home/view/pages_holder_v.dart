@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/widgets/material_picker_v.dart';
 import 'package:moatmat_admin/Presentation/banks/views/add_bank_view.dart';
@@ -7,6 +9,10 @@ import 'package:moatmat_admin/Presentation/banks/views/banks_search_result_v.dar
 import 'package:moatmat_admin/Presentation/banks/views/my_banks_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/codes_views_manager.dart';
 import 'package:moatmat_admin/Presentation/codes/views/print_students_code_view.dart';
+import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
+import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
+import 'package:moatmat_admin/Presentation/notifications/views/notifications_view.dart';
+import 'package:moatmat_admin/Presentation/notifications/views/send_notification_view.dart';
 import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_results_v.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_student_balance_v.dart';
@@ -210,6 +216,32 @@ class _PagesHolderViewState extends State<PagesHolderView> {
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const AddTestView()),
+              );
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          ),
+          SpeedDialChild(
+            label: "إرسال اشعارات",
+            child: const Icon(Icons.notification_add),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => BlocProvider(
+                    create: (context) => locator<SendNotificationBloc>(),
+                    child: SendNotificationView(),
+                  )),
+              );
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+          ),
+          SpeedDialChild(
+            label: "الاشعارات",
+            child: const Icon(Icons.notification_important),
+            onTap: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) =>   BlocProvider(
+          create: (context) => locator<NotificationsBloc>(),
+          child: NotificationsView(),
+        ),),
               );
               FocusManager.instance.primaryFocus?.unfocus();
             },

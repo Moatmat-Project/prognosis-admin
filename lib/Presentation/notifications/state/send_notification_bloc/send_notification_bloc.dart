@@ -1,18 +1,18 @@
 import 'dart:io';
 
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_topics_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_users_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/upload_notification_image_usecase.dart';
-import 'package:share_plus/share_plus.dart';
 
 part 'send_notification_event.dart';
 part 'send_notification_state.dart';
-
 class SendNotificationBloc extends Bloc<SendNotificationEvent, SendNotificationState> {
   final SendNotificationToUsersUsecase _sendNotificationToUsersUsecase;
   final SendNotificationToTopicsUsecase _sendNotificationToTopicsUsecase;
@@ -35,22 +35,18 @@ class SendNotificationBloc extends Bloc<SendNotificationEvent, SendNotificationS
     Emitter<SendNotificationState> emit,
   ) async {
     emit(SendNotificationLoading());
-
-    if (event.imageFile != null) {
-      final result = await _uploadNotificationImageUsecase(imageFile: event.imageFile!);
-      result.fold(
-        (failure) => emit(SendNotificationFailure("خطأ اثناء تحميل صورة الإشعار")),
-        (imageUrl) async {
-          final notification = event.notification.copyWith(imageUrl: imageUrl);
-          final request = SendNotificationToUsersRequest(notification: notification, userIds: event.userIds);
-          final result = await _sendNotificationToUsersUsecase(sendNotificationRequest: request);
-          result.fold(
-            (failure) => emit(SendNotificationFailure("خطأ اثناء ارسال الإشعار")),
-            (_) => emit(SendNotificationSuccess()),
-          );
-        },
-      );
-    }
+    await _handleNotificationSending(
+      imageFile: event.imageFile,
+      originalNotification: event.notification,
+      onSend: (notification) {
+        final request = SendNotificationToUsersRequest(
+          notification: notification,
+          userIds: event.userIds,
+        );
+        return _sendNotificationToUsersUsecase(sendNotificationRequest: request);
+      },
+      emit: emit,
+    );
   }
 
   Future<void> _onSendNotificationToTopics(
@@ -58,19 +54,44 @@ class SendNotificationBloc extends Bloc<SendNotificationEvent, SendNotificationS
     Emitter<SendNotificationState> emit,
   ) async {
     emit(SendNotificationLoading());
-    if (event.imageFile != null) {
-      final result = await _uploadNotificationImageUsecase(imageFile: event.imageFile!);
-      result.fold(
-        (failure) => emit(SendNotificationFailure("خطأ اثناء تحميل صورة الإشعار")),
+    await _handleNotificationSending(
+      imageFile: event.imageFile,
+      originalNotification: event.notification,
+      onSend: (notification) {
+        final request = SendNotificationToTopicsRequest(
+          notification: notification,
+          topics: event.topics,
+        );
+        return _sendNotificationToTopicsUsecase(sendNotificationRequest: request);
+      },
+      emit: emit,
+    );
+  }
+
+  Future<void> _handleNotificationSending({
+    required File? imageFile,
+    required AppNotification originalNotification,
+    required Future<Either<Failure, Unit>> Function(AppNotification notification) onSend,
+    required Emitter<SendNotificationState> emit,
+  }) async {
+    if (imageFile != null) {
+      final uploadResult = await _uploadNotificationImageUsecase(imageFile: imageFile);
+      await uploadResult.fold(
+        (failure) async => emit(SendNotificationFailure("خطأ اثناء تحميل صورة الإشعار")),
         (imageUrl) async {
-          final notification = event.notification.copyWith(imageUrl: imageUrl);
-          final request = SendNotificationToTopicsRequest(notification: notification, topics: event.topics);
-          final result = await _sendNotificationToTopicsUsecase(sendNotificationRequest: request);
-          result.fold(
+          final updatedNotification = originalNotification.copyWith(imageUrl: imageUrl);
+          final sendResult = await onSend(updatedNotification);
+          sendResult.fold(
             (failure) => emit(SendNotificationFailure("خطأ اثناء ارسال الإشعار")),
             (_) => emit(SendNotificationSuccess()),
           );
         },
+      );
+    } else {
+      final sendResult = await onSend(originalNotification);
+      sendResult.fold(
+        (failure) => emit(SendNotificationFailure("خطأ اثناء ارسال الإشعار")),
+        (_) => emit(SendNotificationSuccess()),
       );
     }
   }

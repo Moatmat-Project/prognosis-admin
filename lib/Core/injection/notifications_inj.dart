@@ -1,14 +1,11 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
-import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_local_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/data/repositories/notifications_repository_implements.dart';
 import 'package:moatmat_admin/Features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/cancel_notification_usecase.dart';
-import 'package:moatmat_admin/Features/notifications/domain/usecases/clear_notifications_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/create_notifications_channel_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/delete_device_token_usecase.dart';
-import 'package:moatmat_admin/Features/notifications/domain/usecases/delete_notification_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/display_firebase_notification_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/display_notification_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/get_device_token_usecase.dart';
@@ -26,7 +23,6 @@ import 'package:moatmat_admin/Presentation/notifications/state/initialize_notifi
 import 'package:moatmat_admin/Presentation/notifications/state/notification_settings_bloc/notification_settings_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
-import 'package:sqflite/sqflite.dart';
 
 Future<void> injectNotifications() async {
   await injectDS();
@@ -46,9 +42,7 @@ Future<void> injectUC() async {
   locator.registerFactory<InitializeLocalNotificationsUsecase>(
     () => InitializeLocalNotificationsUsecase(repository: locator()),
   );
-  locator.registerFactory<DeleteNotificationUsecase>(
-    () => DeleteNotificationUsecase(repository: locator()),
-  );
+
   locator.registerFactory<GetDeviceTokenUsecase>(
     () => GetDeviceTokenUsecase(repository: locator()),
   );
@@ -76,9 +70,7 @@ Future<void> injectUC() async {
   locator.registerFactory<RefreshDeviceTokenUsecase>(
     () => RefreshDeviceTokenUsecase(repository: locator()),
   );
-  locator.registerFactory<ClearNotificationsUsecase>(
-    () => ClearNotificationsUsecase(repository: locator()),
-  );
+
   locator.registerLazySingleton(() => SendNotificationToUsersUsecase(repository: locator()));
   locator.registerLazySingleton(() => SendNotificationToTopicsUsecase(repository: locator()));
   locator.registerLazySingleton(
@@ -94,14 +86,12 @@ Future<void> injectUC() async {
 
 Future<void> injectRepo() async {
   locator.registerLazySingleton<NotificationsRepository>(
-    () => NotificationsRepositoryImplements(locator<NotificationsLocalDatasource>(), locator<NotificationsRemoteDatasource>()),
+    () => NotificationsRepositoryImplements( locator<NotificationsRemoteDatasource>()),
   );
 }
 
 Future<void> injectDS() async {
-  locator.registerLazySingleton<NotificationsLocalDatasource>(
-    () => NotificationsLocalDatasourceImplements(locator<Database>()),
-  );
+
   locator.registerLazySingleton<NotificationsRemoteDatasource>(
     () => NotificationsRemoteDatasourceImpl(),
   );
@@ -126,8 +116,7 @@ Future<void> injectBlocs() async {
 
   locator.registerLazySingleton(() => NotificationsBloc(
         getNotificationsUsecase: locator(),
-        clearNotificationsUsecase: locator(),
-        deleteNotificationUsecase: locator(),
+    
       ));
 }
 

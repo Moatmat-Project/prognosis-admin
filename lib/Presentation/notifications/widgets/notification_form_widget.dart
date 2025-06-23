@@ -24,9 +24,7 @@ class NotificationForm extends StatefulWidget {
 }
 
 class _NotificationFormState extends State<NotificationForm> {
-  final titleController = TextEditingController();
-  final bodyController = TextEditingController();
-  final userIdsController = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +37,7 @@ class _NotificationFormState extends State<NotificationForm> {
               child: MyTextFormFieldWidget(
                 width: SpacingResources.mainWidth(context) - 52,
                 hintText: 'عنوان الإشعار',
-                controller: titleController,
+                controller: widget.titleController,
                 validator: validateNotificationTitle,
               ),
             ),
@@ -62,7 +60,7 @@ class _NotificationFormState extends State<NotificationForm> {
         SizedBox(height: 10),
         MyTextFormFieldWidget(
           hintText: 'نص الإشعار',
-          controller: bodyController,
+          controller: widget.bodyController, 
           maxLines: 3,
         ),
         const SizedBox(height: 20),

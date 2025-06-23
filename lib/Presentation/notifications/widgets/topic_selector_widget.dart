@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moatmat_admin/Core/constant/topics_list.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
 
 class TopicSelector extends StatefulWidget {
@@ -12,18 +13,16 @@ class TopicSelector extends StatefulWidget {
 class _TopicSelectorState extends State<TopicSelector> {
   final List<String> _selectedTopics = [];
 
-  final List<String> topics = ["الادمن", 'الاساتذة', 'الطلاب', 'الرفع'];
-
   @override
   Widget build(BuildContext context) {
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 8,
       children: topics.map((topic) {
-        final isSelected = _selectedTopics.contains(topic);
+        final isSelected = _selectedTopics.contains(topic.name);
 
         return FilterChip(
-          label: Text(topic),
+          label: Text(topic.showName),
           selected: isSelected,
           selectedColor: ColorsResources.primaryLight,
           side: BorderSide(
@@ -33,9 +32,9 @@ class _TopicSelectorState extends State<TopicSelector> {
           onSelected: (selected) {
             setState(() {
               if (selected) {
-                _selectedTopics.add(topic);
+                _selectedTopics.add(topic.name);
               } else {
-                _selectedTopics.remove(topic);
+                _selectedTopics.remove(topic.name);
               }
               widget.onChanged(_selectedTopics);
             });

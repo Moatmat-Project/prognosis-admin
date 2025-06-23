@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:moatmat_admin/Presentation/banks/views/add_bank_view.dart';
+import 'package:moatmat_admin/Presentation/notifications/views/notifications_view.dart';
 import 'package:moatmat_admin/Presentation/notifications/views/send_notification_view.dart';
 import 'package:moatmat_admin/Presentation/scanner/state/cubit/explore_outer_tests_cubit.dart';
 import 'package:moatmat_admin/Presentation/tests/views/add_outer_test_view.dart';
@@ -51,16 +52,6 @@ class _HomeViewState extends State<HomeView> {
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const AddTestView()),
-              );
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-          ),
-          SpeedDialChild(
-            label: "إرسال اشعارات",
-            child: const Icon(Icons.notification_add),
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const SendNotificationView()),
               );
               FocusManager.instance.primaryFocus?.unfocus();
             },
