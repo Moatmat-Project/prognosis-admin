@@ -220,7 +220,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     required SendNotificationToUsersRequest sendNotificationRequest,
   }) async {
     return _invokeNotificationFunction(
-      functionName: 'send-fcm-notifications',
+      functionName: 'send-notifications-to-users',
       body: {
         'userIds': sendNotificationRequest.userIds,
         'notification': sendNotificationRequest.notification.toJson(),
