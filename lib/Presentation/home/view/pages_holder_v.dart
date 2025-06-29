@@ -35,6 +35,7 @@ import '../../banks/views/my_banks_v.dart';
 import '../../students/views/add_results_v.dart';
 import '../../tests/views/add_test_vew.dart';
 import '../../tests/views/my_tests_v.dart';
+
 class PagesHolderView extends StatefulWidget {
   const PagesHolderView({super.key});
 
@@ -153,6 +154,45 @@ class _PagesHolderViewState extends State<PagesHolderView> {
                             SizedBox(height: SizesResources.s5),
                             Text(
                               "ادارة الاساتذة",
+                              style: TextStyle(
+                                fontSize: 19,
+                                fontWeight: FontWeight.w500,
+                                color: ColorsResources.primary,
+                              ),
+                            ),
+                            SizedBox(height: SizesResources.s5),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AllTeachersView(),
+                          ),
+                        );
+                      },
+                      child: SizedBox(
+                        width: SpacingResources.mainWidth(context),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(height: SizesResources.s5),
+                            Icon(
+                              Icons.notification_add,
+                              color: ColorsResources.darkPrimary,
+                              size: 50,
+                            ),
+                            SizedBox(height: SizesResources.s5),
+                            Text(
+                              "الاشعارات",
                               style: TextStyle(
                                 fontSize: 19,
                                 fontWeight: FontWeight.w500,
@@ -343,10 +383,11 @@ class _PagesHolderViewState extends State<PagesHolderView> {
             child: const Icon(Icons.notification_add),
             onTap: () async {
               await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => BlocProvider(
-                    create: (context) => locator<SendNotificationBloc>(),
-                    child: SendNotificationView(),
-                  )),
+                MaterialPageRoute(
+                    builder: (context) => BlocProvider(
+                          create: (context) => locator<SendNotificationBloc>(),
+                          child: SendNotificationView(),
+                        )),
               );
               FocusManager.instance.primaryFocus?.unfocus();
             },
@@ -356,10 +397,12 @@ class _PagesHolderViewState extends State<PagesHolderView> {
             child: const Icon(Icons.notification_important),
             onTap: () async {
               await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) =>   BlocProvider(
-          create: (context) => locator<NotificationsBloc>(),
-          child: NotificationsView(),
-        ),),
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider(
+                    create: (context) => locator<NotificationsBloc>(),
+                    child: NotificationsView(),
+                  ),
+                ),
               );
               FocusManager.instance.primaryFocus?.unfocus();
             },
