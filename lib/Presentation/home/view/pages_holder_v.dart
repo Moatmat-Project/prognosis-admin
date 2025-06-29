@@ -175,9 +175,12 @@ class _PagesHolderViewState extends State<PagesHolderView> {
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => AllTeachersView(),
-                          ),
+                              builder: (context) => BlocProvider(
+                                    create: (context) => locator<SendNotificationBloc>(),
+                                    child: SendNotificationView(),
+                                  )),
                         );
+                        FocusManager.instance.primaryFocus?.unfocus();
                       },
                       child: SizedBox(
                         width: SpacingResources.mainWidth(context),
