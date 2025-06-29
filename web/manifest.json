@@ -1,6 +1,6 @@
 {
-    "name": "moatmat_teacher",
-    "short_name": "moatmat_teacher",
+    "name": "moatmat_admin",
+    "short_name": "moatmat_admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
