@@ -54,7 +54,7 @@ class _AddTestViewState extends State<AddTestView> {
             schools: state.schools,
             period: state.information?.period,
             price: state.information?.price,
-            video: state.information?.video,
+            videos: state.information?.videos,
             files: state.information?.files,
             images: state.information?.images,
             previous: state.information?.previous,
@@ -69,7 +69,7 @@ class _AddTestViewState extends State<AddTestView> {
               required teacher,
               required schoolId,
               required title,
-              required video,
+              required videos,
               required images,
             }) {
               var info = TestInformation(
@@ -81,7 +81,7 @@ class _AddTestViewState extends State<AddTestView> {
                 price: price,
                 password: password,
                 period: period,
-                video: video,
+                videos: videos,
                 files: files,
                 previous: previous,
                 images: images,
