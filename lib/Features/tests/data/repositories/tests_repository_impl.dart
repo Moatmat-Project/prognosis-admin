@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
+import 'package:moatmat_admin/Features/tests/domain/entities/video.dart';
 import 'package:moatmat_admin/Features/tests/domain/repositories/tests_repository.dart';
 
 import '../../../../main.dart';
@@ -75,6 +76,18 @@ class TestsRepositoryImpl implements TestsRepository {
   }) async {
     try {
       final res = await dataSource.searchTest(keyword: keyword);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, int>> addVideo({
+    required Video video,
+  }) async {
+    try {
+      var res = await dataSource.addVideo(video: video);
       return right(res);
     } on Exception catch (e) {
       return left(e);

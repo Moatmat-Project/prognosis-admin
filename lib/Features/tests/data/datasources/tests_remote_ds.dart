@@ -8,6 +8,7 @@ import 'package:moatmat_admin/Features/tests/data/models/test_m.dart';
 import 'package:moatmat_admin/Features/tests/data/models/video_m.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/video.dart';
+import 'package:moatmat_admin/Features/tests/domain/usecases/add_video_uc.dart';
 import 'package:moatmat_admin/main.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -39,6 +40,10 @@ abstract class TestsRemoteDS {
   //
   Future<List<Test>> searchTest({
     required String keyword,
+  });
+  //
+  Future<int> addVideo({
+    required Video video,
   });
 }
 
@@ -113,7 +118,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
         (l) {
           ErrorsCopier().addErrorLogs("left $l");
         },
-        (r) {
+        (r) async {
           ErrorsCopier().addErrorLogs("right $r");
           ErrorsCopier().addErrorLogs("starting swap:");
           ErrorsCopier().addErrorLogs("before swap:${newTest.information.videos}");
@@ -122,15 +127,27 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
           //
           int index = newVideos.indexOf(newTest.information.videos![i]);
           //
-          // newVideos[index] = r;
-          newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(url: r);
-          //
-          // replace links
-          newTest = newTest.copyWith(
-            information: newTest.information.copyWith(
-              videos: newVideos,
-            ),
+          var res = await locator<AddVideoUc>().call(video: newVideos[index]);
+          res.fold(
+            (l) {
+              ErrorsCopier().addErrorLogs("left $l");
+              newVideos.removeAt(index);
+            },
+            (id) {
+              newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(
+                url: r,
+                id: id,
+              );
+              // replace links
+              newTest = newTest.copyWith(
+                information: newTest.information.copyWith(
+                  videos: newVideos,
+                ),
+              );
+              //
+            },
           );
+          //
           ErrorsCopier().addErrorLogs("after swap:${newTest.information.videos}");
           ErrorsCopier().addErrorLogs("finish swap.");
         },
@@ -400,5 +417,25 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     }
     //
     return [];
+  }
+
+  @override
+  Future<int> addVideo({
+    required Video video,
+  }) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    int id = -1;
+    //
+    Map videoJson = VideoModel.fromClass(video).toJson();
+    //
+    await client.from("videos").insert(videoJson);
+    //
+    var res = await client.from("videos").select().eq("url", video.url).limit(1);
+    //
+    id = VideoModel.fromJson(res.first).id;
+    //
+    return id;
   }
 }

@@ -1,4 +1,6 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Features/banks/data/models/bank_m.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
@@ -6,6 +8,7 @@ import 'package:moatmat_admin/Features/buckets/domain/usecases/delete_bank_files
 import 'package:moatmat_admin/Features/buckets/domain/usecases/upload_file_uc.dart';
 import 'package:moatmat_admin/Features/tests/data/models/video_m.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/video.dart';
+import 'package:moatmat_admin/Features/tests/domain/usecases/add_video_uc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class BanksRemoteDS {
@@ -97,21 +100,34 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       );
       res.fold(
         (l) {},
-        (r) {
+        (r) async{
           //
           List<Video> newVideos = newBank.information.videos ?? [];
           //
           int index = newVideos.indexOf(newBank.information.videos![i]);
           //
-          // newVideos[index] = r;
-          newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(url: r);
-          //
-          // replace links
-          newBank = newBank.copyWith(
-            information: newBank.information.copyWith(
-              videos: newVideos,
-            ),
+          var res = await locator<AddVideoUc>().call(video: newVideos[index]);
+          res.fold(
+            (l) {
+              Fluttertoast.showToast(msg: "حصل خطأ ما اثناء محاولة رفع مقطع الفيديو");
+              Clipboard.setData(ClipboardData(text: l.toString()));
+              newVideos.removeAt(index);
+            },
+            (id) {
+              newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(
+                url: r,
+                id: id,
+              );
+              // replace links
+              newBank = newBank.copyWith(
+                information: newBank.information.copyWith(
+                  videos: newVideos,
+                ),
+              );
+              //
+            },
           );
+          //
         },
       );
       //
