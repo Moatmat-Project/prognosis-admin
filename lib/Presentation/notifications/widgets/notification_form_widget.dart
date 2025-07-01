@@ -24,8 +24,6 @@ class NotificationForm extends StatefulWidget {
 }
 
 class _NotificationFormState extends State<NotificationForm> {
-  
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -60,8 +58,9 @@ class _NotificationFormState extends State<NotificationForm> {
         SizedBox(height: 10),
         MyTextFormFieldWidget(
           hintText: 'نص الإشعار',
-          controller: widget.bodyController, 
+          controller: widget.bodyController,
           maxLines: 3,
+          minLines: 1,
         ),
         const SizedBox(height: 20),
       ],
