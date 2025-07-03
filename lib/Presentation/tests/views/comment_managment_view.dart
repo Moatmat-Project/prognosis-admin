@@ -24,10 +24,10 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsResources.onPrimary,
+      backgroundColor: ColorsResources.background,
       appBar: AppBar(
         title: Text('إدارة التعليقات والردود'),
-        backgroundColor: ColorsResources.onPrimary,
+        backgroundColor: ColorsResources.background,
       ),
       body: BlocBuilder<CommentsManagmentBloc, CommentsManagmentState>(
         builder: (context, state) {
@@ -51,6 +51,8 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
               final replies = state.repliesMap[comment.id] ?? [];
               //
               return Card(
+                borderOnForeground: false,
+                shape: Border(),
                 child: Container(
                   decoration: BoxDecoration(
                     color: ColorsResources.onPrimary,
@@ -61,11 +63,11 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(comment.username),
-                        IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
+                        TextButton(
                           onPressed: () {
                             _confirmDeleteComment(context, comment.id);
                           },
+                          child: Text('حذف'),
                         ),
                       ],
                     ),
@@ -84,11 +86,11 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(reply.username),
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
+                                  TextButton(
                                     onPressed: () {
                                       _confirmDeleteReply(context, comment.id, reply.id);
                                     },
+                                    child: Text('حذف'),
                                   ),
                                 ],
                               ),
@@ -106,7 +108,8 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
                   ),
                 ),
               );
-            }, separatorBuilder: (BuildContext context, int index) {
+            },
+            separatorBuilder: (BuildContext context, int index) {
               return Padding(padding: EdgeInsets.only(top: SizesResources.s1));
             },
           );
