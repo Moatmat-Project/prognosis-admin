@@ -11,6 +11,7 @@ import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:moatmat_admin/Presentation/tests/state/my_tests/my_tests_cubit.dart';
 import 'package:moatmat_admin/Presentation/tests/state/test_information/test_information_cubit.dart';
 import 'package:moatmat_admin/Presentation/tests/views/add_test_vew.dart';
+import 'package:moatmat_admin/Presentation/tests/views/video_view_list.dart';
 import 'package:moatmat_admin/Presentation/tests/widgets/purchases_informations_w.dart';
 
 import '../../../Core/resources/colors_r.dart';
@@ -113,6 +114,18 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                           builder: (context) => GroupTestDetailsView(
                             test: state.test,
                           ),
+                        ),
+                      );
+                    },
+                  ),
+                  TouchableTileWidget(
+                    title: "ادارة التعليقات",
+                    iconData: Icons.manage_accounts,
+                    onTap: () {
+                      final videos = widget.test?.information.videos;
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => VideosListView(videos: videos ?? [],),
                         ),
                       );
                     },

@@ -11,6 +11,7 @@ import 'package:moatmat_admin/Presentation/schools/state/school_bloc/school_bloc
 import 'package:moatmat_admin/Presentation/students/state/my_students/my_students_cubit.dart';
 import 'package:moatmat_admin/Presentation/students/state/student_reports/student_reports_cubit.dart';
 import 'package:moatmat_admin/Presentation/teachers/state/manage_teacher_purchases/manage_teacher_purchases_bloc.dart';
+import 'package:moatmat_admin/Presentation/tests/state/comment_managment/comments_managment_bloc.dart';
 import 'package:moatmat_admin/Presentation/tests/state/search_test/search_test_cubit.dart';
 import 'package:moatmat_admin/firebase_options.dart';
 import 'Core/injection/app_inj.dart';
@@ -81,7 +82,7 @@ void main() async {
         BlocProvider(create: (context) => StudentReportsCubit()),
         BlocProvider(create: (context) => ManageTeacherPurchasesBloc()),
         BlocProvider(create: (context) => locator<SchoolBloc>()),
-       
+        BlocProvider(create: (context) => CommentsManagmentBloc()),
       ],
       child: const AppRoot(),
     ),

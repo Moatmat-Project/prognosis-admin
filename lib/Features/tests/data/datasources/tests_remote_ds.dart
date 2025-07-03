@@ -3,9 +3,13 @@ import 'package:moatmat_admin/Core/injection/app_inj.dart';
 
 import 'package:moatmat_admin/Features/buckets/domain/usecases/delete_test_files_uc.dart';
 import 'package:moatmat_admin/Features/buckets/domain/usecases/upload_file_uc.dart';
+import 'package:moatmat_admin/Features/tests/data/models/comment_m.dart';
 import 'package:moatmat_admin/Features/tests/data/models/question_m.dart';
+import 'package:moatmat_admin/Features/tests/data/models/reply_comment_m.dart';
 import 'package:moatmat_admin/Features/tests/data/models/test_m.dart';
 import 'package:moatmat_admin/Features/tests/data/models/video_m.dart';
+import 'package:moatmat_admin/Features/tests/domain/entities/comment.dart';
+import 'package:moatmat_admin/Features/tests/domain/entities/reply_comment.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/test/test.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/video.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/add_video_uc.dart';
@@ -44,6 +48,22 @@ abstract class TestsRemoteDS {
   //
   Future<int> addVideo({
     required Video video,
+  });
+  //
+  Future<List<Comment>> getComment({
+    required int videoId,
+  });
+  //
+  Future<List<ReplyComment>> getReplies({
+    required int commentId,
+  });
+  //
+  Future<Unit> deleteComment({
+    required int commentId,
+  });
+  //
+  Future<Unit> deleteReply({
+    required int replyId,
   });
 }
 
@@ -437,5 +457,67 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     id = VideoModel.fromJson(res.first).id;
     //
     return id;
+  }
+  
+  @override
+  Future<List<Comment>> getComment({required int videoId}) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    var res = await client.from('get_comment_view').select().eq('video_id', videoId);
+    //
+    List<Comment> comments = res
+        .map(
+          (e) => CommentModel.fromJson(e),
+        )
+        .toList();
+    //
+    return comments;
+  }
+
+  @override
+  Future<List<ReplyComment>> getReplies({required int commentId}) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    var res = await client.from('get_replies_view').select().eq('comment_id', commentId);
+    //
+    List<ReplyComment> replies = res
+        .map(
+          (e) => ReplyCommentModel.fromJson(e),
+        )
+        .toList();
+    //
+    return replies;
+  }
+
+  @override
+  Future<Unit> deleteComment({
+    required int commentId,
+  }) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    await client
+        .from('comment')
+        .delete()
+        .eq('id', commentId);
+    //
+    return unit;
+  }
+
+  @override
+  Future<Unit> deleteReply({
+    required int replyId,
+  }) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    await client
+        .from('comment_reply')
+        .delete()
+        .eq('id', replyId);
+    //
+    return unit;
   }
 }
