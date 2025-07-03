@@ -24,10 +24,10 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorsResources.onPrimary,
+      backgroundColor: ColorsResources.background,
       appBar: AppBar(
         title: Text('إدارة التعليقات والردود'),
-        backgroundColor: ColorsResources.onPrimary,
+        backgroundColor: ColorsResources.background,
       ),
       body: BlocBuilder<CommentsManagmentBloc, CommentsManagmentState>(
         builder: (context, state) {
