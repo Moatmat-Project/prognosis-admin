@@ -73,14 +73,14 @@ class NotificationCard extends StatelessWidget {
     } else if (minutes < 60) {
       timeText = 'منذ $minutes دقيقة${minutes > 10 ? '' : ''}';
     } else {
-      timeText = 'منذ ${timeago.format(notification.date, locale: 'ar')}';
+      timeText = timeago.format(notification.date, locale: 'ar');
     }
 
     return Container(
       width: SpacingResources.mainWidth(context),
       margin: const EdgeInsets.symmetric(vertical: SizesResources.s1),
       decoration: BoxDecoration(
-        color: notification.seen ? ColorsResources.onPrimary.withOpacity(0.95) : ColorsResources.onPrimary,
+        color: notification.seen ? ColorsResources.onPrimary.withValues(alpha: 0.95) : ColorsResources.onPrimary,
         boxShadow: ShadowsResources.mainBoxShadow,
         borderRadius: BorderRadius.circular(12),
       ),
@@ -103,7 +103,7 @@ class NotificationCard extends StatelessWidget {
                       Icon(
                         Icons.notifications_none,
                         size: 22,
-                        color: notification.seen ? ColorsResources.textSecondary.withOpacity(0.6) : ColorsResources.primary,
+                        color: notification.seen ? ColorsResources.textSecondary.withValues(alpha: 0.6) : ColorsResources.primary,
                       ),
                       if (!notification.seen)
                         Positioned(
@@ -140,7 +140,7 @@ class NotificationCard extends StatelessWidget {
                               notification.title,
                               style: FontsResources.styleMedium(
                                 size: 16,
-                                color: notification.seen ? ColorsResources.textPrimary.withOpacity(0.9) : ColorsResources.textPrimary,
+                                color: notification.seen ? ColorsResources.textPrimary.withValues(alpha: 0.9) : ColorsResources.textPrimary,
                               ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -156,7 +156,7 @@ class NotificationCard extends StatelessWidget {
                           child: Text(
                             notification.body!,
                             style: FontsResources.styleRegular(
-                              color: notification.seen ? ColorsResources.textSecondary.withOpacity(0.7) : ColorsResources.textSecondary,
+                              color: notification.seen ? ColorsResources.textSecondary.withValues(alpha: 0.7) : ColorsResources.textSecondary,
                               size: 14,
                             ),
                             maxLines: 3,
@@ -164,25 +164,23 @@ class NotificationCard extends StatelessWidget {
                           ),
                         ),
 
-                      // Metadata row (time and type)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Row(
                           children: [
-                            // Time ago
                             Text(
                               timeText,
                               style: FontsResources.styleRegular(
                                 size: 12,
-                                color: ColorsResources.textSecondary.withOpacity(0.6),
+                                color: ColorsResources.textSecondary.withValues(alpha: 0.6),
                               ),
                             ),
                           ],
                         ),
                       ),
                     ],
+                    ),
                   ),
-                ),
 
                 // Image thumbnail (if exists)
                 if (notification.imageUrl != null && notification.imageUrl!.isNotEmpty)
@@ -197,7 +195,7 @@ class NotificationCard extends StatelessWidget {
                           height: 64,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: ColorsResources.borders.withOpacity(0.1),
+                              color: ColorsResources.borders.withValues(alpha: 0.1),
                               width: 0.5,
                             ),
                           ),

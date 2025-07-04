@@ -81,7 +81,6 @@ void main() async {
         BlocProvider(create: (context) => StudentReportsCubit()),
         BlocProvider(create: (context) => ManageTeacherPurchasesBloc()),
         BlocProvider(create: (context) => locator<SchoolBloc>()),
-       
       ],
       child: const AppRoot(),
     ),
