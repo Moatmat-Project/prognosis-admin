@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AppNotification {
-  final int id;
+  final String id;
   final String title;
   final String? body;
   final String? html;
@@ -15,7 +15,7 @@ class AppNotification {
   }
 
   AppNotification copyWith({
-    int? id,
+    String? id,
     String? title,
     String? body,
     String? html,
@@ -43,7 +43,7 @@ class AppNotification {
     }
 
     return AppNotification(
-      id: DateTime.now().millisecondsSinceEpoch,
+      id: message.data['id'] ?? DateTime.now().millisecondsSinceEpoch.toString(),
       title: message.data["title"] ?? '',
       body: message.data["body"],
       html: message.data["html"],
@@ -55,7 +55,7 @@ class AppNotification {
 
   factory AppNotification.empty() {
     return AppNotification(
-      id: 0,
+      id: '',
       title: '',
       body: '',
       html: '',
@@ -89,7 +89,7 @@ class AppNotification {
 
   factory AppNotification.fromJson(Map<String, dynamic> json) {
     return AppNotification(
-      id: 1,
+      id: json['id'] as String,
       title: json['title'] ?? '',
       body: json['body'],
       html: json['html'],
