@@ -13,6 +13,7 @@ import 'package:moatmat_admin/Features/notifications/domain/usecases/get_device_
 import 'package:moatmat_admin/Features/notifications/domain/usecases/get_notifications_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/initialize_firebase_notifications_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/initialize_local_notifications_usecase.dart';
+import 'package:moatmat_admin/Features/notifications/domain/usecases/mark_notification_seen.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/refresh_device_token_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_topics_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/send_notification_to_users_usecase.dart';
@@ -72,6 +73,10 @@ Future<void> injectUC() async {
     () => RefreshDeviceTokenUsecase(repository: locator()),
   );
 
+  locator.registerFactory<MarkNotificationSeen>(
+    () => MarkNotificationSeen(repository: locator()),
+  );
+
   locator.registerLazySingleton(() => SendNotificationToUsersUsecase(repository: locator()));
   locator.registerLazySingleton(() => SendNotificationToTopicsUsecase(repository: locator()));
   locator.registerLazySingleton(
@@ -118,6 +123,7 @@ Future<void> injectBlocs() async {
 
   locator.registerFactory(() => NotificationsBloc(
         getNotificationsUsecase: locator(),
+        markNotificationSeen: locator(),
     
       ));
 }

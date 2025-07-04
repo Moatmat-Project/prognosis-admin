@@ -89,16 +89,26 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, List<AppNotification>>> getNotifications() async {
-    try {
-      final response = await _remoteDatasource.getNotifications();
-      return right(response);
-    } on Exception {
-      return left(AnonFailure());
-    }
-    
+@override
+Future<Either<Failure, List<AppNotification>>> getNotifications() async {
+  try {
+    final List<AppNotification> remoteNotifications =
+        await _remoteDatasource.getNotifications();
+
+    final List<AppNotification> updatedNotifications =
+        await Future.wait(remoteNotifications.map((notification) async {
+      final bool isSeen = await _localDataSourse.isNotificationSeen(notification.id.toString());
+
+      return notification.copyWith(seen: isSeen);
+    }));
+
+    return Right(updatedNotifications);
+  } on CacheFailure {
+    return Left(CacheFailure());
+  } catch (e) {
+    return Left(AnonFailure());
   }
+}
 
   @override
   Future<Either<Failure, Unit>> markNotificationAsSeen(String notificationId) async {

@@ -8,24 +8,8 @@ import 'package:moatmat_admin/Core/resources/fonts_r.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/widgets/notification_card_widget.dart';
 
-class NotificationsView extends StatefulWidget {
+class NotificationsView extends StatelessWidget {
   const NotificationsView({super.key});
-
-  @override
-  State<NotificationsView> createState() => _NotificationsViewState();
-}
-
-class _NotificationsViewState extends State<NotificationsView> {
-  bool _isInitialized = false;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInitialized) {
-      BlocProvider.of<NotificationsBloc>(context).add(GetNotifications());
-      _isInitialized = true;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +44,7 @@ class _NotificationsViewState extends State<NotificationsView> {
                 separatorBuilder: (_, __) => const SizedBox(height: SizesResources.s1 / 2),
                 itemBuilder: (context, index) {
                   final notification = state.notifications[index];
+                  BlocProvider.of<NotificationsBloc>(context).add(MarkNotificationAsSeen(notification.id));
                   return NotificationCard(notification: notification);
                 },
               ),

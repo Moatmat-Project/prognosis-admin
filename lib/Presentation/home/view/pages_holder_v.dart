@@ -336,18 +336,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
           ),
-          // SpeedDialChild(
-          //   label: "إضافة استاذ",
-          //   child: const Icon(Icons.person),
-          //   onTap: () async {
-          //     await Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (context) => const AddTeacherView(),
-          //       ),
-          //     );
-          //     FocusManager.instance.primaryFocus?.unfocus();
-          //   },
-          // ),
+
           SpeedDialChild(
             label: "إضافة بنك",
             child: const Icon(Icons.add),
@@ -397,20 +386,49 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           ),
           SpeedDialChild(
             label: "الاشعارات",
-            child: const Icon(Icons.notification_important),
+            child : BlocSelector<NotificationsBloc, NotificationsState, int>(
+     selector: (s) => s is NotificationsLoaded ? s.unreadCount : 0,
+     builder: (_, unread) => _NotificationIcon(unread),
+   ),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => locator<NotificationsBloc>(),
-                    child: NotificationsView(),
-                  ),
+                  builder: (context) => NotificationsView(),
                 ),
               );
               FocusManager.instance.primaryFocus?.unfocus();
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+
+class _NotificationIcon extends StatelessWidget {
+  final int unread;
+  const _NotificationIcon(this.unread, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Badge(
+      isLabelVisible: unread > 0,
+      backgroundColor: ColorsResources.red,
+      padding: const EdgeInsets.all(4),
+      offset: const Offset(6, -12),
+      smallSize: 4,
+      largeSize: 8,
+      alignment: Alignment.topRight,
+      label: const SizedBox(width: 4, height: 4), 
+      child: Icon(
+        unread > 0
+            ? Icons.notifications_active_outlined
+            : Icons.notifications_none,
+        size: 22,
+        color: unread > 0
+            ? ColorsResources.primary.withValues(alpha: 0.6)
+            : ColorsResources.primary,
       ),
     );
   }

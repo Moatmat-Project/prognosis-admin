@@ -3,6 +3,7 @@ import 'package:moatmat_admin/Presentation/auth/state/auth_c/auth_cubit_cubit.da
 import 'package:moatmat_admin/Presentation/banks/state/add_bank/add_bank_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/my_banks/my_banks_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/search_bank/search_bank_cubit.dart';
+import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/outer_tests_results/state/cubit/outer_test_results_cubit.dart';
 import 'package:moatmat_admin/Presentation/picker/state/cubit/questions_picker_cubit.dart';
 import 'package:moatmat_admin/Presentation/questions/state/cubit/create_question_cubit.dart';
@@ -81,6 +82,7 @@ void main() async {
         BlocProvider(create: (context) => StudentReportsCubit()),
         BlocProvider(create: (context) => ManageTeacherPurchasesBloc()),
         BlocProvider(create: (context) => locator<SchoolBloc>()),
+        BlocProvider(create: (context) => locator<NotificationsBloc>()..add(GetNotifications())),
       ],
       child: const AppRoot(),
     ),

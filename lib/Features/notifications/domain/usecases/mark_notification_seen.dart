@@ -5,9 +5,9 @@ import 'package:moatmat_admin/Features/notifications/domain/repositories/notific
 class MarkNotificationSeen {
   final NotificationsRepository repository;
 
-  MarkNotificationSeen(this.repository);
+  MarkNotificationSeen({required this.repository});
 
-  Future<Either<Failure, Unit>> execute(String notificationId) async {
+  Future<Either<Failure, Unit>> call(String notificationId) async {
     return await repository.markNotificationAsSeen(notificationId);
   }
 }
