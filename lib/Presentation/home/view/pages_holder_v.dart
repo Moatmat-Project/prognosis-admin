@@ -413,7 +413,7 @@ class _NotificationIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Badge(
-      isLabelVisible: unread > 0,
+      isLabelVisible: false,// unread > 0,
       backgroundColor: ColorsResources.red,
       padding: const EdgeInsets.all(4),
       offset: const Offset(6, -12),
