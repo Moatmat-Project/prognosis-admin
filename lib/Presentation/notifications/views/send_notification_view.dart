@@ -64,6 +64,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
       date: DateTime.now(),
       title: title,
       body: body,
+      sender: "الادمن",
     );
 
     if (isUserMode) {

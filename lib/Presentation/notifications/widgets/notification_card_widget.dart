@@ -184,7 +184,7 @@ class NotificationCard extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            'الاستاذ ${"عبدالله"}',
+                            '${notification.sender}',
                             style: FontsResources.styleMedium(
                               size: 12,
                               color: ColorsResources.primary,
