@@ -76,6 +76,8 @@ class NotificationCard extends StatelessWidget {
       timeText = timeago.format(notification.date, locale: 'ar');
     }
 
+    final hasImage = notification.imageUrl?.isNotEmpty ?? false;
+
     return Container(
       width: SpacingResources.mainWidth(context),
       margin: const EdgeInsets.symmetric(vertical: SizesResources.s1),
@@ -169,71 +171,74 @@ class NotificationCard extends StatelessWidget {
                         ),
 
                       // Teacher Name Tag
-                    //  if (notification.teacherName != null && notification.teacherName!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 8),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: ColorsResources.primary.withValues(alpha:0.1),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: ColorsResources.primary.withValues(alpha:0.3),
-                                width: 0.5,
-                              ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: ColorsResources.primary.withValues(alpha:0.1),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: ColorsResources.primary.withValues(alpha:0.3),
+                              width: 0.5,
                             ),
-                            child: Text(
-                              'الاستاذ ${"عبدالله"}',
-                              style: FontsResources.styleMedium(
-                                size: 12,
-                                color: ColorsResources.primary,
-                              ),
+                          ),
+                          child: Text(
+                            'الاستاذ ${"عبدالله"}',
+                            style: FontsResources.styleMedium(
+                              size: 12,
+                              color: ColorsResources.primary,
                             ),
                           ),
                         ),
-
-                      // Time
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
+                      ),
+                      
+                   
+                    ],
+                  ),
+                ),
+                // Optional Image Thumbnail
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        // Time positioned at top-right corner
+                        Text(
                           timeText,
                           style: FontsResources.styleRegular(
                             size: 12,
                             color: ColorsResources.textSecondary.withValues(alpha:0.6),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Optional Image Thumbnail
-                if (notification.imageUrl?.isNotEmpty ?? false)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 12),
-                    child: GestureDetector(
-                      onTap: () => _showFullImage(context, notification.imageUrl!),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: ColorsResources.borders.withValues(alpha:0.1),
-                              width: 0.5,
-                            ),
-                          ),
-                          child: Image.network(
-                            notification.imageUrl!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              color: ColorsResources.background,
-                              child: const Icon(Icons.broken_image, size: 24),
+                        const SizedBox(height: 8),
+                        // Image
+                if (hasImage)
+                        GestureDetector(
+                          onTap: () => _showFullImage(context, notification.imageUrl!),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Container(
+                              width: 64,
+                              height: 64,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: ColorsResources.borders.withValues(alpha:0.1),
+                                  width: 0.5,
+                                ),
+                              ),
+                              child: Image.network(
+                                notification.imageUrl!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, __, ___) => Container(
+                                  color: ColorsResources.background,
+                                  child: const Icon(Icons.broken_image, size: 24),
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
               ],
