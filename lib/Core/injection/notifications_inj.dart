@@ -102,19 +102,19 @@ Future<void> injectBlocs() async {
         initializeLocalNotifications: locator(),
         initializeFirebaseNotifications: locator(),
       ));
-  locator.registerLazySingleton(() => NotificationSettingsBloc(
+  locator.registerFactory(() => NotificationSettingsBloc(
         getDeviceToken: locator(),
         subscribeToTopic: locator(),
         unsubscribeFromTopic: locator(),
       ));
 
-  locator.registerLazySingleton(() => SendNotificationBloc(
+    locator.registerFactory(() => SendNotificationBloc(
         uploadNotificationImageUsecase: locator(),
         sendNotificationToUsersUsecase: locator(),
         sendNotificationToTopicsUsecase: locator(),
       ));
 
-  locator.registerLazySingleton(() => NotificationsBloc(
+  locator.registerFactory(() => NotificationsBloc(
         getNotificationsUsecase: locator(),
     
       ));

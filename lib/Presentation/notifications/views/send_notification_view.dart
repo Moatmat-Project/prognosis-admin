@@ -71,14 +71,17 @@ class _SendNotificationViewState extends State<SendNotificationView> {
         _showSnackbar('يرجى اختيار مستخدمين أولاً');
         return;
       }
-      context.read<SendNotificationBloc>().add(
-            SendNotificationToUsers(
-              imageFile: image,
-              userIds: selectedUserIds,
-              notification: notification,
+      if (mounted) {
+        context.read<SendNotificationBloc>().add(
+              SendNotificationToUsers(
+                imageFile: image,
+                userIds: selectedUserIds,
+                notification: notification,
             ),
           );
+      }
     } else {
+      if (mounted) {
       context.read<SendNotificationBloc>().add(
             SendNotificationToTopics(
               imageFile: image,
@@ -86,6 +89,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
               notification: notification,
             ),
           );
+      }
     }
   }
 
