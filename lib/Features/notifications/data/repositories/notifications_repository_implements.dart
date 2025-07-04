@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moatmat_admin/Core/errors/exceptions.dart';
+import 'package:moatmat_admin/Features/notifications/data/datasources/notification_local_data_source.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
@@ -13,8 +14,9 @@ import '../../domain/repositories/notifications_repository.dart';
 
 class NotificationsRepositoryImplements implements NotificationsRepository {
   final NotificationsRemoteDatasource _remoteDatasource;
+  final NotificationLocalDataSource _localDataSourse;
 
-  NotificationsRepositoryImplements( this._remoteDatasource);
+  NotificationsRepositoryImplements( this._remoteDatasource, this._localDataSourse);
   @override
   Future<Either<Failure, Unit>> initializeLocalNotification() async {
     try {
@@ -94,9 +96,18 @@ class NotificationsRepositoryImplements implements NotificationsRepository {
     } on Exception {
       return left(AnonFailure());
     }
+    
   }
 
-
+  @override
+  Future<Either<Failure, Unit>> markNotificationAsSeen(String notificationId) async {
+    try {
+      await _localDataSourse.addSeenNotification(notificationId);
+      return const Right(unit);
+    } catch (e) {
+      return Left(CacheFailure());
+    }
+  }
 
 
 

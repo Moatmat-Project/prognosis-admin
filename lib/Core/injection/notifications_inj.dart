@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
+import 'package:moatmat_admin/Features/notifications/data/datasources/notification_local_data_source.dart';
 import 'package:moatmat_admin/Features/notifications/data/datasources/notifications_remote_datasource.dart';
 import 'package:moatmat_admin/Features/notifications/data/repositories/notifications_repository_implements.dart';
 import 'package:moatmat_admin/Features/notifications/domain/repositories/notifications_repository.dart';
@@ -86,12 +87,13 @@ Future<void> injectUC() async {
 
 Future<void> injectRepo() async {
   locator.registerLazySingleton<NotificationsRepository>(
-    () => NotificationsRepositoryImplements( locator<NotificationsRemoteDatasource>()),
+    () => NotificationsRepositoryImplements( locator<NotificationsRemoteDatasource>(), locator<NotificationLocalDataSource>()),
   );
 }
 
 Future<void> injectDS() async {
-
+   locator.registerLazySingleton<NotificationLocalDataSource>(
+    () => NotificationLocalDataSourceImpl(sharedPreferences: locator()));
   locator.registerLazySingleton<NotificationsRemoteDatasource>(
     () => NotificationsRemoteDatasourceImpl(),
   );

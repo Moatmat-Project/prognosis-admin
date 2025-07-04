@@ -42,6 +42,12 @@ class ServerFailure extends Failure {
   List<Object?> get props => [];
 }
 
+class CacheFailure extends Failure {
+  const CacheFailure() : super("حدث خطأ أثناء الاتصال بقاعدة البيانات.");
+  @override
+  List<Object?> get props => [];
+}
+
 class InvalidDataFailure extends Failure {
   const InvalidDataFailure() : super("خطأ في البيانات المدخلة.!");
   @override
