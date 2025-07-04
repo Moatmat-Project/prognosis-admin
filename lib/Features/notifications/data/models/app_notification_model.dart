@@ -35,7 +35,7 @@ class AppNotificationModel extends AppNotification {
       'image_url': imageUrl,
       'date': date.toIso8601String(),
       'seen': seen ? 1 : 0,
-      'data': data, // 👈 To DB
+      'data': data, 
     };
   }
 }

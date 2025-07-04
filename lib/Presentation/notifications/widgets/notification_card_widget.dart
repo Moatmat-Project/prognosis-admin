@@ -171,6 +171,7 @@ class NotificationCard extends StatelessWidget {
                         ),
 
                       // Teacher Name Tag
+                      if(notification.data != null && notification.data?["sent_by"] != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 8),
                         child: Container(
@@ -184,7 +185,7 @@ class NotificationCard extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            '${notification.data["sent_by"]}',
+                            '${notification.data!["sent_by"]}',
                             style: FontsResources.styleMedium(
                               size: 12,
                               color: ColorsResources.primary,
