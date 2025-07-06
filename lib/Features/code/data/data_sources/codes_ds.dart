@@ -107,10 +107,7 @@ class CodesDataSourceImpl implements CodesDataSource {
     //
     final client = Supabase.instance.client;
     //
-    var res = await client
-        .from("centers")
-        .select()
-        .or("governorate.eq.$governorate,governorate.is.null");
+    var res = await client.from("centers").select().or("governorate.eq.$governorate,governorate.is.null");
     //
     if (res.isEmpty) return [];
     //

@@ -46,14 +46,17 @@ class SendNotificationBody extends StatelessWidget {
         children: [
           Center(
             child: ToggleButtons(
+              borderColor: ColorsResources.borders,
+              selectedBorderColor: ColorsResources.primary,
               borderRadius: BorderRadius.circular(4),
               constraints: BoxConstraints.expand(width: SpacingResources.mainWidth(context) / 2),
               isSelected: [isUserMode, !isUserMode],
-              selectedColor: ColorsResources.primary,
+              selectedColor: ColorsResources.whiteText1,
+              fillColor: ColorsResources.primary.withValues(alpha: 0.9),
               onPressed: (index) => onModeChanged(index == 0),
               children: const [
                 Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text("مستخدمين")),
-                Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text("مواضيع")),
+                Padding(padding: EdgeInsets.symmetric(horizontal: 16), child: Text("تطبيقات")),
               ],
             ),
           ),

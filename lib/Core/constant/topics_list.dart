@@ -10,5 +10,6 @@ const List<Topic> topics = [
   Topic(showName: "الاساتذة", name: "teachers"),
   Topic(showName: "الطلاب", name: "students"),
   Topic(showName: "الرفع", name: "upload"),
-  Topic(showName: "اختبار", name: "test"),
 ];
+
+final String defaultTopic = "admin";
