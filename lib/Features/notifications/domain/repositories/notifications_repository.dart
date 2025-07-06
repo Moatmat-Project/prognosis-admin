@@ -32,7 +32,7 @@ abstract class NotificationsRepository {
 
   ///
   Future<Either<Failure, Unit>> cancelNotification({
-    required int id,
+    required String id,
   });
 
   ///
@@ -80,4 +80,6 @@ abstract class NotificationsRepository {
   Future<Either<Failure, String>> uploadNotificationImage({
     required File imageFile,
   });
+  
+  Future<Either<Failure, Unit>> markNotificationAsSeen(String notificationId);
 }

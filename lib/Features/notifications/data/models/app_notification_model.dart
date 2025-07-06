@@ -1,3 +1,4 @@
+
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 
 class AppNotificationModel extends AppNotification {
@@ -9,6 +10,7 @@ class AppNotificationModel extends AppNotification {
     required super.date,
     required super.seen,
     super.imageUrl,
+    super.data, 
   });
 
   factory AppNotificationModel.fromDatabaseJson(Map json) {
@@ -20,6 +22,7 @@ class AppNotificationModel extends AppNotification {
       date: DateTime.parse(json['date']),
       imageUrl: json['image_url'],
       seen: json['seen'] == 1 ? true : false,
+      data: json['data'] is Map ? Map<String, dynamic>.from(json['data']) : null,
     );
   }
 
@@ -32,6 +35,7 @@ class AppNotificationModel extends AppNotification {
       'image_url': imageUrl,
       'date': date.toIso8601String(),
       'seen': seen ? 1 : 0,
+      'data': data, 
     };
   }
 }

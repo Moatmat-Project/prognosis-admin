@@ -60,10 +60,11 @@ class _SendNotificationViewState extends State<SendNotificationView> {
     final body = bodyController.text.trim();
     final image = selectedImage;
     final notification = AppNotification(
-      id: DateTime.now().millisecondsSinceEpoch,
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       date: DateTime.now(),
       title: title,
       body: body,
+      data: {"sent_by" : "Admin"},
     );
 
     if (isUserMode) {
@@ -71,14 +72,17 @@ class _SendNotificationViewState extends State<SendNotificationView> {
         _showSnackbar('يرجى اختيار مستخدمين أولاً');
         return;
       }
-      context.read<SendNotificationBloc>().add(
-            SendNotificationToUsers(
-              imageFile: image,
-              userIds: selectedUserIds,
-              notification: notification,
+      if (mounted) {
+        context.read<SendNotificationBloc>().add(
+              SendNotificationToUsers(
+                imageFile: image,
+                userIds: selectedUserIds,
+                notification: notification,
             ),
           );
+      }
     } else {
+      if (mounted) {
       context.read<SendNotificationBloc>().add(
             SendNotificationToTopics(
               imageFile: image,
@@ -86,6 +90,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
               notification: notification,
             ),
           );
+      }
     }
   }
 
