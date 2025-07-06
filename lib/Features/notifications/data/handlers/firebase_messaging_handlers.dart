@@ -15,33 +15,36 @@ import 'package:moatmat_admin/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:moatmat_admin/Core/constant/navigation_key.dart';
 
-class FirebaseMessagingHandlers {
-  // [firebase messaging background handler]
-  @pragma('vm:entry-point')
-  static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    debugPrint('A background message was received: ${message.messageId}');
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  debugPrint('A background message was received: ${message.messageId}');
+  if (Firebase.apps.isEmpty) {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+  }
+  if (Supabase.instance.client.auth.currentUser == null) {
     await Supabase.initialize(
       url: SupabaseResources.url,
       anonKey: SupabaseResources.key,
     );
-    await initGetIt();
-    await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
-    debugPrint('DisplayFirebaseNotificationUsecase called');
   }
 
-  ///
-  /// [notifications action handler]
-  @pragma('vm:entry-point')
-  static void onDidReceiveBackgroundNotificationResponse(
-      NotificationResponse? response) async {
-    if (response == null) {
-      return;
-    }
+  await initGetIt();
+  await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
+  debugPrint('DisplayFirebaseNotificationUsecase called');
+}
+
+@pragma('vm:entry-point')
+void onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse? response) async {
+  if (response == null) {
     return;
   }
+  return;
+}
+
+class FirebaseMessagingHandlers {
 
   ///
   /// [firebase messaging foreground handler]
@@ -72,6 +75,7 @@ class FirebaseMessagingHandlers {
 
   Future<void> onNotificationOpened(RemoteMessage message) async {
     //if (message.data['screen'] == 'notifications') {
+    locator<NotificationsBloc>().add(GetNotifications());
     navigatorKey.currentState?.push(
       MaterialPageRoute(builder: (_) => const NotificationsView()),
     );

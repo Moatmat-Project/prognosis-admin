@@ -45,7 +45,6 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
   final _supabase = Supabase.instance.client;
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final _handlers = FirebaseMessagingHandlers();
 
   @override
   Future<Unit> initializeLocalNotification() async {
@@ -58,7 +57,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     await _localNotificationsPlugin.initialize(
       AppLocalNotificationsSettings.settings,
       onDidReceiveNotificationResponse: (response) {},
-      onDidReceiveBackgroundNotificationResponse: FirebaseMessagingHandlers.onDidReceiveBackgroundNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
     );
 
     return unit;
@@ -74,12 +73,14 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
       sound: AppRemoteNotificationsSettings.showSound,
     );
 
-    FirebaseMessaging.onBackgroundMessage(FirebaseMessagingHandlers.firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen(_handlers.onData, onDone: _handlers.onDone, onError: _handlers.onError);
-    FirebaseMessaging.instance.onTokenRefresh.listen(_handlers.onTokenRefreshed);
-    FirebaseMessaging.onMessageOpenedApp.listen(_handlers.onNotificationOpened);
+    final handlers = FirebaseMessagingHandlers();
 
-    await _handlers.onInitialNotification();
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen(handlers.onData, onDone: handlers.onDone, onError: handlers.onError);
+    FirebaseMessaging.instance.onTokenRefresh.listen(handlers.onTokenRefreshed);
+    FirebaseMessaging.onMessageOpenedApp.listen(handlers.onNotificationOpened);
+
+    await handlers.onInitialNotification();
 
     for (var topic in AppRemoteNotificationsSettings.defaultTopicList) {
       await subscribeToTopic(topic);
