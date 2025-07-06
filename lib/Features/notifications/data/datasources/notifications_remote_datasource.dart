@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moatmat_admin/Features/notifications/data/handlers/firebase_messaging_handlers.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,7 +12,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:moatmat_admin/Features/notifications/data/models/device_token_model.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/app_local_notifications_settings.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/firebase_messaging_settings.dart';
-import 'package:moatmat_admin/features/notifications/data/handlers/firebase_messaging_handlers.dart';
 
 import '../../domain/entities/app_notification.dart';
 
@@ -74,9 +73,12 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
       sound: AppRemoteNotificationsSettings.showSound,
     );
 
+    final handlers = FirebaseMessagingHandlers();
+
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen(onData, onDone: onDone, onError: onError);
-    FirebaseMessaging.instance.onTokenRefresh.listen(onTokenRefreshed);
+    FirebaseMessaging.onMessage.listen(handlers.onData, onDone: handlers.onDone, onError: handlers.onError);
+    FirebaseMessaging.instance.onTokenRefresh.listen(handlers.onTokenRefreshed);
+    FirebaseMessaging.onMessageOpenedApp.listen(handlers.onNotificationOpened);
 
     for (var topic in AppRemoteNotificationsSettings.defaultTopicList) {
       await subscribeToTopic(topic);
@@ -205,7 +207,6 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
   Future<Unit> sendNotificationToTopics({
     required SendNotificationToTopicsRequest sendNotificationRequest,
   }) async {
-
     return _invokeNotificationFunction(
       functionName: 'send-notifications-to-topics',
       body: {
@@ -260,59 +261,48 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     }
   }
 
-@override
-Future<String> uploadNotificationImage(File imageFile) async {
-  try {
-    final fileExtension = imageFile.path.split('.').last;
-    final fileName = 'notification_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
-    
-    await _supabase.storage
-        .from('notifications2')
-        .upload(
-          fileName, 
-          imageFile,
-          fileOptions: FileOptions(
-            contentType: 'image/$fileExtension',
-          ),
-        );
-    
-   final imageUrlResponse = _supabase.storage
-        .from('notifications2')
-        .getPublicUrl(fileName);
-    
-    return imageUrlResponse;
-  } catch (e) {
-    debugPrint('[uploadImage] Upload failed: $e');
-    throw Exception('Image upload failed: $e');
+  @override
+  Future<String> uploadNotificationImage(File imageFile) async {
+    try {
+      final fileExtension = imageFile.path.split('.').last;
+      final fileName = 'notification_${DateTime.now().millisecondsSinceEpoch}.$fileExtension';
+
+      await _supabase.storage.from('notifications2').upload(
+            fileName,
+            imageFile,
+            fileOptions: FileOptions(
+              contentType: 'image/$fileExtension',
+            ),
+          );
+
+      final imageUrlResponse = _supabase.storage.from('notifications2').getPublicUrl(fileName);
+
+      return imageUrlResponse;
+    } catch (e) {
+      debugPrint('[uploadImage] Upload failed: $e');
+      throw Exception('Image upload failed: $e');
+    }
+  }
+
+  @override
+  Future<List<AppNotification>> getNotifications() async {
+    try {
+      final user = _supabase.auth.currentUser;
+      final userId = user?.id;
+      final subscribedTopics = AppRemoteNotificationsSettings.defaultTopicList;
+
+      if (userId == null) return [];
+
+      final response = await _supabase.from('notifications2').select().or(
+            'and(type.eq.user,target_user_ids.cs.{$userId}),and(type.eq.topic,target_topics.cs.{${subscribedTopics.join(',')}})',
+          ) as List;
+
+      return response.map((e) {
+        return AppNotification.fromJson(e as Map<String, dynamic>);
+      }).toList();
+    } catch (e) {
+      debugPrint('Unexpected error while trying to get notifications: $e');
+      throw ServerException();
+    }
   }
 }
-@override
-Future<List<AppNotification>> getNotifications() async {
-  try {
-    
-
-  final user = _supabase.auth.currentUser;
-  final userId = user?.id;
-  final subscribedTopics = AppRemoteNotificationsSettings.defaultTopicList;
-
-  if (userId == null) return [];
-
-  final response = await _supabase
-      .from('notifications2')
-      .select()
-      .or(
-        'and(type.eq.user,target_user_ids.cs.{$userId}),and(type.eq.topic,target_topics.cs.{${subscribedTopics.join(',')}})',
-      ) as List;
-
-  return response
-      .map((e) {
-      return AppNotification.fromJson(e as Map<String, dynamic>);
-      })
-      .toList();
-      } catch (e) {
-        debugPrint('Unexpected error while trying to get notifications: $e');
-        throw ServerException();
-      }
-}
-}
-

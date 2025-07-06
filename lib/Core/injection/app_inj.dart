@@ -10,6 +10,7 @@ import 'package:moatmat_admin/Core/injection/update_inj.dart';
 import 'package:moatmat_admin/Core/services/database/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'auth_inj.dart';
 import 'codes_inj.dart';
 import 'notifications_inj.dart';
@@ -22,10 +23,13 @@ var locator = GetIt.instance;
 initGetIt() async {
   //
   var sp = await SharedPreferences.getInstance();
-if (!locator.isRegistered<SharedPreferences>()) {
-  
-  locator.registerSingleton<SharedPreferences>(sp);
-}  
+  if (!locator.isRegistered<SharedPreferences>()) {
+    locator.registerSingleton<SharedPreferences>(sp);
+  }
+  if (!locator.isRegistered<SupabaseClient>()) {
+    locator.registerSingleton<SupabaseClient>(Supabase.instance.client);
+  }
+
   locator.registerFactory<DatabaseService>(() => DatabaseServiceImplements());
   final database = await locator.get<DatabaseService>().initialize();
   locator.registerSingleton<Database>(database);
