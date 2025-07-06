@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class Topic {
   final String showName;
   final String name;
@@ -13,6 +15,5 @@ const List<Topic> topics = [
   Topic(showName: "اختبار", name: "tests"),
 ];
 
-
 // TODO : TEMP
-final String defaultTopic = "tests";
+final String defaultTopic = kDebugMode ? "tests" : "admin";
