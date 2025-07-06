@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:moatmat_admin/Features/notifications/data/handlers/firebase_messaging_handlers.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_topics_request.dart';
 import 'package:moatmat_admin/Features/notifications/domain/requests/send_notification_to_users_request.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,7 +12,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:moatmat_admin/Features/notifications/data/models/device_token_model.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/app_local_notifications_settings.dart';
 import 'package:moatmat_admin/Features/notifications/data/settings/firebase_messaging_settings.dart';
-import 'package:moatmat_admin/features/notifications/data/handlers/firebase_messaging_handlers.dart';
 
 import '../../domain/entities/app_notification.dart';
 
@@ -46,6 +45,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
   final _supabase = Supabase.instance.client;
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final _handlers = FirebaseMessagingHandlers();
 
   @override
   Future<Unit> initializeLocalNotification() async {
@@ -58,7 +58,7 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
     await _localNotificationsPlugin.initialize(
       AppLocalNotificationsSettings.settings,
       onDidReceiveNotificationResponse: (response) {},
-      onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse,
+      onDidReceiveBackgroundNotificationResponse: FirebaseMessagingHandlers.onDidReceiveBackgroundNotificationResponse,
     );
 
     return unit;
@@ -74,9 +74,12 @@ class NotificationsRemoteDatasourceImpl implements NotificationsRemoteDatasource
       sound: AppRemoteNotificationsSettings.showSound,
     );
 
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    FirebaseMessaging.onMessage.listen(onData, onDone: onDone, onError: onError);
-    FirebaseMessaging.instance.onTokenRefresh.listen(onTokenRefreshed);
+    FirebaseMessaging.onBackgroundMessage(FirebaseMessagingHandlers.firebaseMessagingBackgroundHandler);
+    FirebaseMessaging.onMessage.listen(_handlers.onData, onDone: _handlers.onDone, onError: _handlers.onError);
+    FirebaseMessaging.instance.onTokenRefresh.listen(_handlers.onTokenRefreshed);
+    FirebaseMessaging.onMessageOpenedApp.listen(_handlers.onNotificationOpened);
+
+    await _handlers.onInitialNotification();
 
     for (var topic in AppRemoteNotificationsSettings.defaultTopicList) {
       await subscribeToTopic(topic);

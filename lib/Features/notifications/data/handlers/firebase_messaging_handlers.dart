@@ -10,69 +10,81 @@ import 'package:moatmat_admin/Features/notifications/domain/requests/register_de
 import 'package:moatmat_admin/Features/notifications/domain/usecases/display_firebase_notification_usecase.dart';
 import 'package:moatmat_admin/Features/notifications/domain/usecases/register_device_token_usecase.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
+import 'package:moatmat_admin/Presentation/notifications/views/notifications_view.dart';
 import 'package:moatmat_admin/firebase_options.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:moatmat_admin/Core/constant/navigation_key.dart';
 
-/// [firebase messaging background handler]
-
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint('A background message was received in flutter_background_service plugin: ${message.messageId}');
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  debugPrint('Firebase initialized');
-
-  await Supabase.initialize(
-    url: SupabaseResources.url,
-    anonKey: SupabaseResources.key,
-  );
-  
-  
-  debugPrint('Supabase initialized');
-
-  if (!locator.isRegistered<DisplayFirebaseNotificationUsecase>()) {
+class FirebaseMessagingHandlers {
+  // [firebase messaging background handler]
+  @pragma('vm:entry-point')
+  static Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    debugPrint('A background message was received: ${message.messageId}');
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await Supabase.initialize(
+      url: SupabaseResources.url,
+      anonKey: SupabaseResources.key,
+    );
     await initGetIt();
+    await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
+    debugPrint('DisplayFirebaseNotificationUsecase called');
   }
 
-  await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
-  debugPrint('DisplayFirebaseNotificationUsecase called');
-}
-
-///
-/// [notifications action handler]
-@pragma('vm:entry-point')
-void onDidReceiveBackgroundNotificationResponse(
-    NotificationResponse? response) async {
-  if (response == null) {
+  ///
+  /// [notifications action handler]
+  @pragma('vm:entry-point')
+  static void onDidReceiveBackgroundNotificationResponse(
+      NotificationResponse? response) async {
+    if (response == null) {
+      return;
+    }
     return;
   }
-  return;
+
+  ///
+  /// [firebase messaging foreground handler]
+  Future<void> onData(RemoteMessage message) async {
+    // debugPrint('A foreground message was received in flutter_background_service plugin: ${message.messageId}');
+    await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
+    debugPrint('DisplayFirebaseNotificationUsecase called');
+    locator<NotificationsBloc>().add(GetNotifications());
+  }
+
+  ///
+  Future<void> onTokenRefreshed(String newToken) async {
+    final platform = Platform.isAndroid ? 'android' : 'ios';
+
+    await locator<RegisterDeviceTokenUseCase>().call(
+      RegisterDeviceTokenRequest(
+        deviceToken: newToken,
+        platform: platform,
+      ),
+    );
+  }
+
+  ///
+  void onDone() {}
+
+  ///
+  void onError(error) {}
+
+  Future<void> onNotificationOpened(RemoteMessage message) async {
+    //if (message.data['screen'] == 'notifications') {
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const NotificationsView()),
+    );
+    //}
+  }
+
+  /// [firebase notification initial handler]
+  Future<void> onInitialNotification() async {
+    final RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      await onNotificationOpened(initialMessage);
+    }
+  }
 }
-
-///
-/// [firebase messaging foreground handler]
-void onData(RemoteMessage message) async {
-  // debugPrint('A foreground message was received in flutter_background_service plugin: ${message.messageId}');
-  await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
-  debugPrint('DisplayFirebaseNotificationUsecase called');
-  locator<NotificationsBloc>().add(GetNotifications());
-}
-
-///
-void onTokenRefreshed(String newToken) async {
-  final platform = Platform.isAndroid ? 'android' : 'ios';
-
-  await locator<RegisterDeviceTokenUseCase>().call(
-    RegisterDeviceTokenRequest(
-      deviceToken: newToken,
-      platform: platform,
-    ),
-  );
-}
-
-///
-void onDone() {}
-
-///
-void onError(error) {}
