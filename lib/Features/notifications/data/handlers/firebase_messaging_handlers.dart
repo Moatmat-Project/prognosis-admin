@@ -17,20 +17,23 @@ import 'package:moatmat_admin/Core/constant/navigation_key.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  debugPrint('A background message was received: ${message.messageId}');
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
-  if (Supabase.instance.client.auth.currentUser == null) {
-    await Supabase.initialize(
-      url: SupabaseResources.url,
-      anonKey: SupabaseResources.key,
-    );
+ debugPrint('A background message was received in flutter_background_service plugin: ${message.messageId}');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  debugPrint('Firebase initialized');
+
+  await Supabase.initialize(
+    url: SupabaseResources.url,
+    anonKey: SupabaseResources.key,
+  );
+  
+  debugPrint('Supabase initialized');
+
+  if (!locator.isRegistered<DisplayFirebaseNotificationUsecase>()) {
+    await initGetIt();
   }
 
-  await initGetIt();
   await locator<DisplayFirebaseNotificationUsecase>().call(message: message);
   debugPrint('DisplayFirebaseNotificationUsecase called');
 }
@@ -38,14 +41,30 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 @pragma('vm:entry-point')
 void onDidReceiveBackgroundNotificationResponse(
     NotificationResponse? response) async {
-  if (response == null) {
-    return;
+    await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  debugPrint('Firebase initialized');
+
+  await Supabase.initialize(
+    url: SupabaseResources.url,
+    anonKey: SupabaseResources.key,
+  );
+  
+  debugPrint('Supabase initialized');
+
+  if (!locator.isRegistered<DisplayFirebaseNotificationUsecase>()) {
+    await initGetIt();
   }
-  return;
+
+    locator<NotificationsBloc>().add(GetNotifications());
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(builder: (_) => const NotificationsView()),
+    );
+
 }
 
 class FirebaseMessagingHandlers {
-
   ///
   /// [firebase messaging foreground handler]
   Future<void> onData(RemoteMessage message) async {
