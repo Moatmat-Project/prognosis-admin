@@ -16,10 +16,10 @@ class ReportDataModel extends ReportData {
       id: json["id"],
       message: json["message"],
       userName: json["user_name"],
-      questionID: json["question_id"],
+      questionID: json["question_id"] ?? 0,
       testId: json["test_id"],
       bankId: json["bank_id"],
-      teacher: json["teacher"],
+      teacher: json["teacher"] ?? '',
       name: json["name"],
     );
   }
