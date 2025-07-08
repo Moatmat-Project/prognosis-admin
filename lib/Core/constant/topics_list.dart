@@ -12,8 +12,7 @@ const List<Topic> topics = [
   Topic(showName: "الاساتذة", name: "teachers"),
   Topic(showName: "الطلاب", name: "students"),
   Topic(showName: "الرفع", name: "upload"),
-  Topic(showName: "اختبار", name: "tests"),
+  // Topic(showName: "اختبار", name: "tests"),
 ];
 
-// TODO : TEMP
-final String defaultTopic = kDebugMode ? "tests" : "admin";
+final String defaultTopic = "admin";

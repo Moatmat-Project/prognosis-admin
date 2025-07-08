@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Presentation/students/state/my_students/my_students_cubit.dart';
+
 
 class SelectStudentsView extends StatefulWidget {
   const SelectStudentsView({super.key});
@@ -30,19 +32,18 @@ class _SelectStudentsViewState extends State<SelectStudentsView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("اختر الطلاب"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(selectedUserIds.toList());
-            },
-            child: const Text("تأكيد", style: TextStyle(color: Colors.white)),
-          ),
-        ],
+      ),
+      bottomNavigationBar: AnimatedCrossFade(
+        secondChild: SizedBox(),
+        firstChild: _CustomBottomWidget(selectedUserIds: selectedUserIds),
+        crossFadeState: selectedUserIds.isEmpty ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: const Duration(milliseconds: 300),
       ),
       body: BlocBuilder<MyStudentsCubit, MyStudentsState>(
         builder: (context, state) {
           if (state is MyStudentsInitial) {
             return Column(
+              
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -82,6 +83,27 @@ class _SelectStudentsViewState extends State<SelectStudentsView> {
           }
           return const Center(child: CupertinoActivityIndicator());
         },
+      ),
+    );
+  }
+}
+
+class _CustomBottomWidget extends StatelessWidget {
+  final Set<String> selectedUserIds;
+  const _CustomBottomWidget({required this.selectedUserIds});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorsResources.primary,
+        ),
+        onPressed: () {
+          Navigator.of(context).pop(selectedUserIds.toList());
+        },
+        child: const Text("تأكيد", style: TextStyle(color: ColorsResources.whiteText1)),
       ),
     );
   }
