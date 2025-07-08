@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Features/banks/data/models/bank_m.dart';
@@ -88,50 +87,73 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
     // Bank Video
 
     // upload bank videos
-    for (int i = 0; i < (newBank.information.videos ?? []).length; i++) {
+    List<Video> uploadedVideos = [];
+    //
+    for (var video in newBank.information.videos ?? []) {
+      bool isLocal = video.url.startsWith("/");
       //
-      yield "رفع ملف المقطع رقم (${i + 1}/$filesLength)";
+      String finalUrl = video.url;
       //
-      var res = await locator<UploadFileUC>().call(
-        bucket: "banks",
-        material: newBank.information.material,
-        id: newBank.id.toString(),
-        path: newBank.information.videos![i].url,
+      if (isLocal) {
+        //
+        yield "رفع فيديو جديد...";
+        //
+        final uploadRes = await locator<UploadFileUC>().call(
+          bucket: "banks",
+          material: newBank.information.material,
+          id: newBank.id.toString(),
+          path: video.url,
+        );
+        //
+        if (uploadRes.isLeft()) {
+          print("❌ فشل في رفع الفيديو: $uploadRes");
+          continue;
+        }
+        //
+        finalUrl = uploadRes.getOrElse(() => "");
+        //
+        print("✅ تم رفع الفيديو، الرابط: $finalUrl");
+        //
+        if (finalUrl.startsWith("/")) {
+          print("⚠️ الرابط الناتج ما زال محليًا، لن يتم إدخاله.");
+          continue;
+        }
+      }
+      //
+      if (finalUrl.startsWith("/")) {
+        print("⚠️ تم تجاهل الفيديو لأن رابطه ما زال محلي: $finalUrl");
+        continue;
+      }
+      //
+      final addedVideoRes = await locator<AddVideoUc>().call(
+        video: VideoModel(
+          id: -1,
+          url: finalUrl,
+          teacherId: Supabase.instance.client.auth.currentUser!.id,
+        ),
       );
-      res.fold(
-        (l) {},
-        (r) async{
-          //
-          List<Video> newVideos = newBank.information.videos ?? [];
-          //
-          int index = newVideos.indexOf(newBank.information.videos![i]);
-          //
-          var res = await locator<AddVideoUc>().call(video: newVideos[index]);
-          res.fold(
-            (l) {
-              Fluttertoast.showToast(msg: "حصل خطأ ما اثناء محاولة رفع مقطع الفيديو");
-              Clipboard.setData(ClipboardData(text: l.toString()));
-              newVideos.removeAt(index);
-            },
-            (id) {
-              newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(
-                url: r,
-                id: id,
-              );
-              // replace links
-              newBank = newBank.copyWith(
-                information: newBank.information.copyWith(
-                  videos: newVideos,
-                ),
-              );
-              //
-            },
-          );
-          //
-        },
-      );
       //
+      if (addedVideoRes.isLeft()) {
+        print("❌ فشل في إدخال الفيديو بجدول videos: $addedVideoRes");
+        continue;
+      }
+      //
+      final addedVideo = addedVideoRes.getOrElse(() => Video(
+        id: -1,
+        url: finalUrl,
+        teacherId: Supabase.instance.client.auth.currentUser!.id,
+      ));
+      //
+      uploadedVideos.add(addedVideo);
     }
+    //
+    newBank = newBank.copyWith(
+      information: newBank.information.copyWith(
+        videos: uploadedVideos,
+      ),
+    );
+    //
+    print(newBank.information.videos?.map((v) => VideoModel.fromClass(v).toJson(addId: true)).toList());
     // upload bank images
     for (int i = 0; i < (newBank.information.images ?? []).length; i++) {
       //
