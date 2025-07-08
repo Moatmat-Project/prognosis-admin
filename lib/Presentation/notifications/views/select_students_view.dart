@@ -5,6 +5,7 @@ import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Presentation/students/state/my_students/my_students_cubit.dart';
 
+
 class SelectStudentsView extends StatefulWidget {
   const SelectStudentsView({super.key});
 
@@ -32,11 +33,17 @@ class _SelectStudentsViewState extends State<SelectStudentsView> {
       appBar: AppBar(
         title: const Text("اختر الطلاب"),
       ),
-      bottomNavigationBar: _CustomBottomWidget(selectedUserIds: selectedUserIds),
+      bottomNavigationBar: AnimatedCrossFade(
+        secondChild: SizedBox(),
+        firstChild: _CustomBottomWidget(selectedUserIds: selectedUserIds),
+        crossFadeState: selectedUserIds.isEmpty ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        duration: const Duration(milliseconds: 300),
+      ),
       body: BlocBuilder<MyStudentsCubit, MyStudentsState>(
         builder: (context, state) {
           if (state is MyStudentsInitial) {
             return Column(
+              
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -94,7 +101,7 @@ class _CustomBottomWidget extends StatelessWidget {
           backgroundColor: ColorsResources.primary,
         ),
         onPressed: () {
-          Navigator.of(context).pop(selectedUserIds);
+          Navigator.of(context).pop(selectedUserIds.toList());
         },
         child: const Text("تأكيد", style: TextStyle(color: ColorsResources.whiteText1)),
       ),
