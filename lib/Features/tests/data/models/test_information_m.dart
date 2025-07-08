@@ -62,7 +62,7 @@ class TestInformationModel extends TestInformation {
       password: information.password,
       period: information.period,
       images: information.images,
-      videos: information.videos,
+      videos: information.videos?.map((v) => VideoModel.fromClass(v)).toList(),
       files: information.files,
       previous: information.previous,
     );

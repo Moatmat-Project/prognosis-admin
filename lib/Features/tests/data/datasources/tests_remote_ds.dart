@@ -46,7 +46,7 @@ abstract class TestsRemoteDS {
     required String keyword,
   });
   //
-  Future<int> addVideo({
+  Future<Video> addVideo({
     required Video video,
   });
   //
@@ -101,6 +101,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
         model = TestModel.fromClass(
           newTest.copyWith(properties: properties),
         ).toJson();
+        print("Model in uploadTestFile : $model");
         //
       }
     }
@@ -124,56 +125,73 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     //
     ErrorsCopier().addErrorLogs("tests remote datasource:uploading video");
     // upload test videos
-    for (int i = 0; i < (newTest.information.videos ?? []).length; i++) {
+    List<Video> uploadedVideos = [];
+    //
+    for (var video in newTest.information.videos ?? []) {
+      bool isLocal = video.url.startsWith("/");
       //
-      yield "رفع ملف المقطع رقم (${i + 1}/$filesLength)";
+      String finalUrl = video.url;
       //
-      var res = await locator<UploadFileUC>().call(
-        bucket: "tests",
-        material: newTest.information.material,
-        id: newTest.id.toString(),
-        path: newTest.information.videos![i].url,
-      );
-      res.fold(
-        (l) {
-          ErrorsCopier().addErrorLogs("left $l");
-        },
-        (r) async {
-          ErrorsCopier().addErrorLogs("right $r");
-          ErrorsCopier().addErrorLogs("starting swap:");
-          ErrorsCopier().addErrorLogs("before swap:${newTest.information.videos}");
-          //
-          List<Video> newVideos = newTest.information.videos ?? [];
-          //
-          int index = newVideos.indexOf(newTest.information.videos![i]);
-          //
-          var res = await locator<AddVideoUc>().call(video: newVideos[index]);
-          res.fold(
-            (l) {
-              ErrorsCopier().addErrorLogs("left $l");
-              newVideos.removeAt(index);
-            },
-            (id) {
-              newVideos[index] = VideoModel.fromClass(newVideos[index]).copyWith(
-                url: r,
-                id: id,
-              );
-              // replace links
-              newTest = newTest.copyWith(
-                information: newTest.information.copyWith(
-                  videos: newVideos,
-                ),
-              );
-              //
-            },
-          );
-          //
-          ErrorsCopier().addErrorLogs("after swap:${newTest.information.videos}");
-          ErrorsCopier().addErrorLogs("finish swap.");
-        },
+      if (isLocal) {
+        //
+        yield "رفع فيديو جديد...";
+        //
+        final uploadRes = await locator<UploadFileUC>().call(
+          bucket: "tests",
+          material: newTest.information.material,
+          id: newTest.id.toString(),
+          path: video.url,
+        );
+        //
+        if (uploadRes.isLeft()) {
+          print("❌ فشل في رفع الفيديو: $uploadRes");
+          continue;
+        }
+        //
+        finalUrl = uploadRes.getOrElse(() => "");
+        //
+        print("✅ تم رفع الفيديو، الرابط: $finalUrl");
+        //
+        if (finalUrl.startsWith("/")) {
+          print("⚠️ الرابط الناتج ما زال محليًا، لن يتم إدخاله.");
+          continue;
+        }
+      }
+      //
+      if (finalUrl.startsWith("/")) {
+        print("⚠️ تم تجاهل الفيديو لأن رابطه ما زال محلي: $finalUrl");
+        continue;
+      }
+      //
+      final addedVideoRes = await locator<AddVideoUc>().call(
+        video: VideoModel(
+          id: -1,
+          url: finalUrl,
+          teacherId: Supabase.instance.client.auth.currentUser!.id,
+        ),
       );
       //
+      if (addedVideoRes.isLeft()) {
+        print("❌ فشل في إدخال الفيديو بجدول videos: $addedVideoRes");
+        continue;
+      }
+      //
+      final addedVideo = addedVideoRes.getOrElse(() => Video(
+        id: -1,
+        url: finalUrl,
+        teacherId: Supabase.instance.client.auth.currentUser!.id,
+      ));
+      //
+      uploadedVideos.add(addedVideo);
     }
+    //
+    newTest = newTest.copyWith(
+      information: newTest.information.copyWith(
+        videos: uploadedVideos,
+      ),
+    );
+    //
+    print(newTest.information.videos?.map((v) => VideoModel.fromClass(v).toJson(addId: true)).toList());
     // upload test images
     for (int i = 0; i < (newTest.information.images ?? []).length; i++) {
       //
@@ -440,25 +458,25 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
   }
 
   @override
-  Future<int> addVideo({
+  Future<Video> addVideo({
     required Video video,
   }) async {
     //
     final client = Supabase.instance.client;
     //
-    int id = -1;
+    final existing = await client.from("videos").select().eq("url", video.url).limit(1).maybeSingle();
+    //
+    if (existing != null) {
+      return VideoModel.fromJson(existing);
+    }
     //
     Map videoJson = VideoModel.fromClass(video).toJson();
     //
-    await client.from("videos").insert(videoJson);
+    var res = await client.from("videos").insert(videoJson).select().limit(1);
     //
-    var res = await client.from("videos").select().eq("url", video.url).limit(1);
-    //
-    id = VideoModel.fromJson(res.first).id;
-    //
-    return id;
+    return VideoModel.fromJson(res.first);
   }
-  
+
   @override
   Future<List<Comment>> getComment({required int videoId}) async {
     //
@@ -498,10 +516,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     //
     final client = Supabase.instance.client;
     //
-    await client
-        .from('comment')
-        .delete()
-        .eq('id', commentId);
+    await client.from('comment').delete().eq('id', commentId);
     //
     return unit;
   }
@@ -513,10 +528,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     //
     final client = Supabase.instance.client;
     //
-    await client
-        .from('comment_reply')
-        .delete()
-        .eq('id', replyId);
+    await client.from('comment_reply').delete().eq('id', replyId);
     //
     return unit;
   }
