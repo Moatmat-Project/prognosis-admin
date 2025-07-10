@@ -6,7 +6,7 @@ import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/comment.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/reply_comment.dart';
 import 'package:moatmat_admin/Presentation/tests/state/comment_managment/comments_managment_bloc.dart';
-import 'package:moatmat_admin/Presentation/tests/widgets/video_player_w.dart';
+import 'package:moatmat_admin/Presentation/tests/widgets/chewie_player_widget.dart';
 
 class CommentsManagmentView extends StatefulWidget {
   const CommentsManagmentView({

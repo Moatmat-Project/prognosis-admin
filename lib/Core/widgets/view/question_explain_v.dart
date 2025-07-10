@@ -1,9 +1,10 @@
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:moatmat_admin/Presentation/tests/widgets/chewie_player_widget.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../Features/tests/domain/entities/question/question.dart';
-import '../../../Presentation/videos/view/video_player_w.dart';
+
 import '../../resources/sizes_resources.dart';
 import '../fields/elevated_button_widget.dart';
 
@@ -45,8 +46,7 @@ class _QuestionExplainViewState extends State<QuestionExplainView> {
           return;
         }
         final NavigatorState navigator = Navigator.of(context);
-        final bool? shouldPop =
-            _flickManager?.flickControlManager?.isFullscreen;
+        final bool? shouldPop = _flickManager?.flickControlManager?.isFullscreen;
         if (shouldPop ?? false) {
           _flickManager?.flickControlManager?.exitFullscreen();
         } else {
@@ -63,7 +63,7 @@ class _QuestionExplainViewState extends State<QuestionExplainView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  VideoPlayerWidget(flickManager: _flickManager!),
+                  ChewiePlayerWidget(videoUrl: widget.question.video ?? ""),
                 ],
               ),
             if (widget.question.explain != null) ...[

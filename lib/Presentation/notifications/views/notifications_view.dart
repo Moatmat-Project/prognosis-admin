@@ -8,7 +8,6 @@ import 'package:moatmat_admin/Core/resources/fonts_r.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/widgets/notification_card_widget.dart';
 
-
 class NotificationsView extends StatefulWidget {
   const NotificationsView({super.key});
 
