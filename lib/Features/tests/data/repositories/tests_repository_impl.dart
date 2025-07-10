@@ -139,4 +139,16 @@ class TestsRepositoryImpl implements TestsRepository {
       return left(e);
     }
   }
+
+  @override
+  Future<Either<Exception, String>> getVideo({
+    required int videoId,
+  }) async {
+    try {
+      var res = await dataSource.getVideo(videoId: videoId);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
 }

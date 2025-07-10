@@ -65,6 +65,11 @@ abstract class TestsRemoteDS {
   Future<Unit> deleteReply({
     required int replyId,
   });
+  //
+  Future<String> getVideo({
+    required int videoId,
+  });
+  //
 }
 
 class TestsRemoteDSImpl implements TestsRemoteDS {
@@ -532,5 +537,19 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     await client.from('comment_reply').delete().eq('id', replyId);
     //
     return unit;
+  }
+
+  @override
+  Future<String> getVideo({
+    required int videoId,
+  }) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    var res = await client.from('videos').select('url').eq('id', videoId).limit(1).maybeSingle();
+    //
+    String url = res?['url'].toString() ?? "";
+    //
+    return url;
   }
 }
