@@ -36,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
         children: [
           SpeedDialChild(
             label: "إضافة بنك",
-            child: const Icon(Icons.add),
+           child: const Icon(Icons.account_balance_outlined),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
@@ -48,7 +48,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           SpeedDialChild(
             label: "إضافة أختبار",
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.quiz_outlined),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const AddTestView()),
@@ -58,7 +58,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           SpeedDialChild(
             label: "تصميم سلم اختبار خارجي",
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.rule_outlined),
             onTap: () async {
               await Navigator.of(context)
                   .push(

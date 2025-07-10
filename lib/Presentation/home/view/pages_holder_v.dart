@@ -336,10 +336,9 @@ class _PagesHolderViewState extends State<PagesHolderView> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
           ),
-
           SpeedDialChild(
             label: "إضافة بنك",
-            child: const Icon(Icons.add),
+            child: const Icon(Icons.account_balance_outlined),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
@@ -351,7 +350,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           ),
           SpeedDialChild(
             label: "رفع ملف علامات",
-            child: const Icon(Icons.account_tree_outlined),
+            child: const Icon(Icons.upload_file_outlined),
             onTap: () async {
               Navigator.of(context).push(
                 MaterialPageRoute(
@@ -362,7 +361,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           ),
           SpeedDialChild(
             label: "إضافة أختبار",
-            child: const Icon(Icons.person_pin_circle_outlined),
+            child: const Icon(Icons.quiz_outlined),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => const AddTestView()),
@@ -386,10 +385,10 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           ),
           SpeedDialChild(
             label: "الاشعارات",
-            child : BlocSelector<NotificationsBloc, NotificationsState, int>(
-     selector: (s) => s is NotificationsLoaded ? s.unreadCount : 0,
-     builder: (_, unread) => _NotificationIcon(unread),
-   ),
+            child: BlocSelector<NotificationsBloc, NotificationsState, int>(
+              selector: (s) => s is NotificationsLoaded ? s.unreadCount : 0,
+              builder: (_, unread) => _NotificationIcon(unread),
+            ),
             onTap: () async {
               await Navigator.of(context).push(
                 MaterialPageRoute(
@@ -405,7 +404,6 @@ class _PagesHolderViewState extends State<PagesHolderView> {
   }
 }
 
-
 class _NotificationIcon extends StatelessWidget {
   final int unread;
   const _NotificationIcon(this.unread, {super.key});
@@ -413,22 +411,18 @@ class _NotificationIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Badge(
-      isLabelVisible: false,// unread > 0,
+      isLabelVisible: false, // unread > 0,
       backgroundColor: ColorsResources.red,
       padding: const EdgeInsets.all(4),
       offset: const Offset(6, -12),
       smallSize: 4,
       largeSize: 8,
       alignment: Alignment.topRight,
-      label: const SizedBox(width: 4, height: 4), 
+      label: const SizedBox(width: 4, height: 4),
       child: Icon(
-        unread > 0
-            ? Icons.notifications_active_outlined
-            : Icons.notifications_none,
+        unread > 0 ? Icons.notifications_active_outlined : Icons.notifications_none,
         size: 22,
-        color: unread > 0
-            ? ColorsResources.primary.withValues(alpha: 0.6)
-            : ColorsResources.primary,
+        color: unread > 0 ? ColorsResources.primary.withValues(alpha: 0.6) : ColorsResources.primary,
       ),
     );
   }
