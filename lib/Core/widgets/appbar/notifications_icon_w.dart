@@ -54,18 +54,3 @@ class _NotificationIcon extends StatelessWidget {
     );
   }
 }
-
-          // SpeedDialChild(
-          //   label: "الاشعارات",
-          //   child: BlocSelector<NotificationsBloc, NotificationsState, int>(
-          //     builder: (_, unread) => _NotificationIcon(unread),
-          //   ),
-          //   onTap: () async {
-          //     await Navigator.of(context).push(
-          //       MaterialPageRoute(
-          //         builder: (context) => NotificationsView(),
-          //       ),
-          //     );
-          //     FocusManager.instance.primaryFocus?.unfocus();
-          //   },
-          // ),
