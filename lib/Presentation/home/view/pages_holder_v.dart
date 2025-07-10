@@ -24,18 +24,13 @@ import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.
 import 'package:moatmat_admin/Presentation/schools/views/schools_view.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_results_v.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_student_balance_v.dart';
-import 'package:moatmat_admin/Presentation/teachers/views/add_teacher_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/all_teachers_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/add_test_vew.dart';
 import 'package:moatmat_admin/Presentation/tests/views/my_tests_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/tests_search_result_v.dart';
 import '../../../Core/widgets/appbar/notifications_icon_w.dart';
 import '../../../Core/widgets/appbar/report_icon_w.dart';
-import '../../banks/views/add_bank_view.dart';
-import '../../banks/views/my_banks_v.dart';
-import '../../students/views/add_results_v.dart';
-import '../../tests/views/add_test_vew.dart';
-import '../../tests/views/my_tests_v.dart';
+
 import 'package:moatmat_admin/Presentation/home/widgets/home_card_widget.dart';
 
 class PagesHolderView extends StatefulWidget {

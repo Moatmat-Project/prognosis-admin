@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
@@ -36,7 +35,7 @@ class _NotificationsIconWidgetState extends State<NotificationsIconWidget> {
 
 class _NotificationIcon extends StatelessWidget {
   final bool unread;
-  const _NotificationIcon(this.unread, {super.key});
+  const _NotificationIcon(this.unread);
 
   @override
   Widget build(BuildContext context) {
