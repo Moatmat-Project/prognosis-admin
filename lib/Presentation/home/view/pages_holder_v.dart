@@ -29,12 +29,14 @@ import 'package:moatmat_admin/Presentation/teachers/views/all_teachers_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/add_test_vew.dart';
 import 'package:moatmat_admin/Presentation/tests/views/my_tests_v.dart';
 import 'package:moatmat_admin/Presentation/tests/views/tests_search_result_v.dart';
+import '../../../Core/widgets/appbar/notifications_icon_w.dart';
 import '../../../Core/widgets/appbar/report_icon_w.dart';
 import '../../banks/views/add_bank_view.dart';
 import '../../banks/views/my_banks_v.dart';
 import '../../students/views/add_results_v.dart';
 import '../../tests/views/add_test_vew.dart';
 import '../../tests/views/my_tests_v.dart';
+import 'package:moatmat_admin/Presentation/home/widgets/home_card_widget.dart';
 
 class PagesHolderView extends StatefulWidget {
   const PagesHolderView({super.key});
@@ -71,6 +73,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
               actions: const [
                 StudentsSearchIconWidget(),
                 ReportIconWidget(),
+                NotificationsIconWidget(),
               ],
             ),
             body: Center(
@@ -88,126 +91,42 @@ class _PagesHolderViewState extends State<PagesHolderView> {
 
                   //   },
                   // ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => SchoolsView(),
-                          ),
-                        );
-                      },
-                      child: SizedBox(
-                        width: SpacingResources.mainWidth(context),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: SizesResources.s5),
-                            Icon(
-                              Icons.school_rounded,
-                              color: ColorsResources.darkPrimary,
-                              size: 50,
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                            Text(
-                              "ادارة المدارس",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w500,
-                                color: ColorsResources.primary,
-                              ),
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                          ],
+                  HomeCardWidget(
+                    icon: Icons.school_rounded,
+                    title: "ادارة المدارس",
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SchoolsView(),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AllTeachersView(),
-                          ),
-                        );
-                      },
-                      child: SizedBox(
-                        width: SpacingResources.mainWidth(context),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: SizesResources.s5),
-                            Icon(
-                              Icons.person_pin_rounded,
-                              color: ColorsResources.darkPrimary,
-                              size: 50,
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                            Text(
-                              "ادارة الاساتذة",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w500,
-                                color: ColorsResources.primary,
-                              ),
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                          ],
+                  HomeCardWidget(
+                    icon: Icons.person_pin_rounded,
+                    title: "ادارة الاساتذة",
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AllTeachersView(),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(10),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) => BlocProvider(
-                                    create: (context) => locator<SendNotificationBloc>(),
-                                    child: SendNotificationView(),
-                                  )),
-                        );
-                        FocusManager.instance.primaryFocus?.unfocus();
-                      },
-                      child: SizedBox(
-                        width: SpacingResources.mainWidth(context),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: SizesResources.s5),
-                            Icon(
-                              Icons.notification_add,
-                              color: ColorsResources.darkPrimary,
-                              size: 50,
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                            Text(
-                              "الاشعارات",
-                              style: TextStyle(
-                                fontSize: 19,
-                                fontWeight: FontWeight.w500,
-                                color: ColorsResources.primary,
-                              ),
-                            ),
-                            SizedBox(height: SizesResources.s5),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
+                  HomeCardWidget(
+                    icon: Icons.notification_add,
+                    title: "إرسال اشعارات",
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                                  create: (context) => locator<SendNotificationBloc>(),
+                                  child: SendNotificationView(),
+                                )),
+                      );
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    },
+                  ),
                 ],
               ),
             ),
@@ -383,46 +302,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
               FocusManager.instance.primaryFocus?.unfocus();
             },
           ),
-          SpeedDialChild(
-            label: "الاشعارات",
-            child: BlocSelector<NotificationsBloc, NotificationsState, int>(
-              selector: (s) => s is NotificationsLoaded ? s.unreadCount : 0,
-              builder: (_, unread) => _NotificationIcon(unread),
-            ),
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => NotificationsView(),
-                ),
-              );
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-          ),
         ],
-      ),
-    );
-  }
-}
-
-class _NotificationIcon extends StatelessWidget {
-  final int unread;
-  const _NotificationIcon(this.unread, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Badge(
-      isLabelVisible: false, // unread > 0,
-      backgroundColor: ColorsResources.red,
-      padding: const EdgeInsets.all(4),
-      offset: const Offset(6, -12),
-      smallSize: 4,
-      largeSize: 8,
-      alignment: Alignment.topRight,
-      label: const SizedBox(width: 4, height: 4),
-      child: Icon(
-        unread > 0 ? Icons.notifications_active_outlined : Icons.notifications_none,
-        size: 22,
-        color: unread > 0 ? ColorsResources.primary.withValues(alpha: 0.6) : ColorsResources.primary,
       ),
     );
   }

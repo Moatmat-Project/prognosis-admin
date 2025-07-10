@@ -12,19 +12,8 @@ class StudentsSearchIconWidget extends StatelessWidget {
           builder: (context) => const MyStudentsView(),
         ));
       },
-      icon: const Stack(
-        children: [
-          Icon(
-            Icons.person_search,
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: CircleAvatar(
-              radius: 3,
-              backgroundColor: Colors.transparent,
-            ),
-          )
-        ],
+      icon: Icon(
+        Icons.person_search,
       ),
     );
   }
