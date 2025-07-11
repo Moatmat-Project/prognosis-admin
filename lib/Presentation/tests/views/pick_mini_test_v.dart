@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_tests_uc.dart';
 
 import '../../../Core/injection/app_inj.dart';
+import '../../../Core/resources/sizes_resources.dart';
+import '../../../Core/widgets/fields/text_input_field.dart';
 import '../../../Core/widgets/toucheable_tile_widget.dart';
 import '../../../Features/tests/domain/entities/mini_test.dart';
 import '../../../Features/tests/domain/entities/test/test.dart';
 
 class PickMiniTestView extends StatefulWidget {
-  const PickMiniTestView(
-      {super.key, required this.afterPIck, required this.material});
+  const PickMiniTestView({super.key, required this.afterPIck, required this.material});
   final String material;
   final Function(MiniTest) afterPIck;
   @override
@@ -19,16 +20,34 @@ class PickMiniTestView extends StatefulWidget {
 class _PickMiniTestViewState extends State<PickMiniTestView> {
   bool loading = true;
   List<Test> myTests = [];
+  List<Test> searchResults = [];
+  late TextEditingController _controller;
+
   @override
   void initState() {
+    _controller = TextEditingController();
+    _controller.addListener(() {
+      if (_controller.text.isEmpty) {
+        searchResults = myTests;
+      } else {
+        searchResults = myTests.where((e) {
+          return e.information.title.contains(_controller.text);
+        }).toList();
+      }
+      setState(() {});
+    });
     fetchTests();
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   fetchTests() async {
-    final testsRes = await locator<GetTestsUC>().call(
-      material: widget.material,
-    );
+    final testsRes = await locator<GetTestsUC>().call(material: widget.material);
     testsRes.fold(
       (l) {},
       (r) {
@@ -36,6 +55,7 @@ class _PickMiniTestViewState extends State<PickMiniTestView> {
           myTests = r.where((e) {
             return e.information.material == widget.material;
           }).toList();
+          searchResults = myTests;
         });
       },
     );
@@ -52,23 +72,40 @@ class _PickMiniTestViewState extends State<PickMiniTestView> {
           ? const Center(
               child: CupertinoActivityIndicator(),
             )
-          : ListView.builder(
-              itemCount: myTests.length,
-              itemBuilder: (context, index) {
-                return TouchableTileWidget(
-                  title: myTests[index].information.title,
-                  onTap: () {
-                    widget.afterPIck(
-                      MiniTest(
-                        id: myTests[index].id,
-                        title: myTests[index].information.title,
-                        material: myTests[index].information.material,
-                      ),
-                    );
-                    Navigator.of(context).pop();
-                  },
-                );
-              },
+          : Column(
+              children: [
+                //
+                const SizedBox(height: SizesResources.s2),
+                //
+                MyTextFormFieldWidget(
+                  hintText: "ابحث عن اختبار",
+                  controller: _controller,
+                  textInputAction: TextInputAction.search,
+                ),
+                //
+                const SizedBox(height: SizesResources.s2),
+                //
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: searchResults.length,
+                    itemBuilder: (context, index) {
+                      return TouchableTileWidget(
+                        title: searchResults[index].information.title,
+                        onTap: () {
+                          widget.afterPIck(
+                            MiniTest(
+                              id: searchResults[index].id,
+                              title: searchResults[index].information.title,
+                              material: searchResults[index].information.material,
+                            ),
+                          );
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
     );
   }
