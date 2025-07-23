@@ -293,6 +293,7 @@ class NotificationCard extends StatelessWidget {
   void _navigateToCommentManagement(BuildContext context) {
     final videoId = notification.data?["video_id"];
     final commentId = notification.data?["comment_id"];
+    final testId = notification.data?["test_id"];
     final videoUrl = _getVideoUrl();
 
     if (videoId != null && commentId != null) {
@@ -302,6 +303,7 @@ class NotificationCard extends StatelessWidget {
             videoId: int.tryParse(videoId.toString()) ?? 0,
             // url: videoUrl,
             commentId: int.tryParse(commentId.toString()),
+            testId: int.fromEnvironment(testId.toString()),
           ),
         ),
       );
