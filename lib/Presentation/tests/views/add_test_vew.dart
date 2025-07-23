@@ -107,6 +107,7 @@ class _AddTestViewState extends State<AddTestView> {
               timePerQuestion,
               visible,
               scrollable,
+              downloadable,
             }) {
               final properties = TestProperties(
                 exploreAnswers: exploreAnswers,
@@ -115,6 +116,7 @@ class _AddTestViewState extends State<AddTestView> {
                 repeatable: repeatable,
                 visible: visible,
                 scrollable: scrollable,
+                downloadable: downloadable,
               );
               //
               context.read<AddTestCubit>().setTestProperties(

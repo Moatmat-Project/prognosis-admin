@@ -123,7 +123,7 @@ class _ChooseExportVState extends State<ChooseExportV> {
             onTap: () async {
               try {
                 onFilter();
-                await PdfService().exportResults(results, widget.name);
+                await PdfService().exportResults(results.reversed.toList(), widget.name);
               } on Exception catch (e) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('error : $e')),

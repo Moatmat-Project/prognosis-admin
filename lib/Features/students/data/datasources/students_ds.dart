@@ -364,8 +364,6 @@ class StudentsDSimpl implements StudentsDS {
 
     //
     final List<Result> results = resultsJson.map((e) => ResultModel.fromStatisticsQuery(e)).toList();
-    //
-    results.removeWhere((e) => e.answers.any((e) => e == null));
 
     // Store user marks
     Map<String, List<StudentTestMarkDetails>> userMarksHolder = {};
