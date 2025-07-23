@@ -303,7 +303,7 @@ class NotificationCard extends StatelessWidget {
             videoId: int.tryParse(videoId.toString()) ?? 0,
             // url: videoUrl,
             commentId: int.tryParse(commentId.toString()),
-            testId: int.fromEnvironment(testId.toString()),
+            testId: int.tryParse(testId.toString()),
           ),
         ),
       );
