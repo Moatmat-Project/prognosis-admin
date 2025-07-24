@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:moatmat_admin/Core/functions/show_alert.dart';
 import 'package:moatmat_admin/Features/notifications/domain/entities/app_notification.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/views/select_students_view.dart';
@@ -64,7 +65,7 @@ class _SendNotificationViewState extends State<SendNotificationView> {
       date: DateTime.now(),
       title: title,
       body: body,
-      data: {"sent_by" : "Admin"},
+      data: {"sent_by": "Admin"},
     );
 
     if (isUserMode) {
@@ -78,18 +79,18 @@ class _SendNotificationViewState extends State<SendNotificationView> {
                 imageFile: image,
                 userIds: selectedUserIds,
                 notification: notification,
-            ),
-          );
+              ),
+            );
       }
     } else {
       if (mounted) {
-      context.read<SendNotificationBloc>().add(
-            SendNotificationToTopics(
-              imageFile: image,
-              topics: selectedTopics,
-              notification: notification,
-            ),
-          );
+        context.read<SendNotificationBloc>().add(
+              SendNotificationToTopics(
+                imageFile: image,
+                topics: selectedTopics,
+                notification: notification,
+              ),
+            );
       }
     }
   }
@@ -111,7 +112,21 @@ class _SendNotificationViewState extends State<SendNotificationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('إرسال إشعار')),
+      appBar: AppBar(
+        title: const Text('  إرسال إشعار'),
+        leading: IconButton(
+            onPressed: () {
+              showAlert(
+                context: context,
+                title: 'تاكيد الخروج',
+                body: 'هل أنت متأكد من الخروج؟',
+                onAgree: () {
+                  Navigator.pop(context);
+                },
+              );
+            },
+            icon: const Icon(Icons.close)),
+      ),
       body: BlocListener<SendNotificationBloc, SendNotificationState>(
         listener: (context, state) {
           if (state is SendNotificationSuccess) {
