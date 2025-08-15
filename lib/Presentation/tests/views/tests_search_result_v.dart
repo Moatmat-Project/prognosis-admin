@@ -36,7 +36,7 @@ class _TestsSearchResultViewState extends State<TestsSearchResultView> {
                     await Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => TestDetailsView(
-                          test: state.tests[index],
+                          testId: state.tests[index].id,
                         ),
                       ),
                     );

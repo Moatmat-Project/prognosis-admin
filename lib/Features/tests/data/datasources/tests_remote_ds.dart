@@ -183,10 +183,10 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
       }
       //
       final addedVideo = addedVideoRes.getOrElse(() => Video(
-        id: -1,
-        url: finalUrl,
-        teacherId: Supabase.instance.client.auth.currentUser!.id,
-      ));
+            id: -1,
+            url: finalUrl,
+            teacherId: Supabase.instance.client.auth.currentUser!.id,
+          ));
       //
       uploadedVideos.add(addedVideo);
     }
@@ -197,7 +197,6 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
       ),
     );
     //
-    print(newTest.information.videos?.map((v) => VideoModel.fromClass(v).toJson(addId: true)).toList());
     // upload test images
     for (int i = 0; i < (newTest.information.images ?? []).length; i++) {
       //
@@ -243,6 +242,7 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
           bucket: "tests",
           material: newTest.information.material,
           path: newTest.information.files![i],
+          name: newTest.information.files![i].split('/').last,
         );
         res.fold(
           (l) {},

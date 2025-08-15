@@ -100,6 +100,7 @@ class _AddTestViewState extends State<AddTestView> {
             repeatable: state.properties?.repeatable ?? false,
             visible: state.properties?.visible ?? false,
             scrollable: state.properties?.scrollable ?? false,
+            downloadable: state.properties?.downloadable ?? false,
             afterSet: ({
               exploreAnswers,
               repeatable,

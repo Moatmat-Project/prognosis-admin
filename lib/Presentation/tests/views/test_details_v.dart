@@ -24,11 +24,9 @@ import '../../tests_results/views/test_results_v.dart';
 class TestDetailsView extends StatefulWidget {
   const TestDetailsView({
     super.key,
-    this.test,
     this.testId,
   });
   final int? testId;
-  final Test? test;
   @override
   State<TestDetailsView> createState() => _TestDetailsViewState();
 }
@@ -38,7 +36,6 @@ class _TestDetailsViewState extends State<TestDetailsView> {
   @override
   void initState() {
     context.read<TestInformationCubit>().init(
-          test: widget.test,
           testId: widget.testId,
         );
     super.initState();
@@ -53,6 +50,12 @@ class _TestDetailsViewState extends State<TestDetailsView> {
             return Scaffold(
               appBar: AppBar(
                 title: Text(state.test.information.title),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.all(SizesResources.s4),
+                    child: Text("ID:${state.test.id}"),
+                  ),
+                ],
               ),
               body: Column(
                 children: [
@@ -122,8 +125,8 @@ class _TestDetailsViewState extends State<TestDetailsView> {
                     title: "ادارة التعليقات",
                     iconData: Icons.manage_accounts,
                     onTap: () {
-                      final videos = widget.test?.information.videos;
-                      final testId = widget.test?.id ?? -1;
+                      final videos = state.test.information.videos;
+                      final testId = state.test.id;
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => VideosListView(
