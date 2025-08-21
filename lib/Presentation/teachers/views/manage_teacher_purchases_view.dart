@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:moatmat_admin/Core/functions/show_alert.dart';
 import 'package:moatmat_admin/Core/widgets/fields/elevated_button_widget.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
+import 'package:moatmat_admin/Presentation/teachers/views/export_purchases_excel_v.dart';
 import '../../../Core/resources/colors_r.dart';
 import '../../../Core/resources/fonts_r.dart';
 import '../../../Core/resources/shadows_r.dart';
@@ -58,7 +60,7 @@ class _ManageTeacherPurchasesViewState extends State<ManageTeacherPurchasesView>
         },
         builder: (context, state) {
           if (state is ManageTeacherPurchasesInitialState) {
-            return ManageTeacherPurchasesInitialView(state: state);
+            return ManageTeacherPurchasesInitialView(state: state, teacherEmail: widget.teacherData.email);
           } else if (state is ManageTeacherPurchasesAddPurchaseState) {
             return ManageTeacherPurchasesAddPurchaseView(state: state);
           }
@@ -133,8 +135,9 @@ class _ManageTeacherPurchasesAddPurchaseViewState extends State<ManageTeacherPur
 }
 
 class ManageTeacherPurchasesInitialView extends StatefulWidget {
-  const ManageTeacherPurchasesInitialView({super.key, required this.state});
+  const ManageTeacherPurchasesInitialView({super.key, required this.state, required this.teacherEmail});
   final ManageTeacherPurchasesInitialState state;
+  final String teacherEmail;
 
   @override
   State<ManageTeacherPurchasesInitialView> createState() => _ManageTeacherPurchasesInitialViewState();
@@ -144,27 +147,58 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
   late TextEditingController _controller;
   List<PurchaseItem> items = [];
   List<PurchaseItem> search = [];
+  late DateTime _starting, _ending;
   @override
   void initState() {
     //
     items = widget.state.items;
+    //
+    _starting = _parseMMDDToCurrentYear(items.last.dayAndMoth);
+    //
+    _ending = _parseMMDDToCurrentYear(items.first.dayAndMoth);
     //
     search = widget.state.items;
     //
     _controller = TextEditingController();
     //
     _controller.addListener(() {
-      if (_controller.text.isEmpty) {
-        search = items;
-      } else {
-        search = items.where((e) {
-          return e.userName.contains(_controller.text);
-        }).toList();
-      }
-      setState(() {});
+      // if (_controller.text.isEmpty) {
+      //   search = items;
+      // } else {
+      //   search = items.where((e) {
+      //     return e.userName.contains(_controller.text);
+      //   }).toList();
+      // }
+      // setState(() {});
+      _applyFilters();
     });
     //
     super.initState();
+  }
+
+  void _applyFilters() {
+    final query = _controller.text.toLowerCase();
+    setState(() {
+      search = items.where((e) {
+        // filter by search
+        final matchesSearch = query.isEmpty || e.userName.toLowerCase().contains(query);
+
+        // filter by date
+        final date = _parseMMDDToCurrentYear(e.dayAndMoth);
+        final matchesDate = !date.isBefore(_starting) && !date.isAfter(_ending);
+
+        // join
+        return matchesSearch && matchesDate;
+      }).toList();
+    });
+  }
+
+  DateTime _parseMMDDToCurrentYear(String mmdd) {
+    final now = DateTime.now();
+    final parts = mmdd.split('/');
+    final month = int.parse(parts[0]);
+    final day = int.parse(parts[1]);
+    return DateTime(now.year, month, day);
   }
 
   @override
@@ -180,6 +214,16 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
           )
         ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ExportPurchasesExcelView(purchases: items,teacherEmail:widget.teacherEmail),
+            ),
+          );
+        },
+        child: Icon(Icons.file_open),
+      ),
       body: Column(
         children: [
           TeacherPurchasesInformation(
@@ -192,6 +236,29 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
             controller: _controller,
             textInputAction: TextInputAction.done,
             maxLines: 1,
+          ),
+          const SizedBox(height: SizesResources.s2),
+          TimeRangeWidget(
+            starting: _starting,
+            ending: _ending,
+            onChangeStartingDate: (date) {
+              setState(() {
+                _starting = date;
+                if (_ending.isBefore(_starting)) {
+                  _ending = _starting;
+                }
+              });
+              _applyFilters();
+            },
+            onChangeEndingDate: (date) {
+              setState(() {
+                _ending = date;
+                if (_ending.isBefore(_starting)) {
+                  _starting = _ending;
+                }
+              });
+              _applyFilters();
+            },
           ),
           const SizedBox(height: SizesResources.s3),
           //
@@ -378,5 +445,201 @@ class TeacherPurchasesInformation extends StatelessWidget {
       sum += i.amount;
     }
     return sum;
+  }
+}
+
+class TimeRangeWidget extends StatelessWidget {
+  const TimeRangeWidget({
+    super.key,
+    required this.starting,
+    required this.ending,
+    required this.onChangeStartingDate,
+    required this.onChangeEndingDate,
+  });
+  final DateTime starting, ending;
+  final void Function(DateTime date) onChangeStartingDate;
+  final void Function(DateTime date) onChangeEndingDate;
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            SizedBox(
+              width: SpacingResources.mainWidth(context),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: ColorsResources.primary.withAlpha(50),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: ColorsResources.darkPrimary,
+                            width: 2,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4, left: 4),
+                                child: InkWell(
+                                  onTap: () async {
+                                    TimeOfDay? picked = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.fromDateTime(starting),
+                                    );
+                                    if (picked != null) {
+                                      onChangeStartingDate(adjustDate(starting, newTime: picked));
+                                    }
+                                  },
+                                  child: Text(
+                                    DateFormat('hh:mm a').format(starting),
+                                    style: TextStyle(
+                                      color: ColorsResources.primary,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Tajawal",
+                                      fontSize: 19,
+                                      decorationColor: ColorsResources.primary.withAlpha(200),
+                                      decorationThickness: 15,
+                                      decorationStyle: TextDecorationStyle.solid,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  DateTime? picked = await showDatePicker(
+                                    context: context,
+                                    firstDate: starting,
+                                    lastDate: ending,
+                                    initialDate: starting,
+                                    keyboardType: TextInputType.text,
+                                  );
+                                  if (picked != null) {
+                                    onChangeStartingDate(adjustDate(starting, newDate: picked));
+                                  }
+                                },
+                                child: Text(
+                                  DateFormat('MM/dd').format(starting),
+                                  style: TextStyle(
+                                    color: ColorsResources.primary.withAlpha(200),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Tajawal",
+                                    fontSize: 16,
+                                    decorationColor: ColorsResources.primary.withAlpha(200),
+                                    decorationThickness: 15,
+                                    decorationStyle: TextDecorationStyle.solid,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, left: 10, right: 10),
+                      child: Icon(
+                        Icons.arrow_forward_rounded,
+                        color: ColorsResources.primary,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: ColorsResources.primary.withAlpha(50),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: ColorsResources.darkPrimary,
+                            width: 2,
+                          ),
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4, left: 4),
+                                child: InkWell(
+                                  onTap: () async {
+                                    TimeOfDay? picked = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.fromDateTime(ending),
+                                    );
+                                    onChangeEndingDate(adjustDate(ending, newTime: picked));
+                                  },
+                                  child: Text(
+                                    DateFormat('hh:mm a').format(ending),
+                                    style: TextStyle(
+                                      color: ColorsResources.primary,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Tajawal",
+                                      fontSize: 19,
+                                      decorationColor: ColorsResources.primary,
+                                      decorationThickness: 15,
+                                      decorationStyle: TextDecorationStyle.solid,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  DateTime? picked = await showDatePicker(
+                                    context: context,
+                                    firstDate: starting,
+                                    lastDate: ending,
+                                    initialDate: ending,
+                                    keyboardType: TextInputType.text,
+                                  );
+                                  onChangeEndingDate(adjustDate(ending, newDate: picked));
+                                },
+                                child: Text(
+                                  DateFormat('MM/dd').format(ending),
+                                  style: TextStyle(
+                                    color: ColorsResources.primary.withAlpha(200),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Tajawal",
+                                    fontSize: 16,
+                                    decorationThickness: 15,
+                                    decorationColor: ColorsResources.primary,
+                                    decorationStyle: TextDecorationStyle.solid,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  DateTime adjustDate(DateTime date, {TimeOfDay? newTime, DateTime? newDate}) {
+    if (newTime != null) {
+      return DateTime(date.year, date.month, date.day, newTime.hour, newTime.minute);
+    }
+    if (newDate != null) {
+      return DateTime(newDate.year, newDate.month, newDate.day, date.hour, date.minute);
+    }
+    return DateTime.now();
   }
 }

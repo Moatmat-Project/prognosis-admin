@@ -42,6 +42,8 @@ abstract class TestsRemoteDS {
   //
   Future<List<Test>> getMyTests({required String? material});
   //
+  Future<List<Test>> getTestsByEmail({required String email});
+  //
   Future<List<Test>> searchTest({
     required String keyword,
   });
@@ -551,5 +553,22 @@ class TestsRemoteDSImpl implements TestsRemoteDS {
     String url = res?['url'].toString() ?? "";
     //
     return url;
+  }
+
+  @override
+  Future<List<Test>> getTestsByEmail({
+    required String email,
+  }) async {
+    //
+    final client = Supabase.instance.client;
+    //
+    List<Test> tests = [];
+    late List<Map<String, dynamic>> response;
+    //
+    response = await client.from("tests").select("id,information->>title").eq("teacher_email", email);
+    //
+    tests = response.map((e) => TestModel.fromJsonForId(e)).toList();
+    //
+    return tests;
   }
 }

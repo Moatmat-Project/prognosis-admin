@@ -95,7 +95,7 @@ class TestsRepositoryImpl implements TestsRepository {
       return left(e);
     }
   }
-  
+
   @override
   Future<Either<Exception, List<Comment>>> getComment({
     required int videoId,
@@ -119,9 +119,11 @@ class TestsRepositoryImpl implements TestsRepository {
       return left(e);
     }
   }
-  
+
   @override
-  Future<Either<Exception, Unit>> deleteComment({required int commentId,}) async {
+  Future<Either<Exception, Unit>> deleteComment({
+    required int commentId,
+  }) async {
     try {
       var res = await dataSource.deleteComment(commentId: commentId);
       return right(res);
@@ -129,9 +131,11 @@ class TestsRepositoryImpl implements TestsRepository {
       return left(e);
     }
   }
-  
+
   @override
-  Future<Either<Exception, Unit>> deleteReplies({required int replyId,}) async {
+  Future<Either<Exception, Unit>> deleteReplies({
+    required int replyId,
+  }) async {
     try {
       var res = await dataSource.deleteReply(replyId: replyId);
       return right(res);
@@ -146,6 +150,18 @@ class TestsRepositoryImpl implements TestsRepository {
   }) async {
     try {
       var res = await dataSource.getVideo(videoId: videoId);
+      return right(res);
+    } on Exception catch (e) {
+      return left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, List<Test>>> getTestsByEmail({
+    required String email,
+  }) async {
+    try {
+      var res = await dataSource.getTestsByEmail(email: email);
       return right(res);
     } on Exception catch (e) {
       return left(e);

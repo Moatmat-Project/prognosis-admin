@@ -32,6 +32,10 @@ abstract class TestsRepository {
     required String? material,
   });
   //
+  Future<Either<Exception, List<Test>>> getTestsByEmail({
+    required String email,
+  });
+  //
   Future<Either<Exception, List<Test>>> searchTest({
     required String keyword,
   });

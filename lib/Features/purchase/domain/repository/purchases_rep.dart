@@ -25,4 +25,8 @@ abstract class PurchasesRepository {
   Future<Either<Exception, List<PurchaseItem>>> teacherPurchases({
     required String email,
   });
+  //
+  Future<Either<Exception, List<PurchaseItem>>> getTestPurchasesByIds({
+    required List<int> testIds,
+  });
 }

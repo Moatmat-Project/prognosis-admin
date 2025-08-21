@@ -1,4 +1,6 @@
 import 'package:moatmat_admin/Features/tests/data/models/question_m.dart';
+import 'package:moatmat_admin/Features/tests/domain/entities/test/test_information.dart';
+import 'package:moatmat_admin/Features/tests/domain/entities/test/test_properties.dart';
 
 import '../../domain/entities/test/test.dart';
 import 'test_information_m.dart';
@@ -32,6 +34,15 @@ class TestModel extends Test {
       information: test.information,
       properties: test.properties,
       questions: test.questions,
+    );
+  }
+  factory TestModel.fromJsonForId(Map json) {
+    return TestModel(
+      id: json['id'] ?? 0,
+      teacherEmail: "",
+      information: TestInformation.empty().copyWith(title: json['title']),
+      properties: TestProperties.empty(),
+      questions: [],
     );
   }
   toJson() {

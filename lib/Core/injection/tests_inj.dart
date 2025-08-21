@@ -7,6 +7,7 @@ import 'package:moatmat_admin/Features/tests/domain/usecases/delete_reply_uc.dar
 import 'package:moatmat_admin/Features/tests/domain/usecases/delete_test_uc.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_comment_uc.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_replies_uc.dart';
+import 'package:moatmat_admin/Features/tests/domain/usecases/get_tests_by_email.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_tests_uc.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_test_by_id_uc.dart';
 import 'package:moatmat_admin/Features/tests/domain/usecases/get_tests_by_ids_uc.dart';
@@ -87,6 +88,11 @@ void injectUC() {
   );
   locator.registerFactory<GetVideoUc>(
     () => GetVideoUc(
+      repository: locator(),
+    ),
+  );
+  locator.registerFactory<GetTestsByEmail>(
+    () => GetTestsByEmail(
       repository: locator(),
     ),
   );
