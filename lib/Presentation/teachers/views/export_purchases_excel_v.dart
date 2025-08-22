@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:moatmat_admin/Features/purchase/domain/entities/purchase_item.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/manage_teacher_purchases_view.dart';
 import 'package:moatmat_admin/Presentation/teachers/state/export_purchases_bloc/export_purchases_bloc.dart';
@@ -24,10 +23,8 @@ class _ExportPurchasesExcelViewState extends State<ExportPurchasesExcelView> {
   late DateTime _starting;
   late DateTime _ending;
 
-  DateTime _parseMMDDToCurrentYear(String mmdd) {
-    final now = DateTime.now();
-    final parsed = DateFormat('MM/dd').parse(mmdd);
-    return DateTime(now.year, parsed.month, parsed.day);
+  DateTime _parseToCurrentYear(String datetime) {
+    return DateTime.parse(datetime);
   }
 
   @override
@@ -39,14 +36,11 @@ class _ExportPurchasesExcelViewState extends State<ExportPurchasesExcelView> {
       _starting = DateTime(now.year, 1, 1);
       _ending = DateTime(now.year, 12, 31);
     } else {
-      final sortedDates = widget.purchases.map((p) => _parseMMDDToCurrentYear(p.dayAndMoth)).toList()..sort((a, b) => a.compareTo(b)); // ascending
+      final sortedDates = widget.purchases.map((p) => _parseToCurrentYear(p.createdAt!)).toList()..sort((a, b) => a.compareTo(b)); // ascending
 
       _starting = sortedDates.first;
       _ending = sortedDates.last;
     }
-    // context.read<ExportPurchasesBloc>().add(
-    //       ChangeRangeFiltersEvent(starting: _starting, ending: _ending),
-    //     );
   }
 
   @override
@@ -106,7 +100,7 @@ class _ExportPurchasesExcelViewState extends State<ExportPurchasesExcelView> {
                 onPressed: () {
                   // filter data on date
                   final filtered = widget.purchases.where((p) {
-                    final d = _parseMMDDToCurrentYear(p.dayAndMoth);
+                    final d = _parseToCurrentYear(p.createdAt!);
                     return !d.isBefore(_starting) && !d.isAfter(_ending);
                   }).toList();
                   //
@@ -121,7 +115,7 @@ class _ExportPurchasesExcelViewState extends State<ExportPurchasesExcelView> {
                 onPressed: () {
                   // filter data on date
                   final filtered = widget.purchases.where((p) {
-                    final d = _parseMMDDToCurrentYear(p.dayAndMoth);
+                    final d = _parseToCurrentYear(p.createdAt!);
                     return !d.isBefore(_starting) && !d.isAfter(_ending);
                   }).toList();
                   //

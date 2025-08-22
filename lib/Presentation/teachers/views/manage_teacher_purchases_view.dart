@@ -153,9 +153,9 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
     //
     items = widget.state.items;
     //
-    _starting = _parseMMDDToCurrentYear(items.last.dayAndMoth);
+    _starting = _parseToCurrentYear(items.last.createdAt!);
     //
-    _ending = _parseMMDDToCurrentYear(items.first.dayAndMoth);
+    _ending = _parseToCurrentYear(items.first.createdAt!);
     //
     search = widget.state.items;
     //
@@ -184,7 +184,7 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
         final matchesSearch = query.isEmpty || e.userName.toLowerCase().contains(query);
 
         // filter by date
-        final date = _parseMMDDToCurrentYear(e.dayAndMoth);
+        final date = _parseToCurrentYear(e.createdAt!);
         final matchesDate = !date.isBefore(_starting) && !date.isAfter(_ending);
 
         // join
@@ -193,12 +193,8 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
     });
   }
 
-  DateTime _parseMMDDToCurrentYear(String mmdd) {
-    final now = DateTime.now();
-    final parts = mmdd.split('/');
-    final month = int.parse(parts[0]);
-    final day = int.parse(parts[1]);
-    return DateTime(now.year, month, day);
+  DateTime _parseToCurrentYear(String datetime) {
+    return DateTime.parse(datetime);
   }
 
   @override
@@ -218,7 +214,7 @@ class _ManageTeacherPurchasesInitialViewState extends State<ManageTeacherPurchas
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => ExportPurchasesExcelView(purchases: items,teacherEmail:widget.teacherEmail),
+              builder: (context) => ExportPurchasesExcelView(purchases: items, teacherEmail: widget.teacherEmail),
             ),
           );
         },
