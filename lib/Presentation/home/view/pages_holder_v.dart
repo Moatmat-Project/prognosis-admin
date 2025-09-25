@@ -164,7 +164,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: ColorsResources.red,
+        backgroundColor: ColorsResources.background,
         unselectedItemColor: ColorsResources.borders,
         useLegacyColorScheme: false,
         selectedItemColor: ColorsResources.primary,
@@ -187,13 +187,13 @@ class _PagesHolderViewState extends State<PagesHolderView> {
             ),
             label: "الرئيسية",
           ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.quiz),
-            ),
-            label: "اختباراتي",
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Padding(
+          //     padding: EdgeInsets.all(8.0),
+          //     child: Icon(Icons.quiz),
+          //   ),
+          //   label: "اختباراتي",
+          // ),
           BottomNavigationBarItem(
             icon: Padding(
               padding: EdgeInsets.all(8.0),
