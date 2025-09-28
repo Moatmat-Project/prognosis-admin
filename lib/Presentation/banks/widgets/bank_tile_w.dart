@@ -22,7 +22,7 @@ class BankTileWidget extends StatelessWidget {
             vertical: SizesResources.s1,
           ),
           decoration: BoxDecoration(
-            color: isFolderItem ? ColorsResources.background : ColorsResources.onPrimary,
+            color: isFolderItem ? ColorsResources.background : ColorsResources.tailColor,
             border: isFolderItem
                 ? const Border(
                     bottom: BorderSide(color: ColorsResources.borders),

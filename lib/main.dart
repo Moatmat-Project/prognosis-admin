@@ -44,15 +44,24 @@ void main() async {
   // int supabase
   await SupabaseServices.init();
   //
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
+    } on FirebaseException catch (e) {
+      // If the default app is already initialized, ignore the duplicate error.
+      if (e.code != 'duplicate-app') {
+        rethrow;
+      }
+    }
+  } else {
+    // Ensure we reference the default app if it's already initialized.
+    Firebase.app();
+  }
 
   // init get it
   await initGetIt();
- 
-
-
   //
   runApp(
     MultiBlocProvider(
@@ -60,7 +69,7 @@ void main() async {
         BlocProvider(create: (context) => AddTestCubit()),
         BlocProvider(create: (context) => MyTestsCubit()),
         BlocProvider(create: (context) => AddBankCubit()),
-        BlocProvider(create: (context) => MyBanksCubit()),
+        BlocProvider(create: (context) => MyBanksCubit()..init()),
         BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => ReportsCubit()..init()),
         BlocProvider(create: (context) => CreateQuestionCubit()),

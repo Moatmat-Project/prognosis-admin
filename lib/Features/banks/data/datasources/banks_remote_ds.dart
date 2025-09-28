@@ -34,7 +34,7 @@ abstract class BanksRemoteDS {
     required bool update,
   });
   //
-  Future<List<Bank>> getMyBanks({required String? material});
+  Future<List<Bank>> getMyBanks( );
   //
   Future<List<Bank>> searchBank({required String keyword});
 }
@@ -333,18 +333,16 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
   }
 
   @override
-  Future<List<Bank>> getMyBanks({required String? material}) async {
+  Future<List<Bank>> getMyBanks( ) async {
     //
     final client = Supabase.instance.client;
     //
     List<Bank> banks = [];
     //
     final PostgrestList res;
-    if (material != null) {
-      res = await client.from("banks").select().eq("information->>material", material);
-    } else {
+ 
       res = await client.from("banks").select();
-    }
+   
     //
     banks = res.map((e) => BankModel.fromJson(e)).toList();
     //

@@ -18,6 +18,7 @@ class HomeCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: ColorsResources.tailColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
@@ -30,10 +31,18 @@ class HomeCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: SizesResources.s3),
-              Icon(
-                icon,
-                color: ColorsResources.darkPrimary,
-                size: 36,
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: ColorsResources.darkPrimary.withValues(alpha: 0.2),
+                ),
+                child: Icon(
+                  icon,
+                  color: ColorsResources.darkPrimary,
+                  size: 36,
+                ),
               ),
               SizedBox(height: SizesResources.s3),
               Text(

@@ -39,7 +39,7 @@ class TextsResources {
   static const schoolAddedSuccess = 'تمت إضافة المدرسة بنجاح';
   static const schoolUpdatedSuccess = 'تم تحديث بيانات المدرسة بنجاح';
   static const schoolDeletedSuccess = 'تم حذف المدرسة بنجاح';
-  static const loadSchoolsFailure = 'فشل تحميل المدارس';
+  static const loadSchoolsFailure = 'فشل تحميل الجامعات';
 
   static const noSchoolsFound = "لا يوجد مدارس لعرضها حاليا";
 }
@@ -69,7 +69,7 @@ class AppBarTitles {
   static const communicateWithUs = "تواصل معنا";
   static const howToUseApp = "كيفية استخدام التطبيق";
   static const addSchool = "إضافة مدرسة";
-  static const schools = "المدارس";
+  static const schools = "الجامعات";
   static const updateSchool = "تعديل بيانات مدرسة";
   static const home = "اللصفحة الرئيسية";
   static const n = "";

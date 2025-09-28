@@ -1,28 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
 import 'package:moatmat_admin/Presentation/banks/state/my_banks/my_banks_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/views/bank_details_v.dart';
 import 'package:moatmat_admin/Presentation/banks/widgets/bank_tile_w.dart';
-import '../../../Core/resources/sizes_resources.dart';
-import '../../../Core/widgets/appbar/contact_us_w.dart';
-import '../../../Core/widgets/appbar/report_icon_w.dart';
 import '../../../Core/widgets/view/search_in_banks_v.dart';
 
-class MyBanksView extends StatefulWidget {
-  const MyBanksView({super.key, required this.material});
-  final String material;
+class MyBanksView extends StatelessWidget {
+  const MyBanksView({super.key});
   @override
-  State<MyBanksView> createState() => _MyBanksViewState();
-}
-
-class _MyBanksViewState extends State<MyBanksView> {
-  @override
-  void initState() {
-    context.read<MyBanksCubit>().init(material: widget.material);
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,30 +20,15 @@ class _MyBanksViewState extends State<MyBanksView> {
               appBar: AppBar(
                 title: const Text("تصفح البنوك"),
                 actions: [
-                  IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SearchInBanksView(
-                            banks: state.banks,
-                            onPick: (bank) async {
-                              await Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (context) => BankDetailsView(
-                                    bank: bank,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.search),
-                  )
+                  BanksSearchWidget(banks: state.banks),
                 ],
               ),
-              body: RefreshIndicator(
+              body:
+              state.banks.isEmpty ? 
+              const Center(
+                child: Text("لا يوجد بنوك"),
+              ) :
+               RefreshIndicator(
                 onRefresh: () async {
                   context.read<MyBanksCubit>().update();
                 },
@@ -73,8 +45,7 @@ class _MyBanksViewState extends State<MyBanksView> {
                           ),
                         ),
                       );
-
-                      if (mounted) {
+                      if (context.mounted) {
                         context.read<MyBanksCubit>().update();
                       }
                     },
@@ -97,6 +68,39 @@ class _MyBanksViewState extends State<MyBanksView> {
           );
         },
       ),
+    );
+  }
+}
+
+class BanksSearchWidget extends StatelessWidget {
+  const BanksSearchWidget({
+    super.key,
+    required this.banks,
+  });
+  final List<Bank> banks;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SearchInBanksView(
+              banks: banks,
+              onPick: (bank) async {
+                await Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => BankDetailsView(
+                      bank: bank,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      },
+      icon: const Icon(Icons.search),
     );
   }
 }

@@ -1,4 +1,4 @@
-package com.moatmat.admin
+package com.prognosis.admin
 
 import io.flutter.embedding.android.FlutterActivity
 

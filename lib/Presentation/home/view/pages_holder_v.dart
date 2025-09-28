@@ -3,31 +3,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
-import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
-import 'package:moatmat_admin/Core/resources/spacing_resources.dart';
+
 import 'package:moatmat_admin/Core/resources/texts_resources.dart';
 import 'package:moatmat_admin/Core/widgets/appbar/student_search_icon.dart';
-import 'package:moatmat_admin/Core/widgets/material_picker_v.dart';
-import 'package:moatmat_admin/Core/widgets/toucheable_box_widget.dart';
-import 'package:moatmat_admin/Core/widgets/toucheable_tile_widget.dart';
+
 import 'package:moatmat_admin/Presentation/banks/views/add_bank_view.dart';
 
-import 'package:moatmat_admin/Presentation/banks/views/banks_search_result_v.dart';
 import 'package:moatmat_admin/Presentation/banks/views/my_banks_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/codes_views_manager.dart';
 import 'package:moatmat_admin/Presentation/codes/views/print_students_code_view.dart';
-import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
-import 'package:moatmat_admin/Presentation/notifications/views/notifications_view.dart';
 import 'package:moatmat_admin/Presentation/notifications/views/send_notification_view.dart';
 import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.dart';
 import 'package:moatmat_admin/Presentation/schools/views/schools_view.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_results_v.dart';
 import 'package:moatmat_admin/Presentation/students/views/add_student_balance_v.dart';
 import 'package:moatmat_admin/Presentation/teachers/views/all_teachers_v.dart';
-import 'package:moatmat_admin/Presentation/tests/views/add_test_vew.dart';
-import 'package:moatmat_admin/Presentation/tests/views/my_tests_v.dart';
-import 'package:moatmat_admin/Presentation/tests/views/tests_search_result_v.dart';
+
 import '../../../Core/widgets/appbar/notifications_icon_w.dart';
 import '../../../Core/widgets/appbar/report_icon_w.dart';
 
@@ -52,7 +44,60 @@ class _PagesHolderViewState extends State<PagesHolderView> {
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Centralize pages and nav items to keep lengths in sync.
+    final pages = [
+      //
+      MainPage(),
+      //
+      MyBanksView(),
+      //
+      const RequestsViewManager(),
+    ];
+
+    final navItems = const [
+      BottomNavigationBarItem(
+        icon: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.home_filled),
+        ),
+        label: "الرئيسية",
+      ),
+      BottomNavigationBarItem(
+        icon: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.library_books),
+        ),
+        label: "بنوكي",
+      ),
+      BottomNavigationBarItem(
+        icon: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Icon(Icons.file_copy_sharp),
+        ),
+        label: "طلبات رفع",
+      ),
+    ];
+
+    // Safely clamp index to avoid assertion when items/pages change (e.g., hot reload)
+    final maxIndex = pages.length - 1;
+    final safeIndex = index.clamp(0, maxIndex);
+    if (safeIndex != index) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          index = safeIndex;
+          _pageController.jumpToPage(safeIndex);
+        });
+      });
+    }
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -60,155 +105,26 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           index = value;
           setState(() {});
         },
-        children: [
-          //
-          Scaffold(
-            appBar: AppBar(
-              title: Text(AppBarTitles.home),
-              actions: const [
-                StudentsSearchIconWidget(),
-                ReportIconWidget(),
-                NotificationsIconWidget(),
-              ],
-            ),
-            body: Center(
-              child: Column(
-                children: [
-                  // TouchableTileWidget(
-                  //   title: "ادارة المدارس",
-                  //   onTap: () {
-
-                  //   },
-                  // ),
-                  // TouchableTileWidget(
-                  //   title: "ادارة الاساتذة",
-                  //   onTap: () {
-
-                  //   },
-                  // ),
-                  HomeCardWidget(
-                    icon: Icons.school_rounded,
-                    title: "ادارة المدارس",
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SchoolsView(),
-                        ),
-                      );
-                    },
-                  ),
-                  HomeCardWidget(
-                    icon: Icons.person_pin_rounded,
-                    title: "ادارة الاساتذة",
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AllTeachersView(),
-                        ),
-                      );
-                    },
-                  ),
-                  HomeCardWidget(
-                    icon: Icons.notification_add,
-                    title: "إرسال اشعارات",
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => BlocProvider(
-                                  create: (context) => locator<SendNotificationBloc>(),
-                                  child: SendNotificationView(),
-                                )),
-                      );
-                      FocusManager.instance.primaryFocus?.unfocus();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // const AllTeachersView(),
-          //
-          MaterialPickerView(
-            onPick: (s) {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => MyTestsView(
-                  material: s,
-                ),
-              ));
-            },
-            onSearch: (p0) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => TestsSearchResultView(keyword: p0),
-                ),
-              );
-            },
-          ),
-          //
-          MaterialPickerView(
-            onPick: (s) {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => MyBanksView(material: s),
-              ));
-            },
-            onSearch: (p0) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => BanksSearchResultView(keyword: p0),
-                ),
-              );
-            },
-          ),
-          //
-          const RequestsViewManager(),
-        ],
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: ColorsResources.background,
         unselectedItemColor: ColorsResources.borders,
         useLegacyColorScheme: false,
         selectedItemColor: ColorsResources.primary,
-        currentIndex: index,
+        currentIndex: safeIndex,
         onTap: (value) {
+          final target = value.clamp(0, maxIndex);
           _pageController.animateToPage(
-            value,
+            target,
             curve: Curves.easeIn,
             duration: const Duration(milliseconds: 200),
           );
-          index = value;
+          index = target;
           setState(() {});
         },
         iconSize: 20,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.home_filled),
-            ),
-            label: "الرئيسية",
-          ),
-          // BottomNavigationBarItem(
-          //   icon: Padding(
-          //     padding: EdgeInsets.all(8.0),
-          //     child: Icon(Icons.quiz),
-          //   ),
-          //   label: "اختباراتي",
-          // ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.library_books),
-            ),
-            label: "بنوكي",
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(Icons.file_copy_sharp),
-            ),
-            label: "طلبات رفع",
-          ),
-        ],
+        items: navItems,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: SpeedDial(
@@ -273,16 +189,16 @@ class _PagesHolderViewState extends State<PagesHolderView> {
               );
             },
           ),
-          SpeedDialChild(
-            label: "إضافة أختبار",
-            child: const Icon(Icons.quiz_outlined),
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const AddTestView()),
-              );
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
-          ),
+          // SpeedDialChild(
+          //   label: "إضافة أختبار",
+          //   child: const Icon(Icons.quiz_outlined),
+          //   onTap: () async {
+          //     await Navigator.of(context).push(
+          //       MaterialPageRoute(builder: (context) => const AddTestView()),
+          //     );
+          //     FocusManager.instance.primaryFocus?.unfocus();
+          //   },
+          // ),
           // SpeedDialChild(
           //   label: "إرسال اشعارات",
           //   child: const Icon(Icons.notification_add),
@@ -298,6 +214,68 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           //   },
           // ),
         ],
+      ),
+    );
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(AppBarTitles.home),
+        actions: const [
+          StudentsSearchIconWidget(),
+          ReportIconWidget(),
+          NotificationsIconWidget(),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            HomeCardWidget(
+              icon: Icons.school_rounded,
+              title: "ادارة الجامعات",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SchoolsView(),
+                  ),
+                );
+              },
+            ),
+            HomeCardWidget(
+              icon: Icons.person_pin_rounded,
+              title: "ادارة الاساتذة",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AllTeachersView(),
+                  ),
+                );
+              },
+            ),
+            HomeCardWidget(
+              icon: Icons.notification_add,
+              title: "إرسال اشعارات",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                            create: (context) => locator<SendNotificationBloc>(),
+                            child: SendNotificationView(),
+                          )),
+                );
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

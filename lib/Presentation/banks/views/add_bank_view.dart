@@ -73,8 +73,8 @@ class _AddBankViewState extends State<AddBankView> {
                   //
                   var info = BankInformation(
                     title: title,
-                    classs: classs,
-                    material: material,
+                    classs: "classs",
+                    material: "material",
                     teacher: teacher,
                     price: price,
                     videos: videos,

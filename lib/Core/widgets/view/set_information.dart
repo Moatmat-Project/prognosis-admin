@@ -138,29 +138,29 @@ class _SetInformationViewState extends State<SetInformationView> {
                 },
               ),
               const SizedBox(height: SizesResources.s2),
-              DropDownWidget(
-                hintText: "الصف",
-                selectedItem: classs ?? classesLst[classesLst.length - 2],
-                items: classesLst,
-                validator: (p0) {
-                  return notEmptyValidator(text: p0);
-                },
-                onSaved: (p0) {
-                  classs = p0;
-                },
-              ),
-              const SizedBox(height: SizesResources.s2),
-              DropDownWidget(
-                hintText: "المادة",
-                selectedItem: material ?? materialsLst.first["name"],
-                items: materialsLst.map((e) => e["name"] as String).toList(),
-                validator: (p0) {
-                  return notEmptyValidator(text: p0);
-                },
-                onSaved: (p0) {
-                  material = p0;
-                },
-              ),
+              // DropDownWidget(
+              //   hintText: "الصف",
+              //   selectedItem: classs ?? classesLst[classesLst.length - 2],
+              //   items: classesLst,
+              //   validator: (p0) {
+              //     return notEmptyValidator(text: p0);
+              //   },
+              //   onSaved: (p0) {
+              //     classs = p0;
+              //   },
+              // ),
+              // const SizedBox(height: SizesResources.s2),
+              // DropDownWidget(
+              //   hintText: "المادة",
+              //   selectedItem: material ?? materialsLst.first["name"],
+              //   items: materialsLst.map((e) => e["name"] as String).toList(),
+              //   validator: (p0) {
+              //     return notEmptyValidator(text: p0);
+              //   },
+              //   onSaved: (p0) {
+              //     material = p0;
+              //   },
+              // ),
               if (!widget.isBank && widget.schools?.isNotEmpty != null) ...[
                 const SizedBox(height: SizesResources.s2),
                 DropDownWidget(
@@ -360,8 +360,8 @@ class _SetInformationViewState extends State<SetInformationView> {
               _formKey.currentState?.save();
               widget.afterSet!(
                 title: title!,
-                classs: classs!,
-                material: material!,
+                classs: 'classs',
+                material: 'material',
                 schoolId: schoolId,
                 teacher: teacher!,
                 password: password,

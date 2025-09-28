@@ -78,7 +78,7 @@ class MyTextFormFieldWidget extends StatelessWidget {
               suffixIcon: suffix,
               label: hintText != null ? Text(hintText!) : null,
               filled: true,
-              fillColor: ColorsResources.onPrimary,
+              fillColor: ColorsResources.tailColor,
             ),
           ),
         ),

@@ -22,8 +22,7 @@ abstract class BanksRepository {
     required List<int> ids,
     required bool update,
   });
-  //
-  Future<Either<Exception, List<Bank>>> getBanks({required String? material});
+   Future<Either<Exception, List<Bank>>> getBanks( );
   //
   Future<Either<Exception, List<Bank>>> searchBank({required String keyword});
 }

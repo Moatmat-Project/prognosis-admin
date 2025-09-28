@@ -21,7 +21,8 @@ class _RequestsViewState extends State<RequestsView> {
         title: const Text("طلبات الرفع"),
         automaticallyImplyLeading: false,
       ),
-      body: ListView.builder(
+      body:
+      widget.requests.isEmpty ? const Center(child: Text("لا يوجد طلبات")) : ListView.builder(
         itemCount: widget.requests.length,
         itemBuilder: (context, index) {
           return TouchableTileWidget(

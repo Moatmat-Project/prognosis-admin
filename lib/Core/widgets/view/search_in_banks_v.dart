@@ -59,6 +59,7 @@ class _SearchInBanksViewState extends State<SearchInBanksView> {
           const SizedBox(height: SizesResources.s2),
           //
           MyTextFormFieldWidget(
+            hintText: "بحث...",
             controller: _controller,
           ),
           //

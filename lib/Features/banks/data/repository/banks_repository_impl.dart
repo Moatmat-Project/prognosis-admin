@@ -40,11 +40,10 @@ class BanksRepositoryImpl implements BanksRepository {
   }
 
   @override
-  Future<Either<Exception, List<Bank>>> getBanks({
-    required String? material,
-  }) async {
+  Future<Either<Exception, List<Bank>>> getBanks(
+   ) async {
     try {
-      var res = await dataSource.getMyBanks(material: material);
+      var res = await dataSource.getMyBanks();
       return right(res);
     } on Exception catch (e) {
       return left(e);
