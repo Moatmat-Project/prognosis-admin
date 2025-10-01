@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:moatmat_admin/Presentation/auth/state/auth_c/auth_cubit_cubit.dart';
-import 'package:moatmat_admin/Presentation/banks/state/add_bank/add_bank_cubit.dart';
+import 'package:moatmat_admin/Presentation/banks/add_bank/add_bank_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/my_banks/my_banks_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/search_bank/search_bank_cubit.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';

@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Core/widgets/view/attach_file_v.dart';
 import 'package:moatmat_admin/Core/widgets/view/set_questions_v.dart';
 import 'package:moatmat_admin/Core/widgets/view/set_information.dart';
+import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank_information.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank_properties.dart';
-import 'package:moatmat_admin/Presentation/banks/state/add_bank/add_bank_cubit.dart';
-import '../../../Core/widgets/view/set_properties_v.dart';
+import 'package:moatmat_admin/Presentation/banks/add_bank/add_bank_cubit.dart';
+ import '../../../Core/widgets/view/set_properties_v.dart';
 import '../../../Core/widgets/view/upload_done_v.dart';
 import '../../../Core/widgets/view/upload_error_v.dart';
 import '../../questions/view/add_question_v.dart';
@@ -43,12 +45,14 @@ class _AddBankViewState extends State<AddBankView> {
         },
         builder: (context, state) {
           if (state is AddBankInformation) {
-              return SetInformationView(
+            return SetInformationView(
               title: state.information?.title,
               classs: state.information?.classs,
               material: state.information?.material,
               password: null,
-              teacher: state.information?.teacher,
+              teacher: state.information?.teacher ?? locator<TeacherData>().email,
+              schoolId: state.information?.schoolId,
+              schools: state.schools,
               period: null,
               price: state.information?.price,
               videos: state.information?.videos,
@@ -73,8 +77,9 @@ class _AddBankViewState extends State<AddBankView> {
                   //
                   var info = BankInformation(
                     title: title,
-                    classs: "classs",
-                    material: "material",
+                    classs: classs,
+                    schoolId: schoolId,
+                    material: material,
                     teacher: teacher,
                     price: price,
                     videos: videos,

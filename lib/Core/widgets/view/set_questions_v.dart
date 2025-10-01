@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/question/question.dart';
+import 'package:moatmat_admin/Presentation/banks/add_bank/add_bank_cubit.dart';
 
-import '../../../Presentation/banks/state/add_bank/add_bank_cubit.dart';
-import '../../../Presentation/picker/views/questions_picker_v_manager.dart';
+ import '../../../Presentation/picker/views/questions_picker_v_manager.dart';
 import '../../../Presentation/questions/widgets/question_item_widget.dart';
 import '../../../Presentation/tests/state/add_test/add_test_cubit.dart';
 import '../../functions/show_alert.dart';

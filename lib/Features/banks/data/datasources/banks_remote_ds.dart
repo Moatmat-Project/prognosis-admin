@@ -34,7 +34,7 @@ abstract class BanksRemoteDS {
     required bool update,
   });
   //
-  Future<List<Bank>> getMyBanks( );
+  Future<List<Bank>> getMyBanks();
   //
   Future<List<Bank>> searchBank({required String keyword});
 }
@@ -100,7 +100,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
         //
         final uploadRes = await locator<UploadFileUC>().call(
           bucket: "banks",
-          material: newBank.information.material,
+          material: newBank.information.teacher,
           id: newBank.id.toString(),
           path: video.url,
           name: video.url.split('/').last,
@@ -140,10 +140,10 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       }
       //
       final addedVideo = addedVideoRes.getOrElse(() => Video(
-        id: -1,
-        url: finalUrl,
-        teacherId: Supabase.instance.client.auth.currentUser!.id,
-      ));
+            id: -1,
+            url: finalUrl,
+            teacherId: Supabase.instance.client.auth.currentUser!.id,
+          ));
       //
       uploadedVideos.add(addedVideo);
     }
@@ -162,7 +162,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       //
       var res = await locator<UploadFileUC>().call(
         bucket: "banks",
-        material: newBank.information.material,
+        material: newBank.information.teacher,
         id: newBank.id.toString(),
         path: newBank.information.images![i],
       );
@@ -198,7 +198,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
         var res = await locator<UploadFileUC>().call(
           id: newBank.id.toString(),
           bucket: "banks",
-          material: newBank.information.material,
+          material: newBank.information.teacher,
           path: newBank.information.files![i],
           name: newBank.information.files![i].split('/').last,
         );
@@ -234,7 +234,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       if (q.video != null) {
         var res = await locator<UploadFileUC>().call(
           bucket: "banks",
-          material: newBank.information.material,
+          material: newBank.information.teacher,
           id: newBank.id.toString(),
           path: q.video!,
         );
@@ -249,7 +249,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       if (q.explainImage != null) {
         var res = await locator<UploadFileUC>().call(
           bucket: "banks",
-          material: newBank.information.material,
+          material: newBank.information.teacher,
           id: newBank.id.toString(),
           path: q.explainImage!,
         );
@@ -265,7 +265,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       if (q.image != null) {
         var res = await locator<UploadFileUC>().call(
           bucket: "banks",
-          material: newBank.information.material,
+          material: newBank.information.teacher,
           id: newBank.id.toString(),
           path: q.image!,
         );
@@ -286,7 +286,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
         if (a.image != null) {
           var res = await locator<UploadFileUC>().call(
             bucket: "banks",
-            material: newBank.information.material,
+            material: newBank.information.teacher,
             id: newBank.id.toString(),
             path: a.image!,
           );
@@ -333,16 +333,16 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
   }
 
   @override
-  Future<List<Bank>> getMyBanks( ) async {
+  Future<List<Bank>> getMyBanks() async {
     //
     final client = Supabase.instance.client;
     //
     List<Bank> banks = [];
     //
     final PostgrestList res;
- 
-      res = await client.from("banks").select();
-   
+
+    res = await client.from("banks").select();
+
     //
     banks = res.map((e) => BankModel.fromJson(e)).toList();
     //
