@@ -129,7 +129,7 @@ class ExportRepositoryService {
                         children: [
                           if (list.length - 1 == i)
                             pw.Text(
-                              "مؤتمت... معك في كل اختيار",
+                              "بروغنوسز... معك في كل اختيار",
                               textAlign: pw.TextAlign.center,
                               style: const pw.TextStyle(
                                 fontSize: 7,
@@ -556,7 +556,7 @@ class ExportRepositoryService {
             await cacheImage(imageUrl: a.image!, context: context);
           }
         }
-      } on Exception  {
+      } on Exception {
         continue;
       }
       //

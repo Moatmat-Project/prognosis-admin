@@ -12,6 +12,8 @@ import 'package:moatmat_admin/Presentation/banks/views/add_bank_view.dart';
 import 'package:moatmat_admin/Presentation/banks/views/my_banks_v.dart';
 import 'package:moatmat_admin/Presentation/codes/views/codes_views_manager.dart';
 import 'package:moatmat_admin/Presentation/codes/views/print_students_code_view.dart';
+import 'package:moatmat_admin/Presentation/colleges/views/colleges_view.dart';
+import 'package:moatmat_admin/Presentation/colleges/views/schools_view.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/send_notification_bloc/send_notification_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/views/send_notification_view.dart';
 import 'package:moatmat_admin/Presentation/requests/views/requests_view_manager.dart';
@@ -250,8 +252,19 @@ class MainPage extends StatelessWidget {
               },
             ),
             HomeCardWidget(
-              icon: Icons.person_pin_rounded,
-              title: "ادارة الاساتذة",
+              icon: Icons.account_balance,
+              title: "ادارة الكُليات",
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SchoolsCollegeView(),
+                  ),
+                );
+              },
+            ),
+            HomeCardWidget(
+              icon: Icons.book,
+              title: "ادارة المواد",
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(

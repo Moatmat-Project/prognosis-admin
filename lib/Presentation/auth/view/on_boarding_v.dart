@@ -50,7 +50,7 @@ class _OnBoardingViewState extends State<OnBoardingView> {
                 PageSlide(
                   color: textColors[1],
                   content: Image.asset("assets/images/boarding/2.png"),
-                  text: "أنشئ الاختبارات المؤتمتة بكل بساطة وسهولة",
+                  text: "أنشئ الاختبارات البروغنوسزة بكل بساطة وسهولة",
                 ),
                 PageSlide(
                   color: textColors[2],

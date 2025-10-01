@@ -36,11 +36,11 @@ class HomeCardWidget extends StatelessWidget {
                 width: 50,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: ColorsResources.darkPrimary.withValues(alpha: 0.2),
+                  color: ColorsResources.primary.withValues(alpha: 0.1),
                 ),
                 child: Icon(
                   icon,
-                  color: ColorsResources.darkPrimary,
+                  color: ColorsResources.primary,
                   size: 36,
                 ),
               ),

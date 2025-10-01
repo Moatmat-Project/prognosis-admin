@@ -9,7 +9,7 @@ class Topic {
 
 const List<Topic> topics = [
   Topic(showName: "الادمن", name: "admin"),
-  Topic(showName: "الاساتذة", name: "teachers"),
+  Topic(showName: "المواد", name: "teachers"),
   Topic(showName: "الطلاب", name: "students"),
   Topic(showName: "الرفع", name: "upload"),
   // Topic(showName: "اختبار", name: "tests"),

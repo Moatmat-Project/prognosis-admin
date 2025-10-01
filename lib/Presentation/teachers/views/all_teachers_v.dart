@@ -51,8 +51,7 @@ class _AllTeachersViewState extends State<AllTeachersView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("الاساتذة"),
-
+        title: const Text("المواد"),
         actions: [
           //   IconButton(
           // onPressed: () async {
@@ -180,7 +179,7 @@ class _AllTeachersViewState extends State<AllTeachersView> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_home,//Developer Account 1
+        animatedIcon: AnimatedIcons.menu_home, //Developer Account 1
         children: [
           SpeedDialChild(
             label: "إضافة استاذ",

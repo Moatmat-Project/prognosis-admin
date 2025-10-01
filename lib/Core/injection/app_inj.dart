@@ -7,6 +7,7 @@ import 'package:moatmat_admin/Core/injection/reports_inj.dart';
 import 'package:moatmat_admin/Core/injection/school_inj.dart';
 import 'package:moatmat_admin/Core/injection/tests_inj.dart';
 import 'package:moatmat_admin/Core/injection/update_inj.dart';
+import 'package:moatmat_admin/Core/injection/college_inj.dart';
 import 'package:moatmat_admin/Core/services/database/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -51,6 +52,8 @@ initGetIt() async {
   injectRequests();
   //
   injectStudents();
+  //
+  injectColleges();
   //
   injectGroups();
   //

@@ -1,26 +1,21 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:moatmat_admin/Core/resources/colors_r.dart';
-import 'package:moatmat_admin/Core/widgets/fields/elevated_button_widget.dart';
+import 'package:moatmat_admin/Core/resources/images_r.dart';
 import 'package:moatmat_admin/Features/code/domain/entites/code_data.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../Core/resources/sizes_resources.dart';
 
 class CodeView extends StatefulWidget {
-  const CodeView(
-      {super.key,
-      required this.codeData,
-      required this.controller,
-      });
+  const CodeView({
+    super.key,
+    required this.codeData,
+    required this.controller,
+  });
   final CodeData codeData;
   final ScreenshotController controller;
 
@@ -46,9 +41,17 @@ class _CodeViewState extends State<CodeView> {
                     const SizedBox(height: SizesResources.s10),
 
                     //
-                    SvgPicture.asset(
-                      "assets/other/app-icon.svg",
-                      width: MediaQuery.sizeOf(context).width / 4,
+                    Container(
+                      padding: const EdgeInsets.all(SizesResources.s2),
+                      margin: const EdgeInsets.all(SizesResources.s2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: Image.asset(
+                        ImagesResources.appLogo,
+                        width: MediaQuery.sizeOf(context).width / 4,
+                      ),
                     ),
                     //
                     const SizedBox(height: SizesResources.s4),
@@ -95,9 +98,7 @@ class _CodeViewState extends State<CodeView> {
                     const SizedBox(height: SizesResources.s1),
                     TextButton(
                       onPressed: () {
-                        Clipboard.setData(
-                                ClipboardData(text: widget.codeData.id))
-                            .then((_) {
+                        Clipboard.setData(ClipboardData(text: widget.codeData.id)).then((_) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text("تم نسخ الكود"),

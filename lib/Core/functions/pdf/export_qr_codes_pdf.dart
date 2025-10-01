@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:moatmat_admin/Features/code/domain/entites/code_data.dart';
-import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:moatmat_admin/Core/resources/images_r.dart';
 
 Future<Uint8List> exportQRCodesPdf({required List<CodeData> codes, required bool onPerPage}) async {
   final pdf = pw.Document();
@@ -18,14 +15,10 @@ Future<Uint8List> exportQRCodesPdf({required List<CodeData> codes, required bool
     await rootBundle.load("assets/fonts/Tajawal/Tajawal-Bold.ttf"),
   );
   final ByteData framePng = await rootBundle.load("assets/other/code_frame.png");
-  final ByteData logoSvg = await rootBundle.load("assets/other/app-icon.svg");
+  final ByteData logoPng = await rootBundle.load(ImagesResources.appLogo);
   //
   final pw.ImageProvider frame = pw.MemoryImage(framePng.buffer.asUint8List());
-//
-  final ByteData logoSvgBytes = await rootBundle.load("assets/other/app-icon.svg");
-  final String svgString = String.fromCharCodes(logoSvgBytes.buffer.asUint8List());
-
-  final pw.SvgImage logo = pw.SvgImage(svg: svgString);
+  final pw.ImageProvider logo = pw.MemoryImage(logoPng.buffer.asUint8List());
 
   if (onPerPage) {
     for (var c in codes) {
@@ -82,7 +75,7 @@ Future<Uint8List> exportQRCodesPdf({required List<CodeData> codes, required bool
 pw.Widget getCodeWidget({
   required CodeData code,
   required pw.ImageProvider frame,
-  required pw.SvgImage logo,
+  required pw.ImageProvider logo,
 }) {
   final double cellWidth = PdfPageFormat.a4.width / 3;
   final double cellHeight = PdfPageFormat.a4.height / 3;
@@ -100,7 +93,7 @@ pw.Widget getCodeWidget({
         pw.SizedBox(
           width: 40,
           height: 40,
-          child: logo,
+          child: pw.Image(logo, fit: pw.BoxFit.contain),
         ),
         pw.SizedBox(height: 9),
         pw.Stack(
@@ -173,7 +166,7 @@ pw.Page getCodeWPage({
   required pw.Font reqFont,
   required pw.Font boldFont,
   required pw.ImageProvider frame,
-  required pw.SvgImage logo,
+  required pw.ImageProvider logo,
 }) {
   const double imageSize = 300; // QR with frame size
   const double logoSize = 160;
@@ -199,7 +192,7 @@ pw.Page getCodeWPage({
             pw.SizedBox(
               width: logoSize,
               height: logoSize,
-              child: logo,
+              child: pw.Image(logo, fit: pw.BoxFit.contain),
             ),
             pw.SizedBox(height: 60),
             pw.Stack(

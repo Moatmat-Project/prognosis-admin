@@ -3,6 +3,7 @@ import 'package:moatmat_admin/Presentation/auth/state/auth_c/auth_cubit_cubit.da
 import 'package:moatmat_admin/Presentation/banks/add_bank/add_bank_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/my_banks/my_banks_cubit.dart';
 import 'package:moatmat_admin/Presentation/banks/state/search_bank/search_bank_cubit.dart';
+import 'package:moatmat_admin/Presentation/colleges/state/college_bloc/college_bloc.dart';
 import 'package:moatmat_admin/Presentation/notifications/state/notifications_bloc/notifications_bloc.dart';
 import 'package:moatmat_admin/Presentation/outer_tests_results/state/cubit/outer_test_results_cubit.dart';
 import 'package:moatmat_admin/Presentation/picker/state/cubit/questions_picker_cubit.dart';
@@ -66,6 +67,7 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
+        
         BlocProvider(create: (context) => AddTestCubit()),
         BlocProvider(create: (context) => MyTestsCubit()),
         BlocProvider(create: (context) => AddBankCubit()),
@@ -98,6 +100,7 @@ void main() async {
         BlocProvider(create: (context) => CommentsManagmentBloc()),
         BlocProvider(create: (context) => ExportPurchasesBloc()),
         BlocProvider(create: (context) => locator<NotificationsBloc>()..add(GetNotifications())),
+        BlocProvider(create: (context) => locator<CollegeBloc>()),
       ],
       child: const AppRoot(),
     ),
