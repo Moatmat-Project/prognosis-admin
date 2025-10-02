@@ -12,6 +12,7 @@ class BankInformationModel extends BankInformation {
     required super.images,
     required super.files,
     required super.schoolId,
+    super.collegeId,
   });
 
   factory BankInformationModel.fromJson(Map json) {
@@ -22,6 +23,7 @@ class BankInformationModel extends BankInformation {
       teacher: json["teacher"],
       price: json["price"],
       schoolId: json["school_id"]?.toString(),
+      collegeId: json["college_id"]?.toString(),
       images: (json["images"] ?? []).cast<String>(),
       videos: (json["videos"] as List?)?.map((e) => VideoModel.fromJson(e)).toList(),
       files: List.generate(
@@ -51,6 +53,7 @@ class BankInformationModel extends BankInformation {
       teacher: information.teacher,
       price: information.price,
       schoolId: information.schoolId,
+      collegeId: information.collegeId,
       videos: information.videos,
       images: information.images,
       files: information.files,
@@ -68,6 +71,7 @@ class BankInformationModel extends BankInformation {
       "images": images,
       "files": files,
       "school_id": schoolId,
+      "college_id": collegeId,
     };
   }
 }

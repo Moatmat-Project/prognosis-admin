@@ -166,7 +166,7 @@ class ExportRepositoryService {
                           ),
                         ),
                         pw.Text(
-                          "اسم الاستاذ :  $teacher",
+                          "اسم المادة :  $teacher",
                           style: pw.TextStyle(
                             fontSize: 11,
                             fontWeight: pw.FontWeight.bold,

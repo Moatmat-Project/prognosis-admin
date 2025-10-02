@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:moatmat_admin/Core/injection/app_inj.dart';
 import 'package:moatmat_admin/Features/banks/data/models/bank_m.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank.dart';
@@ -43,7 +42,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
   @override
   Stream<String> uploadBank({required Bank bank}) async* {
     //
-    bool visible = bank.properties.visible ?? false;
+    bool visible = bank.properties!.visible ?? false;
     //
     final client = Supabase.instance.client;
     //
@@ -54,7 +53,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
     //
     bank = bank.copyWith(
       id: res[0]["id"],
-      properties: bank.properties.copyWith(visible: false),
+      properties: bank.properties!.copyWith(visible: false),
     );
     //--------------------------------------------------------------------
     late Map model;
@@ -64,7 +63,7 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       }
       if (newBank is Bank) {
         //
-        final properties = newBank.properties.copyWith(visible: visible);
+        final properties = newBank.properties!.copyWith(visible: visible);
         //
         model = BankModel.fromClass(
           newBank.copyWith(properties: properties),

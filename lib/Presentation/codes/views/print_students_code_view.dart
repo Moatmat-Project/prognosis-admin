@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
@@ -39,7 +40,7 @@ class _PrintStudentsCodeViewState extends State<PrintStudentsCodeView> {
             } else if (state is PrintStudentsCodesExploreStudents) {
               return PrintStudentsCodesExploreStudentsView(state: state);
             }
-            return const Center(child: CircularProgressIndicator());
+            return Center(child: CupertinoActivityIndicator());
           },
         ),
       ),

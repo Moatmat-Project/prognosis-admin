@@ -43,7 +43,7 @@ class _CommentsManagmentViewState extends State<CommentsManagmentView> {
               title: Text(state.testTitle ?? 'إدارة التعليقات والردود'),
               backgroundColor: ColorsResources.background,
             ),
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(child: CupertinoActivityIndicator()),
           );
         }
         //

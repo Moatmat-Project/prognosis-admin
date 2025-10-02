@@ -147,9 +147,9 @@ class _AddOrUpdateCollegeViewState extends State<AddOrUpdateCollegeView> {
   }
 
   String? _validateCollegeDescription(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'رجاء ادخل وصف الكُلية';
-    }
+    // if (value == null || value.trim().isEmpty) {
+    //   return 'رجاء ادخل وصف الكُلية';
+    // }
     return null;
   }
 }

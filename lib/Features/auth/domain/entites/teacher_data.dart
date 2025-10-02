@@ -5,6 +5,7 @@ class TeacherData {
   final String name;
   final String email;
   final int price;
+  int? collegeId;
   final String purchaseDescription;
   final TeacherOptions options;
   //
@@ -27,6 +28,7 @@ class TeacherData {
     required this.banksFolders,
     required this.testsFolders,
     required this.groups,
+    this.collegeId,
   });
 
   TeacherData copyWith({
@@ -40,6 +42,7 @@ class TeacherData {
     Map<String, dynamic>? banksFolders,
     Map<String, dynamic>? testsFolders,
     List<Group>? groups,
+    int? collegeId,
   }) {
     return TeacherData(
       name: name ?? this.name,
@@ -52,6 +55,7 @@ class TeacherData {
       testsFolders: testsFolders ?? this.testsFolders,
       banksFolders: banksFolders ?? this.banksFolders,
       groups: groups ?? this.groups,
+      collegeId: collegeId,
     );
   }
 }

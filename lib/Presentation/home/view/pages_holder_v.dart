@@ -76,7 +76,7 @@ class _PagesHolderViewState extends State<PagesHolderView> {
           padding: EdgeInsets.all(8.0),
           child: Icon(Icons.library_books),
         ),
-        label: "بنوكي",
+        label: "البنوك",
       ),
       BottomNavigationBarItem(
         icon: Padding(

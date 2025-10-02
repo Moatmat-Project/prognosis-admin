@@ -113,7 +113,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
               ),
               const SizedBox(height: SizesResources.s4),
               MyTextFormFieldWidget(
-                hintText: "سعر شراء محتوى الاستاذ",
+                hintText: "سعر شراء محتوى المادة",
                 initialValue: teacherData.price.toString(),
                 onSaved: (p0) {
                   teacherData = teacherData.copyWith(
@@ -143,7 +143,7 @@ class _AddTeacherViewState extends State<AddTeacherView> {
               const SizedBox(height: SizesResources.s4),
               //
               AttachmentWidget(
-                title: "صورة الاستاذ",
+                title: "صورة المادة",
                 afterPick: (p0) {
                   teacherData = teacherData.copyWith(
                     image: p0,

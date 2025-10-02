@@ -70,7 +70,7 @@ class _SchoolsViewState extends State<SchoolsView> {
             } else if (state is SchoolError) {
               return Center(child: Text('Failed to load schools: ${state.message}'));
             }
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CupertinoActivityIndicator());
           },
         ),
       ),

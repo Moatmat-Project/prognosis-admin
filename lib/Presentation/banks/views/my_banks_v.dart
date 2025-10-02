@@ -23,44 +23,55 @@ class MyBanksView extends StatelessWidget {
                   BanksSearchWidget(banks: state.banks),
                 ],
               ),
-              body:
-              state.banks.isEmpty ? 
-              const Center(
-                child: Text("لا يوجد بنوك"),
-              ) :
-               RefreshIndicator(
-                onRefresh: () async {
-                  context.read<MyBanksCubit>().update();
-                },
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 100),
-                  itemCount: state.banks.length,
-                  itemBuilder: (context, index) => BankTileWidget(
-                    bank: state.banks[index],
-                    onPick: () async {
-                      await Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BankDetailsView(
-                            bank: state.banks[index],
-                          ),
-                        ),
-                      );
-                      if (context.mounted) {
+              body: state.banks.isEmpty
+                  ? const Center(
+                      child: Text("لا يوجد بنوك"),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
                         context.read<MyBanksCubit>().update();
-                      }
-                    },
-                  ),
-                ),
-              ),
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 100),
+                        itemCount: state.banks.length,
+                        itemBuilder: (context, index) => BankTileWidget(
+                          bank: state.banks[index],
+                          onPick: () async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => BankDetailsView(
+                                  bank: state.banks[index],
+                                ),
+                              ),
+                            );
+                            if (context.mounted) {
+                              context.read<MyBanksCubit>().update();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
             );
           } else if (state is MyBanksError) {
-            return const Padding(
+            return Padding(
               padding: EdgeInsets.all(8.0),
-              child: Center(
-                  child: Text(
-                "data",
-                textAlign: TextAlign.center,
-              )),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                      child: Text(
+                    "حصل خطا ما, تاكد من اتصالك بالانترنيت",
+                    textAlign: TextAlign.center,
+                  )),
+                  Center(
+                      child: TextButton(
+                    onPressed: () {
+                      context.read<MyBanksCubit>().update();
+                    },
+                    child: Text("حاول مرة اخرى"),
+                  )),
+                ],
+              ),
             );
           }
           return const Center(

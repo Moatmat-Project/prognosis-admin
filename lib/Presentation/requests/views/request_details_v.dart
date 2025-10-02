@@ -334,7 +334,7 @@ class BankInformationWidget extends StatelessWidget {
         ),
         Row(
           children: [
-            const Text("الاستاذ"),
+            const Text("المادة"),
             const Spacer(),
             Text(information.teacher),
           ],
@@ -392,7 +392,7 @@ class TestInformationWidget extends StatelessWidget {
         ),
         Row(
           children: [
-            const Text("الاستاذ"),
+            const Text("المادة"),
             const Spacer(),
             Text(information.teacher),
           ],

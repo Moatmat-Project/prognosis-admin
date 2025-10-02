@@ -60,6 +60,7 @@ class _AddTestViewState extends State<AddTestView> {
             previous: state.information?.previous,
             afterSet: ({
               required classs,
+              required collegeId,
               required files,
               required material,
               required password,

@@ -58,8 +58,8 @@ class _UpdateTeacherViewState extends State<UpdateTeacherView> {
           onPressed: () {
             showAlert(
               context: context,
-              title: "حذف الاستاذ",
-              body: "هل انت متاكد من انك تريد حذف الاستاذ؟",
+              title: "حذف المادة",
+              body: "هل انت متاكد من انك تريد حذف المادة؟",
               agreeBtn: "حذف",
               onAgree: onDelete,
             );
@@ -142,7 +142,7 @@ class _UpdateTeacherViewState extends State<UpdateTeacherView> {
               ),
               const SizedBox(height: SizesResources.s4),
               MyTextFormFieldWidget(
-                hintText: "سعر شراء محتوى الاستاذ",
+                hintText: "سعر شراء محتوى المادة",
                 initialValue: teacherData.price.toString(),
                 onSaved: (p0) {
                   teacherData = teacherData.copyWith(
@@ -174,7 +174,7 @@ class _UpdateTeacherViewState extends State<UpdateTeacherView> {
               //
               //
               AttachmentWidget(
-                title: "صورة الاستاذ",
+                title: "صورة المادة",
                 file: teacherData.image,
                 fileType: FileType.image,
                 afterPick: (p0) {

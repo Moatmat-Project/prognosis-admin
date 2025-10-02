@@ -4,11 +4,13 @@ import 'package:moatmat_admin/Core/errors/exceptions.dart';
 import 'package:moatmat_admin/Features/auth/domain/entites/teacher_data.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank_information.dart';
 import 'package:moatmat_admin/Features/banks/domain/entities/bank_properties.dart';
+import 'package:moatmat_admin/Features/banks/domain/entities/bank_options.dart';
 import 'package:moatmat_admin/Features/banks/domain/usecases/update_bank_uc.dart';
 import 'package:moatmat_admin/Features/banks/domain/usecases/upload_bank_uc.dart';
 import 'package:moatmat_admin/Features/requests/domain/entities/request.dart';
 import 'package:moatmat_admin/Features/schools/domain/entites/school.dart';
 import 'package:moatmat_admin/Features/schools/domain/usecases/fetch_all_schools_uc.dart';
+import 'package:moatmat_admin/Features/auth/domain/use_cases/update_user_data_uc.dart';
  import '../../../../Core/injection/app_inj.dart';
 import '../../../../Core/services/questions_cash_s.dart';
 import '../../../../Features/banks/domain/entities/bank.dart';
@@ -153,7 +155,12 @@ class AddBankCubit extends Cubit<AddBankState> {
         id: 0,
         teacherEmail: information!.teacher,
         information: information!,
-        properties: properties!,
+        properties: properties,
+        options: BankOptions(
+          scrollable: properties?.scrollable ?? false,
+          visible: properties?.visible ?? false,
+          downloadable: false,
+        ),
         questions: questions,
       );
       // upload Bank information
@@ -165,6 +172,22 @@ class AddBankCubit extends Cubit<AddBankState> {
           await for (var b in r) {
             emit(AddBankLoading(details: b));
           }
+          
+          // Update teacher's college ID if collegeId is provided
+          if (information?.collegeId != null) {
+            try {
+              final currentTeacher = locator<TeacherData>();
+              final updatedTeacher = currentTeacher.copyWith(
+                collegeId: int.tryParse(information!.collegeId!),
+              );
+              
+              await locator<UpdateTeacherDataUC>().call(teacherData: updatedTeacher);
+            } catch (e) {
+              // Log error but don't fail the bank upload
+              print('Failed to update teacher college ID: $e');
+            }
+          }
+          
           emit(AddBankDone());
         },
       );
@@ -179,7 +202,12 @@ class AddBankCubit extends Cubit<AddBankState> {
       id: 0,
       teacherEmail: bank!.information.teacher,
       information: information!,
-      properties: properties!,
+      properties: properties,
+      options: BankOptions(
+        scrollable: properties?.scrollable ?? false,
+        visible: properties?.visible ?? false,
+        downloadable: false,
+      ),
       questions: [],
     );
     //

@@ -32,8 +32,8 @@ class HomeCardWidget extends StatelessWidget {
             children: [
               SizedBox(height: SizesResources.s3),
               Container(
-                height: 50,
-                width: 50,
+                height: 65,
+                width: 65,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: ColorsResources.primary.withValues(alpha: 0.1),

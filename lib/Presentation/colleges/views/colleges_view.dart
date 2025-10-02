@@ -154,8 +154,9 @@ class _CollegesViewState extends State<CollegesView> {
   void _showDeleteDialog(College college) {
     showAlert(
       context: context,
+      
       title: 'حذف كُلية',
-      body: 'هل انت متاكد انك تريد الحذف "${college.name}"?',
+      body: 'هل انت متاكد انك تريد حذف كُلية "${college.name}"?',
       onAgree: () {
         context.read<CollegeBloc>().add(DeleteCollegeEvent(college.id));
       },

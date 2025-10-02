@@ -1,8 +1,8 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:moatmat_admin/Core/constant/classes_list.dart';
-import 'package:moatmat_admin/Core/constant/materials.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moatmat_admin/Core/resources/sizes_resources.dart';
 import 'package:moatmat_admin/Core/validators/not_empty_v.dart';
 import 'package:moatmat_admin/Core/widgets/fields/drop_down_w.dart';
@@ -10,6 +10,8 @@ import 'package:moatmat_admin/Core/widgets/fields/elevated_button_widget.dart';
 import 'package:moatmat_admin/Core/widgets/fields/text_input_field.dart';
 import 'package:moatmat_admin/Features/tests/data/models/video_m.dart';
 import 'package:moatmat_admin/Features/tests/domain/entities/video.dart';
+import 'package:moatmat_admin/Features/colleges/domain/entities/college.dart';
+import 'package:moatmat_admin/Presentation/colleges/state/college_bloc/college_bloc.dart';
 
 import '../../../Features/schools/domain/entites/school.dart';
 import '../../../Features/tests/domain/entities/mini_test.dart';
@@ -59,6 +61,7 @@ class SetInformationView extends StatefulWidget {
     required String material,
     required String teacher,
     required String? schoolId,
+    required String? collegeId,
     required String? password,
     required int? period,
     required int price,
@@ -79,6 +82,7 @@ class _SetInformationViewState extends State<SetInformationView> {
   String material = "material";
   String? teacher;
   String? schoolId;
+  String? collegeId;
   String? password;
   int? period;
   int? price;
@@ -87,6 +91,7 @@ class _SetInformationViewState extends State<SetInformationView> {
   List<Video>? videos;
   List<String>? files;
   MiniTest? previous;
+  List<College> colleges = [];
   //
   @override
   void initState() {
@@ -110,9 +115,7 @@ class _SetInformationViewState extends State<SetInformationView> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: widget.isBank
-            ? const Text("معلومات البنك الرئيسية")
-            : const Text("معلومات الاختبار الرئيسية"),
+        title: widget.isBank ? const Text("معلومات البنك الرئيسية") : const Text("معلومات الاختبار الرئيسية"),
         actions: [
           IconButton(
             onPressed: () {
@@ -144,37 +147,67 @@ class _SetInformationViewState extends State<SetInformationView> {
                 const SizedBox(height: SizesResources.s2),
                 DropDownWidget(
                   hintText: "الجامعة : ",
-                  selectedItem: widget.schools
-                          ?.where(((e) => e.id.toString() == schoolId))
-                          .firstOrNull
-                          ?.information
-                          .name ??
-                      "غير محدد",
-                  items: ["غير محدد"] +
-                      widget.schools!.map((e) => e.information.name).toList(),
+                  selectedItem: widget.schools?.where(((e) => e.id.toString() == schoolId)).firstOrNull?.information.name ?? "غير محدد",
+                  items: ["غير محدد"] + widget.schools!.map((e) => e.information.name).toList(),
                   onChanged: (p0) {
                     setState(() {
-                      schoolId = widget.schools
-                          ?.where((e) => e.information.name == p0)
-                          .firstOrNull
-                          ?.id
-                          .toString();
+                      schoolId = widget.schools?.where((e) => e.information.name == p0).firstOrNull?.id.toString();
+                      // Reset college selection when university changes
+                      collegeId = null;
+                      colleges = [];
                     });
+                    // Fetch colleges for the selected university
+                    if (schoolId != null && schoolId != "غير محدد") {
+                      context.read<CollegeBloc>().add(
+                            FetchCollegesBySchoolId(int.parse(schoolId!)),
+                          );
+                    }
                   },
                   onSaved: (p0) {
                     setState(() {
-                      schoolId = widget.schools
-                          ?.where((e) => e.information.name == p0)
-                          .firstOrNull
-                          ?.id
-                          .toString();
+                      schoolId = widget.schools?.where((e) => e.information.name == p0).firstOrNull?.id.toString();
                     });
                   },
                 ),
+                const SizedBox(height: SizesResources.s2),
+                // College dropdown - shows only when a university is selected
+                if (schoolId != null && schoolId != "غير محدد") ...[
+                  BlocConsumer<CollegeBloc, CollegeState>(
+                    listener: (context, state) {
+                      if (state is CollegeLoaded) {
+                        setState(() {
+                          colleges = state.colleges;
+                        });
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is CollegeLoading) {
+                        return const Center(
+                          child: CupertinoActivityIndicator(),
+                        );
+                      }
+                      return DropDownWidget(
+                        hintText: "الكلية : ",
+                        selectedItem: colleges.where((e) => e.id.toString() == collegeId).firstOrNull?.name ?? "غير محدد",
+                        items: ["غير محدد"] + colleges.map((e) => e.name).toList(),
+                        onChanged: (p0) {
+                          setState(() {
+                            collegeId = colleges.where((e) => e.name == p0).firstOrNull?.id.toString();
+                          });
+                        },
+                        onSaved: (p0) {
+                          setState(() {
+                            collegeId = colleges.where((e) => e.name == p0).firstOrNull?.id.toString();
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ],
               ],
               const SizedBox(height: SizesResources.s2),
               MyTextFormFieldWidget(
-                hintText: "الاستاذ",
+                hintText: "مدرس المادة",
                 initialValue: teacher,
                 textInputAction: TextInputAction.next,
                 validator: (p0) {
@@ -272,8 +305,7 @@ class _SetInformationViewState extends State<SetInformationView> {
                         assets: videos?.map((e) => e.url).toList() ?? [],
                         onSave: (res) {
                           setState(() {
-                            videos =
-                                res.map((e) => VideoModel.fromUrl(e)).toList();
+                            videos = res.map((e) => VideoModel.fromUrl(e)).toList();
                           });
                         },
                       ),
@@ -357,6 +389,7 @@ class _SetInformationViewState extends State<SetInformationView> {
                 classs: "classs!",
                 material: "material!",
                 schoolId: schoolId,
+                collegeId: collegeId,
                 teacher: teacher!,
                 password: password,
                 period: period,

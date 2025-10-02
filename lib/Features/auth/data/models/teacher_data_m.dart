@@ -16,12 +16,14 @@ class TeacherDataModel extends TeacherData {
     required super.price,
     required super.purchaseDescription,
     required super.groups,
+    super.collegeId,
   });
   factory TeacherDataModel.fromJson(Map json) {
     return TeacherDataModel(
       name: json["name"],
       email: json["email"],
       description: json["description"],
+      collegeId: json['college_id'],
       image: json["image"],
       price: json["price"] ?? 0,
       purchaseDescription: json["purchase_description"] ?? '',
@@ -56,6 +58,7 @@ class TeacherDataModel extends TeacherData {
       testsFolders: teacherData.testsFolders,
       banksFolders: teacherData.banksFolders,
       groups: teacherData.groups,
+      collegeId: teacherData.collegeId,
     );
   }
 
@@ -69,6 +72,7 @@ class TeacherDataModel extends TeacherData {
       "purchase_description": purchaseDescription,
       "tests_folders": testsFolders,
       "banks_folders": banksFolders,
+      "college_id": collegeId,
       "groups": groups.map((e) => GroupModel.fromClass(e).toJson()).toList(),
       "teacher_options": TeacherOptionsModel.fromClass(options).toJson(),
     };

@@ -16,6 +16,7 @@ class CollegeRepositoryImpl implements CollegeRepository {
       await remoteDataSource.addCollege(CollegeModel(
         id: college.id,
         name: college.name,
+        description: college.description,
         imageUrl: college.imageUrl,
         schoolId: college.schoolId,
       ));
@@ -45,6 +46,7 @@ class CollegeRepositoryImpl implements CollegeRepository {
       await remoteDataSource.updateCollege(CollegeModel(
         id: college.id,
         name: college.name,
+        description: college.description,
         imageUrl: college.imageUrl,
         schoolId: college.schoolId,
       ));
@@ -69,8 +71,7 @@ class CollegeRepositoryImpl implements CollegeRepository {
   }
 
   @override
-  Future<Either<Failure, List<College>>> getCollegesBySchoolId(
-      int schoolId) async {
+  Future<Either<Failure, List<College>>> getCollegesBySchoolId(int schoolId) async {
     try {
       final colleges = await remoteDataSource.getCollegesBySchoolId(schoolId);
       return Right(colleges);
