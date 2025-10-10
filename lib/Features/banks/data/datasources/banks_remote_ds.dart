@@ -71,6 +71,10 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       }
     }
     //--------------------------------------------------------------------
+    Supabase.instance.client.from("teachers_data").update({
+      "college_id": bank.information.collegeId,
+    }).eq("email", bank.information.teacher);
+    //--------------------------------------------------------------------
     // update bank
     await client.from("banks").update(model).eq("id", bank.id);
     //
@@ -309,6 +313,8 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
     //
     final client = Supabase.instance.client;
     //
+
+    //
     await client.from("banks").delete().eq("id", bankId);
     //
     return unit;
@@ -371,6 +377,11 @@ class BanksRemoteDSImpl implements BanksRemoteDS {
       if (newBank is String) {
         yield newBank;
       }
+      //--------------------------------------------------------------------
+      Supabase.instance.client.from("teachers_data").update({
+        "college_id": bank.information.collegeId,
+      }).eq("email", bank.information.teacher);
+      //--------------------------------------------------------------------
       if (newBank is Bank) {
         model = BankModel.fromClass(newBank).toJson();
       }

@@ -112,6 +112,9 @@ class TeachersDataSourceImpl implements TeachersDataSource {
     Map json = TeacherDataModel.fromClass(teacherData).toJson();
     //
     var query1 = await client.from("teachers_data").select().eq("email", teacherData.email);
+
+     final collegeId = query1.first["college_id"];
+     json["college_id"] = collegeId;
     //
     if (teacherData.image != null) {
       //
@@ -119,7 +122,7 @@ class TeachersDataSourceImpl implements TeachersDataSource {
         path: teacherData.image!,
         teacher: teacherData.email,
       );
-      //
+      // 
       json["image"] = res;
     }
     //
